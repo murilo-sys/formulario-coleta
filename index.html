@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Formulário de coleta</title>
+  <link rel="stylesheet" href="assets/style.css">
+</head>
+
+<body>
+  <form class="formularioColeta">
+
+    <div class="cartaoPerguntas">
+
+      <h3>Dados do solicitante</h3>
+      <p class="resumoCampo">CNPJ ou CPF de quem está solicitando a coleta</p>
+
+      <p class="perguntaTitulo">Documento do solicitante</p>
+      <input type="text" id="clienteDoc" placeholder="00.000.000/0000-00">
+
+    </div>
+
+    <div class="cartaoPerguntas">
+
+      <h3>Endereço da coleta</h3>
+      <p class="resumoCampo">Local onde a mercadoria será retirada</p>
+
+      <div class="linhaDupla">
+
+        <div class="coluna-flex-1">
+          <p class="perguntaTitulo">CEP</p>
+          <input type="text" id="cepInput" placeholder="00000-000">
+        </div>
+
+        <div class="coluna-flex-3">
+          <p class="perguntaTitulo">Logradouro</p>
+          <input type="text" id="logradouroInput" placeholder="Rua, Avenida, Travessa...">
+        </div>
+
+      </div>
+
+      <div class="linhaDupla">
+
+        <div class="coluna-flex-1">
+          <p class="perguntaTitulo">Número</p>
+          <input type="text" id="numeroInput" placeholder="Ex: 01">
+        </div>
+
+        <div class="coluna-flex-3">
+          <p class="perguntaTitulo">Complemento</p>
+          <input type="text" id="complementoInput" placeholder="Apartamento, sala, bloco...">
+        </div>
+
+      </div>
+
+      <div class="linhaDupla">
+
+        <div class="coluna-flex-2">
+          <p class="perguntaTitulo">Bairro</p>
+          <input type="text" id="bairroInput" placeholder="Ex: 01">
+        </div>
+
+        <div class="coluna-flex-1">
+          <p class="perguntaTitulo">Cidade</p>
+          <input type="text" id="cidadeInput" placeholder="São Paulo">
+        </div>
+
+        <div class="coluna-flex-1">
+          <p class="perguntaTitulo">Estado</p>
+          <input type="text" id="estadoInput" placeholder="SP">
+        </div>
+
+      </div>
+    </div>
+  </form>
+
+</body>
+
+</html>
