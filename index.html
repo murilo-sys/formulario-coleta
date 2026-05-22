@@ -58,17 +58,96 @@
 
         <div class="coluna-flex-2">
           <p class="perguntaTitulo">Bairro</p>
-          <input type="text" id="bairroInput" placeholder="Ex: 01">
+          <input type="text" id="bairroInput" placeholder="Centro, Vila Mariana...">
         </div>
 
         <div class="coluna-flex-1">
           <p class="perguntaTitulo">Cidade</p>
-          <input type="text" id="cidadeInput" placeholder="São Paulo">
+          <input type="text" id="cidadeInput" placeholder="São Paulo...">
         </div>
 
         <div class="coluna-flex-1">
           <p class="perguntaTitulo">Estado</p>
-          <input type="text" id="estadoInput" placeholder="SP">
+          <input type="text" id="estadoInput" placeholder="SP, RJ...">
+        </div>
+
+      </div>
+    </div>
+
+    <div class="cartaoPerguntas">
+      <h3>Remetente e Destinatário</h3>
+
+      <div class="linhaDupla">
+
+        <div class="coluna-flex-2">
+          <p class="perguntaTitulo">Documento do Remetente</p>
+          <input type="text" id="docRemetente" placeholder="00.000.000/0000-00">
+        </div>
+
+        <div class="coluna-flex-2">
+          <p class="perguntaTitulo">Documento do Destinatário</p>
+          <input type="text" id="docDestinatário" placeholder="00.000.000/0000-00">
+        </div>
+
+      </div>
+    </div>
+
+    <div class="cartaoPerguntas">
+      <h3>Dados da mercadoria</h3>
+      <p class="perguntaTitulo">Natureza da mercadoria</p>
+      <input type="text" id="naturezaMercadoria" placeholder="Ex: Eletrônicos, Têxteis, Alimentos...">
+
+      <div class="linhaDupla">
+
+        <div class="coluna-flex-1">
+          <p class="perguntaTitulo">Valor da NF (R$)</p>
+          <input type="number" id="valorNf" step="0.01" placeholder="R$ 0,00">
+        </div>
+
+        <div class="coluna-flex-1">
+          <p class="perguntaTitulo">Volumes</p>
+          <input type="number" id="qtdVolumes" placeholder="Qtd. de volumes">
+        </div>
+
+        <div class="coluna-flex-1">
+          <p class="perguntaTitulo">Peso Real</p>
+          <input type="number" id="pesoReal" step="0.01" placeholder="0,00 kg">
+        </div>
+
+      </div>
+
+      <div class="linhaDuplaCubagem">
+
+        <div>
+          <p class="pergunta-cubagem-titulo">Dimensões da embalagem</p>
+          <p class="subTitulo">Medidas em centímetros (cm)</p>
+        </div>
+
+        <div class="coluna-botao">
+          <button id="botaoAdicionar">+ Adicionar</button>
+        </div>
+
+      </div>
+
+      <div class="coluna-cubagem">
+
+        <div class="coluna-flex-1">
+          <p class="pergunta-cubagem">COMPRIMENTO</p>
+          <input id="comprimento">
+        </div>
+
+        <div class="coluna-flex-1">
+          <p class="pergunta-cubagem">LARGURA</p>
+          <input id="largura">
+        </div>
+
+        <div class="coluna-flex-1">
+          <p class="pergunta-cubagem">ALTURA</p>
+          <input id="altura">
+        </div>
+
+        <div class="coluna-lixo">
+          <button id="botaoLixo">🗑️</button>
         </div>
 
       </div>
