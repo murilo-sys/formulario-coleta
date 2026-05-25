@@ -99,7 +99,17 @@
     <div class="cartaoPerguntas">
       <h3>Dados da mercadoria</h3>
       <p class="perguntaTitulo">Natureza da mercadoria</p>
-      <input type="text" id="naturezaMercadoria" placeholder="Ex: Eletrônicos, Têxteis, Alimentos...">
+      <select id="naturezaMercadoria">
+        <option value disabled selected>Selecione o tipo de carga...</option>
+        <option value="alimentos">Alimentos não perecíveis</option>
+        <option value="eletronicos">Eletrônicos e Informática</option>
+        <option value="texteis">Têxteis e Confecções</option>
+        <option value="pecas">Peças Automotivas / Maquinário</option>
+        <option value="medicamentos">Medicamentos e Cosméticos</option>
+
+        <option value="perigosos_quimicos">Químicos / Inflamáveis</option>
+        <option value="perigosos_explosivos">Explosivos / Munições</option>
+      </select>
 
       <div class="linhaDupla">
 
@@ -139,36 +149,38 @@
 
       </div>
 
-      <div class="coluna-cubagem">
+      <div id="containerCubagem">
+        <div class="coluna-cubagem">
 
-        <div class="coluna-flex-1">
-          <p class="pergunta-cubagem">COMPRIMENTO</p>
-          <div class="input-grupo-sufixo">
-            <input id="comprimento">
-            <span class="sufixo">| cm</span>
+          <div class="coluna-flex-1">
+            <p class="pergunta-cubagem">COMPRIMENTO</p>
+            <div class="input-grupo-sufixo">
+              <input class="input-comprimento" type="number" placeholder="0">
+              <span class="sufixo">| cm</span>
+            </div>
           </div>
-        </div>
 
-        <div class="coluna-flex-1">
-          <p class="pergunta-cubagem">LARGURA</p>
-          <div class="input-grupo-sufixo">
-            <input id="largura">
-            <span class="sufixo">| cm</span>
+          <div class="coluna-flex-1">
+            <p class="pergunta-cubagem">LARGURA</p>
+            <div class="input-grupo-sufixo">
+              <input class="input-largura" type="number" placeholder="0">
+              <span class="sufixo">| cm</span>
+            </div>
           </div>
-        </div>
 
-        <div class="coluna-flex-1">
-          <p class="pergunta-cubagem">ALTURA</p>
-          <div class="input-grupo-sufixo">
-            <input id="altura">
-            <span class="sufixo">| cm</span>
+          <div class="coluna-flex-1">
+            <p class="pergunta-cubagem">ALTURA</p>
+            <div class="input-grupo-sufixo">
+              <input class="input-altura" type="number" placeholder="0">
+              <span class="sufixo">| cm</span>
+            </div>
           </div>
-        </div>
 
-        <div class="coluna-lixo">
-          <button id="botaoLixo" type="button">🗑️</button>
-        </div>
+          <div class="coluna-lixo">
+            <button class="botao-lixo" type="button">🗑️</button>
+          </div>
 
+        </div>
       </div>
     </div>
 
