@@ -185,9 +185,9 @@ input[type="number"] {
 }
 
 #pesoReal,
-#comprimento,
-#largura,
-#altura {
+.input-comprimento,
+.input-largura,
+.input-altura {
   padding-right: 45px;
 }
 

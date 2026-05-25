@@ -134,20 +134,18 @@ document.addEventListener('DOMContentLoaded', () => {
 
   if (formulario) {
 
+    //Limpar campos erro-input 
+    formulario.addEventListener('input', (evento) => {
+      if (evento.target.tagName === 'INPUT' || evento.target.tagName === 'SELECT') {
+        evento.target.classList.remove('erro-input');
+      }
+    });
+
     //Clique do botão submit
     formulario.addEventListener('submit', (evento) => {
       evento.preventDefault();
 
       console.log("botão clicado")
-
-      //Limpar campos erro-input
-      const todosOsCampos = document.querySelectorAll('input, select');
-      todosOsCampos.forEach(campo => {
-        campo.addEventListener('input', () => {
-          campo.classList.remove('erro-input');
-        });
-      });
-
 
       //Puxando os valores sem a mascara
       const cnpjSolicitante = maskSolicitante ? maskSolicitante.unmaskedValue : '';
@@ -267,9 +265,27 @@ document.addEventListener('DOMContentLoaded', () => {
         `;
 
         // Injeta o HTML novo no final da lista dentro do container
+        qtdVolumes.classList.remove('erro-input')
         containerCubagem.insertAdjacentHTML('beforeend', novaLinhaHTML);
 
       });
     }
+
+
+    containerCubagem.addEventListener('click', (evento) => {
+
+      // Verifica se clicou na lixeira
+      if (evento.target.classList.contains('botao-lixo')) {
+
+        const totalLinhas = containerCubagem.querySelectorAll('.coluna-cubagem').length;
+
+        if (totalLinhas === 1) {
+          return;
+        }
+
+        const linhaParaRemover = evento.target.closest('.coluna-cubagem');
+        linhaParaRemover.remove();
+      }
+    });
   }
 });
