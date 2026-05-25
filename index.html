@@ -5,7 +5,11 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Formulário de coleta</title>
+
   <link rel="stylesheet" href="assets/style.css">
+
+  <script src="https://unpkg.com/imask"></script>
+  <script src="js/main.js"></script>
 </head>
 
 <body>
@@ -17,8 +21,26 @@
       <p class="resumoCampo">CNPJ ou CPF de quem está solicitando a coleta</p>
 
       <p class="perguntaTitulo">Documento do solicitante</p>
-      <input type="text" id="clienteDoc" placeholder="00.000.000/0000-00">
+      <input type="text" id="solicitanteDoc" placeholder="CPF ou CNPJ">
 
+    </div>
+
+    <div class="cartaoPerguntas">
+      <h3>Remetente e Destinatário</h3>
+
+      <div class="linhaDupla">
+
+        <div class="coluna-flex-2">
+          <p class="perguntaTitulo">Documento do Remetente</p>
+          <input type="text" id="docRemetente" placeholder="CPF ou CNPJ">
+        </div>
+
+        <div class="coluna-flex-2">
+          <p class="perguntaTitulo">Documento do Destinatário</p>
+          <input type="text" id="docDestinatario" placeholder="CPF ou CNPJ">
+        </div>
+
+      </div>
     </div>
 
     <div class="cartaoPerguntas">
@@ -75,24 +97,6 @@
     </div>
 
     <div class="cartaoPerguntas">
-      <h3>Remetente e Destinatário</h3>
-
-      <div class="linhaDupla">
-
-        <div class="coluna-flex-2">
-          <p class="perguntaTitulo">Documento do Remetente</p>
-          <input type="text" id="docRemetente" placeholder="00.000.000/0000-00">
-        </div>
-
-        <div class="coluna-flex-2">
-          <p class="perguntaTitulo">Documento do Destinatário</p>
-          <input type="text" id="docDestinatário" placeholder="00.000.000/0000-00">
-        </div>
-
-      </div>
-    </div>
-
-    <div class="cartaoPerguntas">
       <h3>Dados da mercadoria</h3>
       <p class="perguntaTitulo">Natureza da mercadoria</p>
       <input type="text" id="naturezaMercadoria" placeholder="Ex: Eletrônicos, Têxteis, Alimentos...">
@@ -101,7 +105,10 @@
 
         <div class="coluna-flex-1">
           <p class="perguntaTitulo">Valor da NF (R$)</p>
-          <input type="number" id="valorNf" step="0.01" placeholder="R$ 0,00">
+          <div class="input-grupo-sufixo">
+            <span class="sufixo"> R$ |</span>
+            <input type="text" id="valorNf" placeholder="0,00">
+          </div>
         </div>
 
         <div class="coluna-flex-1">
@@ -111,7 +118,10 @@
 
         <div class="coluna-flex-1">
           <p class="perguntaTitulo">Peso Real</p>
-          <input type="number" id="pesoReal" step="0.01" placeholder="0,00 kg">
+          <div class="input-grupo-sufixo">
+            <input type="text" id="pesoReal" placeholder="0,00">
+            <span class="sufixo">| KG</span>
+          </div>
         </div>
 
       </div>
@@ -124,7 +134,7 @@
         </div>
 
         <div class="coluna-botao">
-          <button id="botaoAdicionar">+ Adicionar</button>
+          <button id="botaoAdicionar" type="button">+ Adicionar</button>
         </div>
 
       </div>
@@ -133,24 +143,38 @@
 
         <div class="coluna-flex-1">
           <p class="pergunta-cubagem">COMPRIMENTO</p>
-          <input id="comprimento">
+          <div class="input-grupo-sufixo">
+            <input id="comprimento">
+            <span class="sufixo">| cm</span>
+          </div>
         </div>
 
         <div class="coluna-flex-1">
           <p class="pergunta-cubagem">LARGURA</p>
-          <input id="largura">
+          <div class="input-grupo-sufixo">
+            <input id="largura">
+            <span class="sufixo">| cm</span>
+          </div>
         </div>
 
         <div class="coluna-flex-1">
           <p class="pergunta-cubagem">ALTURA</p>
-          <input id="altura">
+          <div class="input-grupo-sufixo">
+            <input id="altura">
+            <span class="sufixo">| cm</span>
+          </div>
         </div>
 
         <div class="coluna-lixo">
-          <button id="botaoLixo">🗑️</button>
+          <button id="botaoLixo" type="button">🗑️</button>
         </div>
 
       </div>
+    </div>
+
+    <div class="coluna-botao-agendar">
+      <button id="buttonLimparForm" type="reset">Limpar Formulário</button>
+      <button id="buttonSolicitarColeta" type="submit">Solicitar Coleta</button>
     </div>
   </form>
 

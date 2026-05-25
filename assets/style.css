@@ -4,7 +4,6 @@ body {
 
 p {
   margin-bottom: 3px;
-  margin-top: 20;
 }
 
 input {
@@ -25,7 +24,7 @@ h3 {
 
 .perguntaTitulo {
   font-family: Arial, Helvetica, sans-serif;
-  font-size: 13px;
+  font-size: 14px;
 }
 
 .resumoCampo {
@@ -57,6 +56,7 @@ input[type="number"] {
 
 .linhaDupla {
   display: flex;
+  flex-wrap: wrap;
   gap: 15px;
 }
 
@@ -113,18 +113,22 @@ input[type="number"] {
 
 .coluna-cubagem {
   display: flex;
+  flex-wrap: wrap;
   gap: 15px;
+  margin-top: 15px;
+
 }
 
 .pergunta-cubagem {
   font-family: Arial, Helvetica, sans-serif;
   color: gray;
   font-size: 12px;
+  margin-top: 0;
 }
 
 .pergunta-cubagem-titulo {
   font-family: Arial, Helvetica, sans-serif;
-  font-size: 13px;
+  font-size: 14px;
   margin-top: 20px;
 }
 
@@ -136,6 +140,100 @@ input[type="number"] {
 #botaoLixo {
   width: fit-content;
   height: 33px;
-  border: 0px;
-  background-color: transparent;
+  border: solid 1px rgba(0, 0, 0, 0.349);
+  border-radius: 5px;
+  background-color: white;
+}
+
+.coluna-botao-agendar {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-right: 10px;
+}
+
+#buttonSolicitarColeta,
+#buttonLimparForm {
+  height: 40px;
+  width: 150px;
+  font-family: Arial;
+  font-size: 14px;
+  border-radius: 5px;
+  padding: 10px 15px 10px 15px;
+}
+
+#buttonSolicitarColeta {
+  border: transparent;
+  color: white;
+  background-color: rgb(26, 58, 107);
+}
+
+#buttonLimparForm {
+  border: solid 1.5px gainsboro;
+  color: gray;
+}
+
+.input-grupo-sufixo {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+#pesoReal,
+#comprimento,
+#largura,
+#altura {
+  padding-right: 45px;
+}
+
+#valorNf {
+  padding-left: 45px;
+}
+
+.sufixo {
+  position: absolute;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 13px;
+  color: gray;
+  user-select: none;
+  pointer-events: none;
+}
+
+.input-grupo-sufixo .sufixo:last-child {
+  right: 10px;
+}
+
+.input-grupo-sufixo .sufixo:first-child {
+  left: 10px;
+}
+
+/* --- ESTILO EXCLUSIVO PARA TELAS ABAIXO DE 492px --- */
+@media (max-width: 491px) {
+
+  .linhaDupla,
+  .coluna-cubagem,
+  .coluna-botao-agendar {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .coluna-flex-1,
+  .coluna-flex-2,
+  .coluna-flex-3 {
+    flex: none;
+    width: 100%;
+  }
+
+  #buttonSolicitarColeta,
+  #buttonLimparForm {
+    width: 100%;
+  }
+
+  .coluna-cubagem {
+    position: relative;
+    background-color: rgba(0, 0, 0, 0.041);
+    border-radius: 5px;
+    padding: 10px;
+    gap: 10px;
+  }
 }
