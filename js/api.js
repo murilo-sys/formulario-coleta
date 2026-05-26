@@ -34,8 +34,7 @@ async function consultarEmpresaPorCnpj(cnpjLimpo) {
     const resposta = await fetch(URL_API_LOCAL, {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${TOKEN_API}`
+        'Content-Type': 'application/json'
       },
       body: JSON.stringify(corpoRequisicao)
     });
