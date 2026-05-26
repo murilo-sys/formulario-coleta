@@ -1,6 +1,6 @@
 document.addEventListener("DOMContentLoaded", () => {
   // ========================================================================= //
-  //                        1. VARIÁVEIS GLOBAIS DE MÁSCARAS                    //
+  //                          VARIÁVEIS GLOBAIS DE MÁSCARAS                    //
   // ========================================================================= //
   let maskSolicitante,
     maskRemetente,
@@ -11,7 +11,7 @@ document.addEventListener("DOMContentLoaded", () => {
     maskVolumes;
 
   // ========================================================================= //
-  //              2. MÁSCARAS DE DOCUMENTOS (CPF / CNPJ DINÂMICO)               //
+  //                MÁSCARAS DE DOCUMENTOS (CPF / CNPJ DINÂMICO)               //
   // ========================================================================= //
   const solicitanteDoc = document.getElementById("solicitanteDoc");
   const docRemetente = document.getElementById("docRemetente");
@@ -57,7 +57,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
   // ================================================================================== //
-  //                                   3. MÁSCARA DE CEP                                //
+  //                                      MÁSCARA DE CEP                                //
   // ================================================================================== //
   const cepInput = document.getElementById("cepInput");
 
@@ -69,7 +69,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
   // ================================================================================================================= //
-  //               4. MÁSCARAS DE VALORES (PESO, VALOR DA NF, COMPRIMENTO, LARGURA, ALTURA E VOLUMES)                  //
+  //                  MÁSCARAS DE VALORES (PESO, VALOR DA NF, COMPRIMENTO, LARGURA, ALTURA E VOLUMES)                  //
   // ================================================================================================================= //
   const pesoReal = document.getElementById("pesoReal");
   const valorNf = document.getElementById("valorNf");
@@ -147,7 +147,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
   // ========================================================================= //
-  //                        5. VALIDAÇÃO E ENVIO DO FORMULÁRIO                 //
+  //                           VALIDAÇÃO E ENVIO DO FORMULÁRIO                 //
   // ========================================================================= //
   const formulario = document.querySelector(".formularioColeta");
 
@@ -258,9 +258,27 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
+  // ========================================================================= //
+  // VEFICAÇÃO DOS CAMPOS DE SOLICITANTE, REMENTETE E DESTINATARIO NO SISTEMA  //
+  // ========================================================================= //
+
+  solicitanteDoc.addEventListener('blur', async () => {
+    const cnpjSolicitante = maskSolicitante.unmaskedValue
+
+    console.log("Verificando CNPJ solicitante...")
+    if (cnpjSolicitante.length !== 14) return
+
+    console.log("Tem 14 caracteres")
+
+    console.log("Consultando dados do remetente...");
+    const endereco = await consultarEmpresaPorCnpj(cnpjSolicitante);
+
+    console.log(endereco)
+  })
+
 
   // ========================================================================= //
-  //          6. LÓGICA DINÂMICA: ADICIONAR/REMOVER LINHAS DE CUBAGEM          //
+  //             LÓGICA DINÂMICA: ADICIONAR/REMOVER LINHAS DE CUBAGEM          //
   // ========================================================================= //
   const qtdVolumes = document.getElementById("qtdVolumes");
 

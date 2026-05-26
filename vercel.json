@@ -1,0 +1,8 @@
+{
+  "rewrites": [
+    {
+      "source": "/api-esl",
+      "destination": "https://globalcargo.eslcloud.com.br/graphql"
+    }
+  ]
+}
