@@ -31,7 +31,7 @@ async function consultarEmpresaPorCnpj(cnpjLimpo) {
 
   try {
     // 2. O 'fetch' faz a viagem física até o servidor da ESL levando a nossa Query
-    const resposta = await fetch(URL_API_ESL, {
+    const resposta = await fetch(URL_API_LOCAL, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
