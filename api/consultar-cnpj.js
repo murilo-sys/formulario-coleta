@@ -1,6 +1,11 @@
 // api/consultar-cnpj.js
 
+//Função dessa rota
 module.exports = async function (req, res) {
+
+  //Verifica o metodo utilização na requisição -- Pode utilizar apenas POST
+  if (req.method !== "POST") { return res.status(405).json({ error: "Metodo não autorizado" }) }
+
   // Garante que o corpo está em formato de objeto mesmo se não vier pré-parseado
   let body = req.body;
   if (typeof body === 'string') {
@@ -11,16 +16,26 @@ module.exports = async function (req, res) {
     }
   }
 
+  //Verifica se o objeto existe
   if (!body) {
     return res.status(400).json({ error: "Corpo da requisição inválido ou vazio" });
   }
 
+  //Coloca o body.cnpj em uma variavel
   const { cnpj } = body;
 
-  if (!cnpj || cnpj.length !== 14) {
-    return res.status(400).json({ error: "O Cnpj enviado é invalido ou está incompleto" })
+  //Verifica se a variavel cnpj existe
+  if (!cnpj) { return res.status(400).json({ error: "Cnpj inválido ou está incompleto" }) }
+
+  //Limpa a variavel deixando apenas os numeros
+  const cnpjLimpo = cnpj.replace(/\D/g, "")
+
+  //Verifica se o cnpj está limpo e valido
+  if (!cnpjLimpo || cnpjLimpo.length !== 14 || isNaN(cnpjLimpo)) {
+    return res.status(400).json({ error: "O Cnpj enviado é invalido ou está incompleto", body: cnpjLimpo })
   }
 
+  //Corpo da requisição
   const corpoGraphQL = {
     query: `
       query company($params: CompanyInput!) {
@@ -35,7 +50,7 @@ module.exports = async function (req, res) {
         }
       }
     `,
-    variables: { params: { cnpj: cnpj } }
+    variables: { params: { cnpj: cnpjLimpo } }
   };
 
   try {
