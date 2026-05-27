@@ -39,8 +39,7 @@ module.exports = async function (req, res) {
   };
 
   try {
-    // Permite usar TOKEN_API (produção na Vercel) ou API_KEY (.env local)
-    const token = process.env.TOKEN_API || process.env.API_KEY;
+    const token = process.env.TOKEN_API;
 
     const respostaESL = await fetch('https://globalcargo.eslcloud.com.br/graphql', {
       method: 'POST',
