@@ -2,6 +2,8 @@ document.addEventListener("DOMContentLoaded", () => {
   // ========================================================================= //
   //                          VARIÁVEIS GLOBAIS DE MÁSCARAS                    //
   // ========================================================================= //
+
+  //Mascaras do IMASK
   let maskSolicitante,
     maskRemetente,
     maskDestinatario,
@@ -9,6 +11,14 @@ document.addEventListener("DOMContentLoaded", () => {
     maskPeso,
     maskValor,
     maskVolumes;
+
+  //Verificadores
+  let solicitanteVerificado,
+    remetenteVerificado,
+    destinatarioVerificado;
+
+  //Define como falso inicialmente
+  solicitanteVerificado = remetenteVerificado = destinatarioVerificado = false;
 
   // ========================================================================= //
   //                MÁSCARAS DE DOCUMENTOS (CPF / CNPJ DINÂMICO)               //
@@ -258,22 +268,49 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // ========================================================================= //
-  // VEFICAÇÃO DOS CAMPOS DE SOLICITANTE, REMENTETE E DESTINATARIO NO SISTEMA  //
-  // ========================================================================= //
+  // ================================================================================ //
+  // VEFICAÇÃO DE API DOS CAMPOS DE SOLICITANTE, REMETENTE E DESTINATARIO NO SISTEMA  //
+  // ================================================================================ //
 
+  //Caso o campo de solicitante perca o foco
   solicitanteDoc.addEventListener('blur', async () => {
     const cnpjSolicitante = maskSolicitante.unmaskedValue
 
+    //Verifica se já não foi verificado o solicitante antes
+    if (solicitanteVerificado) return
+
+    //Aqui verifica se o cnpj tem 14 caracteres
     console.log("Verificando CNPJ solicitante...")
     if (cnpjSolicitante.length !== 14) return
 
     console.log("Tem 14 caracteres")
 
+    //Consulta os dados do solicitante.
     console.log("Consultando dados do remetente...");
-    const endereco = await consultarEmpresaPorCnpj(cnpjSolicitante);
+    const endereco = await consultarEmpresaPorCnpj(cnpjSolicitante)
 
-    console.log(endereco)
+    //Verifica se os dados existem
+    if (!endereco) { return console.log("Endereço não encontrado e(ou) indisponivel") }
+
+    const cep = document.getElementById('cepInput')
+    const logradouro = document.getElementById('logradouroInput')
+    const numero = document.getElementById('numeroInput')
+    const complemento = document.getElementById('complementoInput')
+    const bairro = document.getElementById('bairroInput')
+    const cidade = document.getElementById('cidadeInput')
+    const estado = document.getElementById('estadoInput')
+
+    //Define os campos do endereço com o do solicitante
+    maskCep.value = endereco.postalCode || ""
+    logradouro.value = endereco.line1 || ""
+    numero.value = endereco.number || ""
+    complemento.value = endereco.line2 || ""
+    bairro.value = endereco.neighborhood || ""
+    cidade.value = endereco.city.name || ""
+    estado.value = endereco.city.state.code || ""
+
+    //Solicitante já foi verificado
+    solicitanteVerificado = true
   })
 
 

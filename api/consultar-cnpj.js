@@ -39,16 +39,28 @@ module.exports = async function (req, res) {
   const corpoGraphQL = {
     query: `
       query company($params: CompanyInput!) {
-        company(params: $params) {
-          edges {
-            node {
-              name
-              cnpj
-              mainAddress { postalCode line1 neighborhood }
+      company(params: $params) {
+        edges {
+          node {
+            name
+            cnpj
+            mainAddress {
+              postalCode
+              line1
+              line2
+              neighborhood
+              number
+              city {
+                name
+                state {
+                  code
+                }
+              }
             }
           }
         }
       }
+    }
     `,
     variables: { params: { cnpj: cnpjLimpo } }
   };
