@@ -49,3 +49,9 @@ Desktop.ini
 # npm package lock
 yarn.lock
 pnpm-lock.yaml
+.vercel
+.env*
+
+# Local development server
+server.js
+

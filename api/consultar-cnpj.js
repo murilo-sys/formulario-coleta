@@ -1,8 +1,25 @@
 // api/consultar-cnpj.js
 
-export default async function handler(req, res) {
-  // Captura o CNPJ enviado pelo seu formulário
-  const { cnpj } = req.body;
+module.exports = async function (req, res) {
+  // Garante que o corpo está em formato de objeto mesmo se não vier pré-parseado
+  let body = req.body;
+  if (typeof body === 'string') {
+    try {
+      body = JSON.parse(body);
+    } catch (e) {
+      // Ignora erro de parsing
+    }
+  }
+
+  if (!body) {
+    return res.status(400).json({ error: "Corpo da requisição inválido ou vazio" });
+  }
+
+  const { cnpj } = body;
+
+  if (!cnpj || cnpj.length !== 14) {
+    return res.status(400).json({ error: "O Cnpj enviado é invalido ou está incompleto" })
+  }
 
   const corpoGraphQL = {
     query: `
@@ -22,22 +39,30 @@ export default async function handler(req, res) {
   };
 
   try {
-    // A Vercel faz o envio para a ESL em total segredo, lendo o token do painel
+    // Permite usar TOKEN_API (produção na Vercel) ou API_KEY (.env local)
+    const token = process.env.TOKEN_API || process.env.API_KEY;
+
     const respostaESL = await fetch('https://globalcargo.eslcloud.com.br/graphql', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${process.env.TOKEN_API}` // Lê com segurança na nuvem
+        'Authorization': `Bearer ${token}`
       },
       body: JSON.stringify(corpoGraphQL)
     });
 
-    const dados = await respostaESL.json();
+    const rawText = await respostaESL.text();
+    let dados;
+    try {
+      dados = JSON.parse(rawText);
+    } catch (e) {
+      throw new Error(`ESL retornou um formato não-JSON: ${rawText}`);
+    }
 
     // Devolve a resposta da ESL de volta para a sua tela
     return res.status(200).json(dados);
 
   } catch (erro) {
-    return res.status(500).json({ error: "Erro na comunicação com a ESL" });
+    return res.status(500).json({ error: "Erro na comunicação com a ESL", details: erro.message });
   }
 }
