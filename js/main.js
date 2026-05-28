@@ -350,7 +350,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const totalLinhas = containerCubagem.querySelectorAll(".coluna-cubagem");
 
       totalLinhas.forEach((linha) => {
-        const comprimento = Webkit = linha.querySelector(".input-comprimento");
+        const comprimento = linha.querySelector(".input-comprimento");
         const largura = linha.querySelector(".input-largura");
         const altura = linha.querySelector(".input-altura");
 
@@ -505,7 +505,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     // Quando digita algo dentro do input
-    qtdVolumes.addEventListener("keyup", () => {
+    qtdVolumes.addEventListener("input", () => {
       // Regra de segurança: ignora se não for número ou se for maior/igual a 100
       if (isNaN(qtdVolumes.value) || qtdVolumes.value >= 100) return;
 
