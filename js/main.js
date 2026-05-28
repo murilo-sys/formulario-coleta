@@ -174,10 +174,6 @@ document.addEventListener("DOMContentLoaded", () => {
   // FUNÇÕES                                                                          //
   // ================================================================================ //
 
-  function verificarEndColeta(params) {
-    verificarEndColeta()
-  }
-
   //Função de "ativar" ou "desativar" EndColeta com readOnly
   function readOnlyEndColeta(valor) {
     cep.readOnly = valor
@@ -417,20 +413,15 @@ document.addEventListener("DOMContentLoaded", () => {
         remetenteDoc.readOnly = false
       }
 
-      //Confere o campo de coleta para ver se tem vestigios dos dados do remetente (especificamente pelo cep), e se tiver algo ele limpa tudo
-      if (maskCep.unmaskedValue.trim() != "" && maskCep.unmaskedValue.trim() == enderecoRemetente?.postalCode && cepInput.readOnly == true) {
-
-        console.log("Vestigios de dados do remetente no campo de coleta, limpando...")
-
-        readOnlyEndColeta(false)
-        limparEndColeta()
-      }
-
       //Coloca o valor do solicitante no destinatario
       maskDestinatario.value = solicitanteDoc.value
 
       //Desativa o campo destinatario
       destinatarioDoc.readOnly = true
+
+      limparEndColeta()
+
+      readOnlyEndColeta(false)
     }
 
 
@@ -472,10 +463,11 @@ document.addEventListener("DOMContentLoaded", () => {
         remetenteDoc.readOnly = false
       }
 
-      //Confere o campo de coleta para ver se tem vestigios dos dados do remetente (especificamente pelo cep), e se tiver algo ele limpa tudo
+      //Confere o campo de coleta (especificamente pelo cep), e se tiver algo ele limpa tudo
+
       console.log(`valor do maskCep ${maskCep.value.trim()}`)
 
-      if (maskCep.unmaskedValue.trim() != "" && maskCep.unmaskedValue.trim() == enderecoRemetente?.postalCode && cepInput.readOnly == true) {
+      if (maskCep.unmaskedValue.trim() != "" && maskCep.unmaskedValue.trim() == enderecoRemetente.postalCode && cepInput.readOnly == true) {
 
         console.log("Vestigios de dados do remetente no campo de coleta, limpando...")
 

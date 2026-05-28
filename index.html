@@ -24,12 +24,12 @@
 
       <div class="linhaDupla">
         <div class="coluna-flex-1">
-         <p class="perguntaTitulo ">Documento do solicitante</p>
+         <label for="solicitanteDoc" class="perguntaTitulo">Documento do solicitante</label>
          <input type="text" id="solicitanteDoc" placeholder="CPF ou CNPJ">
         </div>
 
         <div class="coluna-flex-1">
-         <p class="perguntaTitulo ">Nome do solicitante</p>
+         <label for="solicitanteNome" class="perguntaTitulo">Nome do solicitante</label>
          <input type="text" id="solicitanteNome" placeholder="Seu nome">
         </div>
       </div>
@@ -57,7 +57,7 @@
       <div class="linhaDupla">
 
         <div class="coluna-flex-2">
-          <p class="perguntaTitulo">Documento do Remetente</p>
+          <label for="remetenteDoc" class="perguntaTitulo">Documento do Remetente</label>
           <input type="text" id="remetenteDoc" placeholder="CPF ou CNPJ">
           <div class="grupo-cidade-estado">
           <p class="cidade-estado oculto" id="cidadeEstadoRemetente"></p>
@@ -65,7 +65,7 @@
         </div>
 
         <div class="coluna-flex-2">
-          <p class="perguntaTitulo">Documento do Destinatário</p>
+          <label for="destinatarioDoc" class="perguntaTitulo">Documento do Destinatário</label>
           <input type="text" id="destinatarioDoc" placeholder="CPF ou CNPJ">
           <div class="grupo-cidade-estado">
           <p class="cidade-estado oculto" id="cidadeEstadoDestinatario"></p>
@@ -84,12 +84,12 @@
       <div class="linhaDupla">
 
         <div class="coluna-flex-1">
-          <p class="perguntaTitulo">CEP</p>
+          <label for="cepInput" class="perguntaTitulo">CEP</label>
           <input type="text" id="cepInput" placeholder="00000-000">
         </div>
 
         <div class="coluna-flex-3">
-          <p class="perguntaTitulo">Logradouro</p>
+          <label for="logradouroInput" class="perguntaTitulo">Logradouro</label>
           <input type="text" id="logradouroInput" placeholder="Rua, Avenida, Travessa...">
         </div>
 
@@ -98,12 +98,12 @@
       <div class="linhaDupla">
 
         <div class="coluna-flex-1">
-          <p class="perguntaTitulo">Número</p>
+          <label for="numeroInput" class="perguntaTitulo">Número</label>
           <input type="text" id="numeroInput" placeholder="Ex: 01">
         </div>
 
         <div class="coluna-flex-3">
-          <p class="perguntaTitulo">Complemento</p>
+          <label for="complementoInput" class="perguntaTitulo">Complemento</label>
           <input type="text" id="complementoInput" placeholder="Apartamento, sala, bloco...">
         </div>
 
@@ -112,17 +112,17 @@
       <div class="linhaDupla">
 
         <div class="coluna-flex-2">
-          <p class="perguntaTitulo">Bairro</p>
+          <label for="bairroInput" class="perguntaTitulo">Bairro</label>
           <input type="text" id="bairroInput" placeholder="Centro, Vila Mariana...">
         </div>
 
         <div class="coluna-flex-1">
-          <p class="perguntaTitulo">Cidade</p>
+          <label for="cidadeInput" class="perguntaTitulo">Cidade</label>
           <input type="text" id="cidadeInput" placeholder="São Paulo...">
         </div>
 
         <div class="coluna-flex-1">
-          <p class="perguntaTitulo">Estado</p>
+          <label for="estadoInput" class="perguntaTitulo">Estado</label>
           <input type="text" id="estadoInput" placeholder="SP, RJ...">
         </div>
 
@@ -131,7 +131,7 @@
 
     <div class="cartaoPerguntas">
       <h3>Dados da mercadoria</h3>
-      <p class="perguntaTitulo">Natureza da mercadoria</p>
+      <label for="naturezaMercadoria" class="perguntaTitulo">Natureza da mercadoria</label>
       <select id="naturezaMercadoria">
         <option value disabled selected>Selecione o tipo de carga...</option>
         <option value="alimentos">Alimentos não perecíveis</option>
@@ -147,7 +147,7 @@
       <div class="linhaDupla">
 
         <div class="coluna-flex-1">
-          <p class="perguntaTitulo">Valor da NF (R$)</p>
+          <label for="valorNf" class="perguntaTitulo">Valor da NF (R$)</label>
           <div class="input-grupo-sufixo">
             <span class="sufixo"> R$ |</span>
             <input type="text" id="valorNf" placeholder="0,00">
@@ -155,12 +155,12 @@
         </div>
 
         <div class="coluna-flex-1">
-          <p class="perguntaTitulo">Volumes</p>
+          <label for="qtdVolumes" class="perguntaTitulo">Volumes</label>
           <input type="number" id="qtdVolumes" placeholder="Qtd. de volumes" >
         </div>
 
         <div class="coluna-flex-1">
-          <p class="perguntaTitulo">Peso Real</p>
+          <label for="pesoReal" class="perguntaTitulo">Peso Real</label>
           <div class="input-grupo-sufixo">
             <input type="text" id="pesoReal" placeholder="0,00">
             <span class="sufixo">| KG</span>
@@ -205,6 +205,14 @@
           </div>
         </div>
       </div>
+    </div>
+
+    <div class="cartaoPerguntas">
+      <h3>Instruções adicionais</h3>
+      <p class="resumoCampo">Pontos de referência, observações sobre a mercadoria, etc...</p>
+ 
+      <label for="observacoes" class="perguntaTitulo">Observações da coleta</label>
+      <input type="text" id="observacoes" placeholder="Ex: Entrar pelos fundos do galpão B...">
     </div>
 
     <div class="coluna-botao-agendar">
