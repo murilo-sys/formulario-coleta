@@ -464,9 +464,9 @@ document.addEventListener("DOMContentLoaded", () => {
       }
 
       //Confere o campo de coleta (especificamente pelo cep), e se tiver algo ele limpa tudo
-      if (maskCep.value.trim() != "") {
+      if (maskCep.value.trim() != "" && maskCep.value.trim() != enderecoRemetente.postalCode) {
 
-        console.log("Vestigios de dados no campo de coleta, limpando...")
+        console.log("Vestigios de dados do remetente no campo de coleta, limpando...")
 
         readOnlyEndColeta(false)
         limparEndColeta()
