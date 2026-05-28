@@ -1,3 +1,11 @@
+body,
+input,
+select,
+button,
+textarea {
+  font-family: Arial, Helvetica, sans-serif;
+}
+
 body {
   background-color: antiquewhite;
 }
@@ -13,33 +21,28 @@ select {
   border-radius: 5px;
   box-sizing: border-box;
   font-size: 13px;
-  font-family: Arial, Helvetica, sans-serif;
   color: gray;
   width: 100%;
   background-color: rgba(0, 0, 0, 0.041);
 }
 
-.participante{
+.participante {
   width: auto;
 }
 
-
 h3 {
-  font-family: Arial, Helvetica, sans-serif;
   margin: 0px;
   font-size: medium;
 }
 
 .perguntaTitulo {
   display: block;
-  font-family: Arial, Helvetica, sans-serif;
   font-size: 14px;
   margin-top: 13px;
 }
 
 .resumoCampo {
   margin-top: 4px;
-  font-family: Arial, Helvetica, sans-serif;
   color: gray;
   font-size: 14px;
   margin-bottom: 0px;
@@ -93,7 +96,7 @@ input[type="number"] {
   margin: 10px;
   margin-bottom: 15px;
   border-radius: 10px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.264)
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.264);
 }
 
 .coluna-botao {
@@ -104,7 +107,6 @@ input[type="number"] {
 }
 
 #botaoAdicionar {
-  font-family: Arial, Helvetica, sans-serif;
   font-size: 14px;
   color: rgb(90, 88, 88);
   border-radius: 5px;
@@ -115,7 +117,6 @@ input[type="number"] {
 }
 
 .subTitulo {
-  font-family: Arial, Helvetica, sans-serif;
   font-size: 11px;
   margin: 0;
   color: gray;
@@ -126,18 +127,15 @@ input[type="number"] {
   flex-wrap: wrap;
   gap: 15px;
   margin-top: 15px;
-
 }
 
 .pergunta-cubagem {
-  font-family: Arial, Helvetica, sans-serif;
   color: gray;
   font-size: 12px;
   margin-top: 0;
 }
 
 .pergunta-cubagem-titulo {
-  font-family: Arial, Helvetica, sans-serif;
   font-size: 14px;
   margin-top: 20px;
 }
@@ -166,7 +164,6 @@ input[type="number"] {
 #buttonLimparForm {
   height: 40px;
   width: 150px;
-  font-family: Arial;
   font-size: 14px;
   border-radius: 5px;
   padding: 10px 15px 10px 15px;
@@ -202,7 +199,6 @@ input[type="number"] {
 
 .sufixo {
   position: absolute;
-  font-family: Arial, Helvetica, sans-serif;
   font-size: 13px;
   color: gray;
   user-select: none;
@@ -244,37 +240,41 @@ input[type="number"] {
     transform: translateX(0);
   }
 }
- 
-.gap-2{
+
+.gap-2 {
   gap: 2px;
 }
 
-.margem-top-padrao{
+.margem-top-padrao {
   margin-top: 3px;
 }
 
-
-
-/* Estilos para botões segmentados do Solicitante */
-.grupo-opcoes-solicitante {
+/* Estilos para botões segmentados do Solicitante e do Horário de Almoço */
+.grupo-opcoes-solicitante,
+.grupo-radio-almoco {
   display: flex;
   gap: 10px;
   margin-top: 3px;
   margin-bottom: 0px;
 }
 
-.grupo-opcoes-solicitante input[type="radio"] {
+.grupo-radio-almoco {
+  margin-top: 8px;
+}
+
+.grupo-opcoes-solicitante input[type="radio"],
+.grupo-radio-almoco input[type="radio"] {
   display: none;
 }
 
-.grupo-opcoes-solicitante label {
+.grupo-opcoes-solicitante label,
+.grupo-radio-almoco label {
   flex: 1;
   text-align: center;
   padding: 8px 12px;
   background-color: rgba(0, 0, 0, 0.041);
   border: 1px solid lightgray;
   border-radius: 5px;
-  font-family: Arial, Helvetica, sans-serif;
   font-size: 13px;
   color: gray;
   cursor: pointer;
@@ -282,28 +282,30 @@ input[type="number"] {
   transition: all 0.2s ease-in-out;
 }
 
-.grupo-opcoes-solicitante input[type="radio"]:checked + label {
+.grupo-opcoes-solicitante input[type="radio"]:checked + label,
+.grupo-radio-almoco input[type="radio"]:checked + label {
   background-color: rgb(26, 58, 107);
   color: white;
   border-color: rgb(26, 58, 107);
   font-weight: bold;
 }
 
-.oculto{
+.oculto {
   display: none;
 }
 
-.visivel{
+.visivel {
   display: block;
   animation: carregar 0.2s ease-out;
 }
 
 @keyframes carregar {
-  0%{
+  0% {
     opacity: 0;
     transform: translateY(+10px);
   }
-  100%{
+
+  100% {
     opacity: 1;
     transform: translateY(0px);
   }
@@ -311,11 +313,11 @@ input[type="number"] {
 
 /* --- ESTILO EXCLUSIVO PARA TELAS ABAIXO DE 492px --- */
 @media (max-width: 491px) {
-
   .linhaDupla,
   .coluna-cubagem,
   .coluna-botao-agendar,
-  .grupo-opcoes-solicitante {
+  .grupo-opcoes-solicitante,
+  .grupo-radio-almoco {
     flex-direction: column;
     gap: 10px;
   }
@@ -340,43 +342,10 @@ input[type="number"] {
     gap: 10px;
   }
 }
- 
+
 /* Asterisco vermelho para campos obrigatórios */
 .obrigatorio::after {
   content: " *";
-  color: #e74c3c; /* Vermelho suave */
-  font-weight: bold;
-}
- 
-/* Estilos para os checkboxes do Horário de Almoço (Segmented Control) */
-.grupo-radio-almoco {
-  display: flex;
-  gap: 10px;
-  margin-top: 8px;
-}
- 
-.grupo-radio-almoco input[type="radio"] {
-  display: none;
-}
- 
-.grupo-radio-almoco label {
-  flex: 1;
-  text-align: center;
-  padding: 8px 12px;
-  background-color: rgba(0, 0, 0, 0.041);
-  border: 1px solid lightgray;
-  border-radius: 5px;
-  font-family: Arial, Helvetica, sans-serif;
-  font-size: 13px;
-  color: gray;
-  cursor: pointer;
-  user-select: none;
-  transition: all 0.2s ease-in-out;
-}
- 
-.grupo-radio-almoco input[type="radio"]:checked + label {
-  background-color: rgb(26, 58, 107);
-  color: white;
-  border-color: rgb(26, 58, 107);
+  color: #e74c3c;
   font-weight: bold;
 }

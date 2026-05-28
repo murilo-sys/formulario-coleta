@@ -11,7 +11,12 @@
   <script src="https://unpkg.com/imask"></script>
 
   <script src="js/api.js"></script>
-  <script src="js/main.js"></script>
+  <script src="js/estado.js"></script>
+  <script src="js/endereco.js"></script>
+  <script src="js/mascaras.js"></script>
+  <script src="js/solicitante.js"></script>
+  <script src="js/cubagem.js"></script>
+  <script src="js/validacao.js"></script>
 </head>
 
 <body>
@@ -249,6 +254,32 @@
       <button id="buttonSolicitarColeta" type="submit">Solicitar Coleta</button>
     </div>
   </form>
+
+  <template id="template-cubagem">
+    <div class="coluna-cubagem">
+      <div class="coluna-flex-1">
+        <p class="pergunta-cubagem">COMPRIMENTO</p>
+        <div class="input-grupo-sufixo">
+          <input class="input-comprimento" placeholder="0">
+          <span class="sufixo">| cm</span>
+        </div>
+      </div>
+      <div class="coluna-flex-1">
+        <p class="pergunta-cubagem">LARGURA</p>
+        <div class="input-grupo-sufixo">
+          <input class="input-largura" placeholder="0">
+          <span class="sufixo">| cm</span>
+        </div>
+      </div>
+      <div class="coluna-flex-1">
+        <p class="pergunta-cubagem">ALTURA</p>
+        <div class="input-grupo-sufixo">
+          <input class="input-altura" placeholder="0">
+          <span class="sufixo">| cm</span>
+        </div>
+      </div>
+    </div>
+  </template>
 
 </body>
 
