@@ -19,6 +19,9 @@ select {
   background-color: rgba(0, 0, 0, 0.041);
 }
 
+.participante{
+  width: auto;
+}
 
 
 h3 {
@@ -239,13 +242,78 @@ input[type="number"] {
     transform: translateX(0);
   }
 }
+ 
+.gap-2{
+  gap: 2px;
+}
+
+.margem-top-padrao{
+  margin-top: 3px;
+}
+
+
+
+/* Estilos para botões segmentados do Solicitante */
+.grupo-opcoes-solicitante {
+  display: flex;
+  gap: 10px;
+  margin-top: 3px;
+  margin-bottom: 0px;
+}
+
+.grupo-opcoes-solicitante input[type="radio"] {
+  display: none;
+}
+
+.grupo-opcoes-solicitante label {
+  flex: 1;
+  text-align: center;
+  padding: 8px 12px;
+  background-color: rgba(0, 0, 0, 0.041);
+  border: 1px solid lightgray;
+  border-radius: 5px;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 13px;
+  color: gray;
+  cursor: pointer;
+  user-select: none;
+  transition: all 0.2s ease-in-out;
+}
+
+.grupo-opcoes-solicitante input[type="radio"]:checked + label {
+  background-color: rgb(26, 58, 107);
+  color: white;
+  border-color: rgb(26, 58, 107);
+  font-weight: bold;
+}
+
+.oculto{
+  display: none;
+}
+
+.visivel{
+  display: block;
+  animation: carregar 0.2s ease-out;
+}
+
+@keyframes carregar {
+  0%{
+    opacity: 0;
+    transform: translateY(+10px);
+  }
+  100%{
+    opacity: 1;
+    transform: translateY(0px);
+  }
+}
 
 /* --- ESTILO EXCLUSIVO PARA TELAS ABAIXO DE 492px --- */
 @media (max-width: 491px) {
 
   .linhaDupla,
   .coluna-cubagem,
-  .coluna-botao-agendar {
+  .coluna-botao-agendar,
+  .grupo-opcoes-solicitante {
     flex-direction: column;
     gap: 10px;
   }

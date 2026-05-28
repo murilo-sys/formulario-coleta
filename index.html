@@ -22,8 +22,32 @@
       <h3>Dados do solicitante</h3>
       <p class="resumoCampo">CNPJ ou CPF de quem está solicitando a coleta</p>
 
-      <p class="perguntaTitulo">Documento do solicitante</p>
-      <input type="text" id="solicitanteDoc" placeholder="CPF ou CNPJ">
+      <div class="linhaDupla">
+        <div class="coluna-flex-1">
+         <p class="perguntaTitulo ">Documento do solicitante</p>
+         <input type="text" id="solicitanteDoc" placeholder="CPF ou CNPJ">
+        </div>
+
+        <div class="coluna-flex-1">
+         <p class="perguntaTitulo ">Nome do solicitante</p>
+         <input type="text" id="solicitanteDoc" placeholder="Seu nome">
+        </div>
+      </div>
+      
+      <div id="grupoEscondidoSolicitante" class="oculto">
+      <p class="perguntaTitulo">O Solicitante é o...</p>
+
+      <div class="grupo-opcoes-solicitante">
+        <input type="radio" name="tipoSolicitante" id="solicitanteRemetente" value="remetente">
+        <label for="solicitanteRemetente">Remetente</label>
+
+        <input type="radio" name="tipoSolicitante" id="solicitanteDestinatario" value="destinatario">
+        <label for="solicitanteDestinatario">Destinatário</label>
+
+        <input type="radio" name="tipoSolicitante" id="solicitanteOutros" value="outros">
+        <label for="solicitanteOutros">Outros</label>
+      </div>
+      </div>
 
     </div>
 
@@ -35,14 +59,21 @@
         <div class="coluna-flex-2">
           <p class="perguntaTitulo">Documento do Remetente</p>
           <input type="text" id="docRemetente" placeholder="CPF ou CNPJ">
+          <div class="grupo-cidade-estado">
+          <p class="cidade-estado oculto" id="cidadeEstadoRemetente"></p>
+          </div>
         </div>
 
         <div class="coluna-flex-2">
           <p class="perguntaTitulo">Documento do Destinatário</p>
           <input type="text" id="docDestinatario" placeholder="CPF ou CNPJ">
+          <div class="grupo-cidade-estado">
+          <p class="cidade-estado oculto" id="cidadeEstadoDestinatario"></p>
+          </div>
         </div>
 
       </div>
+
     </div>
 
     <div class="cartaoPerguntas">

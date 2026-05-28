@@ -269,6 +269,59 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   // ================================================================================ //
+  // CAMPOS DINAMICOS QUE FICAM OCULTOS E APARECEM EM SEGUIDA                         //
+  // ================================================================================ //
+  const grupoEscondidoSolicitante = document.getElementById('grupoEscondidoSolicitante')
+
+
+  //Verifica se pode aparecer o campo que pergunta papel do solicitante
+  solicitanteDoc.addEventListener('input', () => {
+    const cnpjSolicitante = maskSolicitante.unmaskedValue
+
+    //Aqui verifica se o cnpj tem 14 caracteres
+    if (cnpjSolicitante.length !== 14) return
+
+    //Abre div escondida para selecionar o papel do solicitante
+    grupoEscondidoSolicitante.classList.add('visivel')
+  })
+
+  //Verifica o botão clicado no grupo que solicita o papel do solicitante
+  grupoEscondidoSolicitante.addEventListener('click', (evento) => {
+
+    //Se clicou no destinatario
+    if (evento.target.value == 'destinatario') {
+
+      //Verifica se o valor do remetente é igual a do solicitante
+      if (maskRemetente.unmaskedValue == maskSolicitante.unmaskedValue) {
+
+        //se for igual ele vai limpar
+        maskRemetente.value = ""
+      }
+
+      maskDestinatario.value = solicitanteDoc.value
+    }
+
+    //Se clicou no remetente
+    if (evento.target.value == 'remetente') {
+
+      //Verifica se o valor do destinatario é igual a do solicitante
+      if (maskDestinatario.unmaskedValue == maskSolicitante.unmaskedValue) {
+
+        //se for igual ele vai limpar
+        maskDestinatario.value = ""
+      }
+
+      maskRemetente.value = solicitanteDoc.value
+
+    }
+
+    if (evento.target.value == 'outros') {
+      alert("liga pra nois tamo junto valeu")
+    }
+  })
+
+
+  // ================================================================================ //
   // VEFICAÇÃO DE API DOS CAMPOS DE SOLICITANTE, REMETENTE E DESTINATARIO NO SISTEMA  //
   // ================================================================================ //
 
@@ -292,6 +345,7 @@ document.addEventListener("DOMContentLoaded", () => {
     //Verifica se os dados existem
     if (!endereco) { return console.log("Endereço não encontrado e(ou) indisponivel") }
 
+    //Declara os campos que serão preenchidos
     const cep = document.getElementById('cepInput')
     const logradouro = document.getElementById('logradouroInput')
     const numero = document.getElementById('numeroInput')
@@ -306,17 +360,17 @@ document.addEventListener("DOMContentLoaded", () => {
     numero.value = endereco.number || ""
     complemento.value = endereco.line2 || ""
     bairro.value = endereco.neighborhood || ""
-    cidade.value = endereco.city.name || ""
-    estado.value = endereco.city.state.code || ""
+    cidade.value = endereco.city?.name || ""
+    estado.value = endereco.city?.state.code || ""
 
     //Solicitante já foi verificado
     solicitanteVerificado = true
   })
 
-
   // ========================================================================= //
   //             LÓGICA DINÂMICA: ADICIONAR/REMOVER LINHAS DE CUBAGEM          //
   // ========================================================================= //
+
   const qtdVolumes = document.getElementById("qtdVolumes");
 
   if (qtdVolumes) {
