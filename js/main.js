@@ -3,6 +3,15 @@ document.addEventListener("DOMContentLoaded", () => {
   //                          VARIÁVEIS GLOBAIS DE MÁSCARAS                    //
   // ========================================================================= //
 
+  //Endereços
+  const cep = document.getElementById('cepInput')
+  const logradouro = document.getElementById('logradouroInput')
+  const numero = document.getElementById('numeroInput')
+  const complemento = document.getElementById('complementoInput')
+  const bairro = document.getElementById('bairroInput')
+  const cidade = document.getElementById('cidadeInput')
+  const estado = document.getElementById('estadoInput')
+
   //Mascaras do IMASK
   let maskSolicitante,
     maskRemetente,
@@ -11,6 +20,9 @@ document.addEventListener("DOMContentLoaded", () => {
     maskPeso,
     maskValor,
     maskVolumes;
+
+  //Endereço remetente
+  let enderecoRemetente;
 
   //Verificadores
   let solicitanteVerificado,
@@ -23,9 +35,11 @@ document.addEventListener("DOMContentLoaded", () => {
   // ========================================================================= //
   //                MÁSCARAS DE DOCUMENTOS (CPF / CNPJ DINÂMICO)               //
   // ========================================================================= //
+
   const solicitanteDoc = document.getElementById("solicitanteDoc");
-  const docRemetente = document.getElementById("docRemetente");
-  const docDestinatario = document.getElementById("docDestinatario");
+  const remetenteDoc = document.getElementById("remetenteDoc");
+  const destinatarioDoc = document.getElementById("destinatarioDoc");
+  const solicitanteNome = document.getElementById("solicitanteNome")
 
   // Configuração reutilizável para a lógica de alternância CPF/CNPJ
   const maskOptionsDoc = {
@@ -56,19 +70,19 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   // Aplica a máscara no Remetente
-  if (docRemetente) {
-    maskRemetente = IMask(docRemetente, maskOptionsDoc);
+  if (remetenteDoc) {
+    maskRemetente = IMask(remetenteDoc, maskOptionsDoc);
   }
 
   // Aplica a máscara no Destinatário
-  if (docDestinatario) {
-    maskDestinatario = IMask(docDestinatario, maskOptionsDoc);
+  if (destinatarioDoc) {
+    maskDestinatario = IMask(destinatarioDoc, maskOptionsDoc);
   }
-
 
   // ================================================================================== //
   //                                      MÁSCARA DE CEP                                //
   // ================================================================================== //
+
   const cepInput = document.getElementById("cepInput");
 
   if (cepInput) {
@@ -77,10 +91,10 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-
   // ================================================================================================================= //
   //                  MÁSCARAS DE VALORES (PESO, VALOR DA NF, COMPRIMENTO, LARGURA, ALTURA E VOLUMES)                  //
   // ================================================================================================================= //
+
   const pesoReal = document.getElementById("pesoReal");
   const valorNf = document.getElementById("valorNf");
   const volumes = document.getElementById('qtdVolumes')
@@ -95,7 +109,8 @@ document.addEventListener("DOMContentLoaded", () => {
         evento.key === "E" ||
         evento.key === "-" ||
         evento.key === "." ||
-        evento.key === ","
+        evento.key === "," ||
+        evento.key === "+"
       ) {
         evento.preventDefault(); // Cancela a ação da tecla imediatamente
       }
@@ -155,10 +170,93 @@ document.addEventListener("DOMContentLoaded", () => {
     blindarInputCubagem(primeiraLinhaHTML.querySelector(".input-altura"));
   }
 
+  // ================================================================================ //
+  // FUNÇÕES                                                                          //
+  // ================================================================================ //
+
+  //Função de "ativar" ou "desativar" EndColeta com readOnly
+  function readOnlyEndColeta(valor) {
+    cep.readOnly = valor
+    logradouro.readOnly = valor
+    numero.readOnly = valor
+    complemento.readOnly = valor
+    bairro.readOnly = valor
+    cidade.readOnly = valor
+    estado.readOnly = valor
+  }
+
+  function preencherEndColeta() {
+
+    readOnlyEndColeta(true)
+
+    //Define os campos do endereço com o do Remetente
+    maskCep.value = enderecoRemetente.postalCode || ""
+    logradouro.value = enderecoRemetente.line1 || ""
+    numero.value = enderecoRemetente.number || ""
+    complemento.value = enderecoRemetente.line2 || ""
+    bairro.value = enderecoRemetente.neighborhood || ""
+    cidade.value = enderecoRemetente.city?.name || ""
+    estado.value = enderecoRemetente.city?.state.code || ""
+  }
+
+  function limparEndColeta() {
+
+    //limpa os campos do endereço
+    const campos = [maskCep, logradouro, numero, complemento, bairro, cidade, estado]
+
+    //entra em cada campo e não limpa caso tiver algo
+    campos.forEach(campo => {
+      if (campo) {
+        campo.value = ""
+      }
+    });
+  }
+
+
+
+  //Função de verificar cnpj
+  function verificarCnpj(cnpj) {
+
+    //Aqui verifica se o cnpj tem 14 caracteres
+    if (cnpj && cnpj.length !== 14) return false
+
+    return true
+  }
+
+  //Função de preencher o EndColeta com os dados do remetente
+  async function verificarEndRemetente() {
+
+    const remetenteDocLimpo = maskRemetente.unmaskedValue
+
+    //Verifica se já não foi verificado a api no remetente antes 
+    if (remetenteVerificado) {
+      console.log("Dados já salvos anteriormente, buscando...")
+      preencherEndColeta()
+      return
+    }
+
+    if (await !verificarCnpj(remetenteDocLimpo)) return
+
+    console.log("Dados não encontrados, consultando na API")
+
+    //Consulta os dados do solicitante.
+    const endereco = await consultarEmpresaPorCnpj(remetenteDocLimpo)
+
+    //Verifica se os dados existem
+    if (!endereco) { return console.log("Endereço não encontrado e(ou) indisponivel") }
+
+    enderecoRemetente = endereco
+
+    preencherEndColeta()
+
+    //Remetente já foi verificado marcar como true
+    remetenteVerificado = true
+  }
 
   // ========================================================================= //
   //                           VALIDAÇÃO E ENVIO DO FORMULÁRIO                 //
   // ========================================================================= //
+
   const formulario = document.querySelector(".formularioColeta");
 
   if (formulario) {
@@ -194,19 +292,27 @@ document.addEventListener("DOMContentLoaded", () => {
 
       // --- Início das Validações Individuais ---
 
+      //Regex que não permite números
+      const regexNome = /^[a-zA-ZÀ-ÿ\s]+$/
+
+      if (solicitanteNome && solicitanteNome.value.trim() == "" || !regexNome.test(solicitanteNome.value)) {
+        void solicitanteNome.offsetWidth
+        solicitanteNome.classList.add("erro-input")
+      }
+
       if (!DocValido(cnpjSolicitante)) {
         void solicitanteDoc.offsetWidth; // Força um reflow para reiniciar possíveis animações de erro
         solicitanteDoc.classList.add("erro-input");
       }
 
       if (!DocValido(documentoRemetente)) {
-        void docRemetente.offsetWidth;
-        docRemetente.classList.add("erro-input");
+        void remetenteDoc.offsetWidth;
+        remetenteDoc.classList.add("erro-input");
       }
 
       if (!DocValido(documentoDestinatario)) {
-        void docDestinatario.offsetWidth;
-        docDestinatario.classList.add("erro-input");
+        void destinatarioDoc.offsetWidth;
+        destinatarioDoc.classList.add("erro-input");
       }
 
       // Verifica natureza da mercadoria (Select)
@@ -269,13 +375,13 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   // ================================================================================ //
-  // CAMPOS DINAMICOS QUE FICAM OCULTOS E APARECEM EM SEGUIDA                         //
+  // CAMPO DINAMICO QUE FICA OCULTO E APARECEM EM SEGUIDA                             //
   // ================================================================================ //
+
   const grupoEscondidoSolicitante = document.getElementById('grupoEscondidoSolicitante')
 
-
   //Verifica se pode aparecer o campo que pergunta papel do solicitante
-  solicitanteDoc.addEventListener('input', () => {
+  solicitanteDoc.addEventListener('blur', () => {
     const cnpjSolicitante = maskSolicitante.unmaskedValue
 
     //Aqui verifica se o cnpj tem 14 caracteres
@@ -284,6 +390,10 @@ document.addEventListener("DOMContentLoaded", () => {
     //Abre div escondida para selecionar o papel do solicitante
     grupoEscondidoSolicitante.classList.add('visivel')
   })
+
+  // ================================================================================ //
+  // CLIQUE ONDE É DEFINIDO O PAPEL DO SOLICITANTE                                    //
+  // ================================================================================ //
 
   //Verifica o botão clicado no grupo que solicita o papel do solicitante
   grupoEscondidoSolicitante.addEventListener('click', (evento) => {
@@ -298,8 +408,22 @@ document.addEventListener("DOMContentLoaded", () => {
         maskRemetente.value = ""
       }
 
+      //Ativa o campo remetente caso tiver desativado
+      if (remetenteDoc.readOnly == true) {
+        remetenteDoc.readOnly = false
+      }
+
+      //Coloca o valor do solicitante no destinatario
       maskDestinatario.value = solicitanteDoc.value
+
+      //Desativa o campo destinatario
+      destinatarioDoc.readOnly = true
+
+      limparEndColeta()
+
+      readOnlyEndColeta(false)
     }
+
 
     //Se clicou no remetente
     if (evento.target.value == 'remetente') {
@@ -311,60 +435,59 @@ document.addEventListener("DOMContentLoaded", () => {
         maskDestinatario.value = ""
       }
 
+      //Ativa o campo destinatario caso tiver desativado
+      if (destinatarioDoc.readOnly == true) {
+        destinatarioDoc.readOnly = false
+      }
+
+      //Coloca o valor do solicitante no remetente
       maskRemetente.value = solicitanteDoc.value
+
+      //Faz a requisição da api para preencher campo de endereço de coleta
+      verificarEndRemetente()
+
+      //Desativa o campo remetente
+      remetenteDoc.readOnly = true
 
     }
 
     if (evento.target.value == 'outros') {
-      alert("liga pra nois tamo junto valeu")
+
+      //Ativa o campo destinatario caso tiver desativado
+      if (destinatarioDoc.readOnly == true) {
+        destinatarioDoc.readOnly = false
+      }
+
+      //Ativa o campo remetente caso tiver desativado
+      if (remetenteDoc.readOnly == true) {
+        remetenteDoc.readOnly = false
+      }
+
+      //Confere o campo de coleta (especificamente pelo cep), e se tiver algo ele limpa tudo
+      if (maskCep.value.trim() != "") {
+
+        console.log("Vestigios de dados no campo de coleta, limpando...")
+
+        readOnlyEndColeta(false)
+        limparEndColeta()
+      }
+
+      //Verifica se o valor do destinatario é igual a do solicitante
+      if (maskDestinatario.unmaskedValue == maskSolicitante.unmaskedValue) {
+
+        //se for igual ele vai limpar
+        maskDestinatario.value = ""
+      }
+
+      //Verifica se o valor do remetente é igual a do solicitante
+      if (maskRemetente.unmaskedValue == maskSolicitante.unmaskedValue) {
+
+        //se for igual ele vai limpar
+        maskRemetente.value = ""
+      }
+
+
     }
-  })
-
-
-  // ================================================================================ //
-  // VEFICAÇÃO DE API DOS CAMPOS DE SOLICITANTE, REMETENTE E DESTINATARIO NO SISTEMA  //
-  // ================================================================================ //
-
-  //Caso o campo de solicitante perca o foco
-  solicitanteDoc.addEventListener('blur', async () => {
-    const cnpjSolicitante = maskSolicitante.unmaskedValue
-
-    //Verifica se já não foi verificado o solicitante antes
-    if (solicitanteVerificado) return
-
-    //Aqui verifica se o cnpj tem 14 caracteres
-    console.log("Verificando CNPJ solicitante...")
-    if (cnpjSolicitante.length !== 14) return
-
-    console.log("Tem 14 caracteres")
-
-    //Consulta os dados do solicitante.
-    console.log("Consultando dados do remetente...");
-    const endereco = await consultarEmpresaPorCnpj(cnpjSolicitante)
-
-    //Verifica se os dados existem
-    if (!endereco) { return console.log("Endereço não encontrado e(ou) indisponivel") }
-
-    //Declara os campos que serão preenchidos
-    const cep = document.getElementById('cepInput')
-    const logradouro = document.getElementById('logradouroInput')
-    const numero = document.getElementById('numeroInput')
-    const complemento = document.getElementById('complementoInput')
-    const bairro = document.getElementById('bairroInput')
-    const cidade = document.getElementById('cidadeInput')
-    const estado = document.getElementById('estadoInput')
-
-    //Define os campos do endereço com o do solicitante
-    maskCep.value = endereco.postalCode || ""
-    logradouro.value = endereco.line1 || ""
-    numero.value = endereco.number || ""
-    complemento.value = endereco.line2 || ""
-    bairro.value = endereco.neighborhood || ""
-    cidade.value = endereco.city?.name || ""
-    estado.value = endereco.city?.state.code || ""
-
-    //Solicitante já foi verificado
-    solicitanteVerificado = true
   })
 
   // ========================================================================= //
