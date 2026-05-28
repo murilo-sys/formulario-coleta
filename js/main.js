@@ -83,10 +83,8 @@ document.addEventListener("DOMContentLoaded", () => {
   //                                      MÁSCARA DE CEP                                //
   // ================================================================================== //
 
-  const cepInput = document.getElementById("cepInput");
-
-  if (cepInput) {
-    maskCep = IMask(cepInput, {
+  if (cep) {
+    maskCep = IMask(cep, {
       mask: "00000-000",
     });
   }
@@ -290,42 +288,81 @@ document.addEventListener("DOMContentLoaded", () => {
         return true;
       }
 
+      // Função reutilizável para aplicar o estilo de erro com animação
+      function marcarErro(elemento) {
+        if (!elemento) return;
+        void elemento.offsetWidth; // Força reflow para reiniciar animações CSS
+        elemento.classList.add("erro-input");
+      }
+
       // --- Início das Validações Individuais ---
 
       //Regex que não permite números
       const regexNome = /^[a-zA-ZÀ-ÿ\s]+$/
 
-      if (solicitanteNome && solicitanteNome.value.trim() == "" || !regexNome.test(solicitanteNome.value)) {
-        void solicitanteNome.offsetWidth
-        solicitanteNome.classList.add("erro-input")
+      if (solicitanteNome && (solicitanteNome.value.trim() == "" || !regexNome.test(solicitanteNome.value))) {
+        marcarErro(solicitanteNome);
       }
 
       if (!DocValido(cnpjSolicitante)) {
-        void solicitanteDoc.offsetWidth; // Força um reflow para reiniciar possíveis animações de erro
-        solicitanteDoc.classList.add("erro-input");
+        marcarErro(solicitanteDoc);
       }
 
       if (!DocValido(documentoRemetente)) {
-        void remetenteDoc.offsetWidth;
-        remetenteDoc.classList.add("erro-input");
+        marcarErro(remetenteDoc);
       }
 
       if (!DocValido(documentoDestinatario)) {
-        void destinatarioDoc.offsetWidth;
-        destinatarioDoc.classList.add("erro-input");
+        marcarErro(destinatarioDoc);
+      }
+
+      // Validação do Endereço de Coleta (exceto complemento)
+      if (cep && (cep.value.trim() == "" || cepLimpo.length !== 8)) {
+        marcarErro(cep);
+      }
+      if (logradouro && logradouro.value.trim() == "") {
+        marcarErro(logradouro);
+      }
+      if (numero && numero.value.trim() == "") {
+        marcarErro(numero);
+      }
+      if (bairro && bairro.value.trim() == "") {
+        marcarErro(bairro);
+      }
+      if (cidade && cidade.value.trim() == "") {
+        marcarErro(cidade);
+      }
+      if (estado && estado.value.trim() == "") {
+        marcarErro(estado);
+      }
+
+      // Validação do Horário de Funcionamento
+      const horarioAbertura = document.getElementById("horarioAbertura");
+      const horarioFechamento = document.getElementById("horarioFechamento");
+
+      if (horarioAbertura && horarioAbertura.value == "") {
+        marcarErro(horarioAbertura);
+      }
+      if (horarioFechamento && horarioFechamento.value == "") {
+        marcarErro(horarioFechamento);
+      }
+      // Validação cronológica (Abertura não pode ser depois do Fechamento)
+      if (horarioAbertura && horarioFechamento && horarioAbertura.value !== "" && horarioFechamento.value !== "") {
+        if (horarioAbertura.value >= horarioFechamento.value) {
+          marcarErro(horarioAbertura);
+          marcarErro(horarioFechamento);
+        }
       }
 
       // Verifica natureza da mercadoria (Select)
       const naturezaMercadoria = document.getElementById("naturezaMercadoria");
       if (naturezaMercadoria.value == "") {
-        void naturezaMercadoria.offsetWidth;
-        naturezaMercadoria.classList.add("erro-input");
+        marcarErro(naturezaMercadoria);
       }
 
       // Verifica se valor da NF é menor/igual a zero, nulo ou NaN
       if (valorNfLimpo <= 0 || isNaN(valorNfLimpo) || valorNfLimpo == "") {
-        void valorNf.offsetWidth;
-        valorNf.classList.add("erro-input");
+        marcarErro(valorNf);
       }
 
       // Verifica a quantidade de volumes
@@ -335,14 +372,17 @@ document.addEventListener("DOMContentLoaded", () => {
         isNaN(qtdVolumes.value) ||
         qtdVolumes.value == ""
       ) {
-        void qtdVolumes.offsetWidth;
-        qtdVolumes.classList.add("erro-input");
+        marcarErro(qtdVolumes);
       }
 
       // Verifica o peso real
       if (pesoLimpo <= 0 || isNaN(pesoLimpo) || pesoLimpo == "") {
-        void pesoReal.offsetWidth;
-        pesoReal.classList.add("erro-input");
+        marcarErro(pesoReal);
+      }
+
+      //Verifica as observações
+      if (observacoes && observacoes.value.trim() == "") {
+        marcarErro(observacoes);
       }
 
       // Validação das linhas de cubagem geradas dinamicamente
@@ -464,10 +504,7 @@ document.addEventListener("DOMContentLoaded", () => {
       }
 
       //Confere o campo de coleta (especificamente pelo cep), e se tiver algo ele limpa tudo
-
-      console.log(`valor do maskCep ${maskCep.value.trim()}`)
-
-      if (maskCep.unmaskedValue.trim() != "" && maskCep.unmaskedValue.trim() == enderecoRemetente.postalCode && cepInput.readOnly == true) {
+      if (maskCep.unmaskedValue.trim() != "" && maskCep.unmaskedValue.trim() == enderecoRemetente?.postalCode && cep.readOnly == true) {
 
         console.log("Vestigios de dados do remetente no campo de coleta, limpando...")
 
