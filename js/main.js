@@ -21,8 +21,8 @@ document.addEventListener("DOMContentLoaded", () => {
     maskValor,
     maskVolumes;
 
-  //Endereço remetente
-  let enderecoRemetente;
+  //Endereço & cnpj remetente
+  let remetenteEndereco, remetenteCnpj;
 
   //Verificadores
   let solicitanteVerificado,
@@ -188,13 +188,13 @@ document.addEventListener("DOMContentLoaded", () => {
     readOnlyEndColeta(true)
 
     //Define os campos do endereço com o do Remetente
-    maskCep.value = enderecoRemetente.postalCode || ""
-    logradouro.value = enderecoRemetente.line1 || ""
-    numero.value = enderecoRemetente.number || ""
-    complemento.value = enderecoRemetente.line2 || ""
-    bairro.value = enderecoRemetente.neighborhood || ""
-    cidade.value = enderecoRemetente.city?.name || ""
-    estado.value = enderecoRemetente.city?.state.code || ""
+    maskCep.value = remetenteEndereco.postalCode || ""
+    logradouro.value = remetenteEndereco.line1 || ""
+    numero.value = remetenteEndereco.number || ""
+    complemento.value = remetenteEndereco.line2 || ""
+    bairro.value = remetenteEndereco.neighborhood || ""
+    cidade.value = remetenteEndereco.city?.name || ""
+    estado.value = remetenteEndereco.city?.state.code || ""
   }
 
   function limparEndColeta() {
@@ -210,9 +210,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-
-
-  //Função de verificar cnpj
+  //Função no qual verifica se o CNPJ é valido ou não.
   function verificarCnpj(cnpj) {
 
     //Aqui verifica se o cnpj tem 14 caracteres
@@ -221,13 +219,13 @@ document.addEventListener("DOMContentLoaded", () => {
     return true
   }
 
-  //Função de preencher o EndColeta com os dados do remetente
+  //Função de consultar dados do remetente de endereço
   async function verificarEndRemetente() {
 
     const remetenteDocLimpo = maskRemetente.unmaskedValue
 
     //Verifica se já não foi verificado a api no remetente antes 
-    if (remetenteVerificado) {
+    if (remetenteVerificado && maskRemetente.unmaskedValue == remetenteCnpj) {
       console.log("Dados já salvos anteriormente, buscando...")
       preencherEndColeta()
       return
@@ -243,12 +241,15 @@ document.addEventListener("DOMContentLoaded", () => {
     //Verifica se os dados existem
     if (!endereco) { return console.log("Endereço não encontrado e(ou) indisponivel") }
 
-    enderecoRemetente = endereco
+    //Define o endereço do remetente com o endereço obtido pela API
+    remetenteEndereco = endereco
 
+    //Preenche o end de coleta
     preencherEndColeta()
 
-    //Remetente já foi verificado marcar como true
+    //Remetente já foi verificado marcar como true e guardar o cnpj que foi verificado
     remetenteVerificado = true
+    remetenteCnpj = maskRemetente.unmaskedValue
   }
 
   // ========================================================================= //
@@ -265,6 +266,14 @@ document.addEventListener("DOMContentLoaded", () => {
         evento.target.tagName === "SELECT"
       ) {
         evento.target.classList.remove("erro-input");
+      }
+
+      // Limpa o erro do container de rádio de almoço ao selecionar uma das opções
+      if (evento.target.name === "horarioAlmoco") {
+        const grupoRadioAlmoco = document.querySelector(".grupo-radio-almoco");
+        if (grupoRadioAlmoco) {
+          grupoRadioAlmoco.classList.remove("erro-input");
+        }
       }
     });
 
@@ -504,7 +513,7 @@ document.addEventListener("DOMContentLoaded", () => {
       }
 
       //Confere o campo de coleta (especificamente pelo cep), e se tiver algo ele limpa tudo
-      if (maskCep.unmaskedValue.trim() != "" && maskCep.unmaskedValue.trim() == enderecoRemetente?.postalCode && cep.readOnly == true) {
+      if (maskCep.unmaskedValue.trim() != "" && maskCep.unmaskedValue.trim() == remetenteEndereco?.postalCode && cep.readOnly == true) {
 
         console.log("Vestigios de dados do remetente no campo de coleta, limpando...")
 
