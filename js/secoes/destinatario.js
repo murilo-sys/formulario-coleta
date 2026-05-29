@@ -41,7 +41,9 @@ destinatarioDoc.addEventListener('blur', async () => {
       if (cidadeEstadoDestinatario && state.destinatarioEndereco?.city) {
         const cidadeNome = state.destinatarioEndereco.city.name || "-";
         const estadoSigla = state.destinatarioEndereco.city.state?.code || "-";
-        cidadeEstadoDestinatario.innerHTML = `🏢 ${cidadeNome} / ${estadoSigla}`;
+        const razaoSocial = state.destinatarioEndereco.razaoSocial || "";
+        const prefixoNome = razaoSocial ? `${razaoSocial} | ` : "";
+        cidadeEstadoDestinatario.innerHTML = `🏢 ${prefixoNome}${cidadeNome} / ${estadoSigla}`;
         cidadeEstadoDestinatario.classList.remove('oculto');
       }
       return;
@@ -70,7 +72,9 @@ destinatarioDoc.addEventListener('blur', async () => {
     if (cidadeEstadoDestinatario && destinatarioInfos.city) {
       const cidadeNome = destinatarioInfos.city.name || "-";
       const estadoSigla = destinatarioInfos.city.state?.code || "-";
-      cidadeEstadoDestinatario.innerHTML = `🏢 ${cidadeNome} / ${estadoSigla}`;
+      const razaoSocial = destinatarioInfos.razaoSocial || "";
+      const prefixoNome = razaoSocial ? `${razaoSocial} | ` : "";
+      cidadeEstadoDestinatario.innerHTML = `🏢 ${prefixoNome}${cidadeNome} / ${estadoSigla}`;
       cidadeEstadoDestinatario.classList.remove('oculto');
     }
 

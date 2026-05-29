@@ -19,7 +19,9 @@ export function preencherEndColeta() {
   if (elCidadeEstado && state.remetenteEndereco?.city) {
     const cidadeNome = state.remetenteEndereco.city.name || "-";
     const estadoSigla = state.remetenteEndereco.city.state?.code || "-";
-    elCidadeEstado.innerHTML = `🏢 ${cidadeNome} / ${estadoSigla}`;
+    const razaoSocial = state.remetenteEndereco.razaoSocial || "";
+    const prefixoNome = razaoSocial ? `${razaoSocial} | ` : "";
+    elCidadeEstado.innerHTML = `🏢 ${prefixoNome}${cidadeNome} / ${estadoSigla}`;
     elCidadeEstado.classList.remove("oculto");
   }
 }

@@ -26,6 +26,9 @@ export async function consultarEmpresaPorCnpj(cnpjLimpo) {
     let endereco = null;
     if (empresas && empresas.length > 0) {
       endereco = empresas[0].node.mainAddress || null;
+      if (endereco) {
+        endereco.razaoSocial = empresas[0].node.name || "";
+      }
     }
 
     // Salva no cache (salva inclusive null para evitar requisições de CNPJs inválidos)
