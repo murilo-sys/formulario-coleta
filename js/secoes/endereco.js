@@ -99,7 +99,7 @@ export function abrirDialogConfirmacao(endereco) {
 }
 
 export function recusarEndereco() {
-  alert("Por favor, entre em contato conosco para atualizar os dados cadastrais antes de solicitar a coleta.");
+  avisoCadastro("Remetente", "editar");
 
   // Muda o rádio do solicitante para "Outros" para restaurar os campos
   const radioOutros = document.getElementById("solicitanteOutros");
