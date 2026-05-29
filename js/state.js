@@ -1,4 +1,4 @@
-// js/estado.js
+// js/state.js
 
 // Objeto de estado centralizado para gerenciar propriedades e elementos entre os módulos
 export const state = {

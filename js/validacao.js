@@ -1,15 +1,14 @@
 // js/validacao.js
 import { state } from './estado.js';
+import { DocValido } from './utils/utils.js';
+import { validarSolicitante } from './secoes/solicitante.js';
+import { validarEndereco } from './secoes/endereco.js';
+import { validarMercadoria } from './secoes/mercadoria.js';
+import { validarCubagem } from './secoes/cubagem.js';
+import { validarFuncionamento } from './secoes/funcionamento.js';
 
 document.addEventListener("DOMContentLoaded", () => {
   const formulario = document.querySelector(".formularioColeta");
-  const solicitanteNome = document.getElementById("solicitanteNome");
-  const solicitanteDoc = document.getElementById("solicitanteDoc");
-  const remetenteDoc = document.getElementById("remetenteDoc");
-  const destinatarioDoc = document.getElementById("destinatarioDoc");
-  const pesoReal = document.getElementById("pesoReal");
-  const valorNf = document.getElementById("valorNf");
-  const observacoes = document.getElementById("observacoes");
 
   // ========================================================================= //
   //                           VALIDAÇÃO E ENVIO DO FORMULÁRIO                 //
@@ -38,22 +37,6 @@ document.addEventListener("DOMContentLoaded", () => {
     formulario.addEventListener("submit", (evento) => {
       evento.preventDefault();
 
-      // Puxando os valores reais (sem a formatação da máscara) para validação
-      const cnpjSolicitante = state.maskSolicitante ? state.maskSolicitante.unmaskedValue : "";
-      const documentoRemetente = state.maskRemetente ? state.maskRemetente.unmaskedValue : "";
-      const documentoDestinatario = state.maskDestinatario ? state.maskDestinatario.unmaskedValue : "";
-      const cepLimpo = state.maskCep ? state.maskCep.unmaskedValue : "";
-      const pesoLimpo = state.maskPeso ? state.maskPeso.unmaskedValue : "";
-      const valorNfLimpo = state.maskValor ? state.maskValor.unmaskedValue : "";
-
-      // Função auxiliar para verificar se o documento tem o tamanho correto (CPF = 11, CNPJ = 14)
-      function DocValido(doc) {
-        if (doc.length !== 11 && doc.length !== 14) {
-          return false;
-        }
-        return true;
-      }
-
       // Função reutilizável para aplicar o estilo de erro com animação
       function marcarErro(elemento) {
         if (!elemento) return;
@@ -61,122 +44,51 @@ document.addEventListener("DOMContentLoaded", () => {
         elemento.classList.add("erro-input");
       }
 
-      // --- Início das Validações Individuais ---
+      // --- Execução das Validações Modulares ---
+      let formValido = true;
 
-      // Regex que não permite números
-      const regexNome = /^[a-zA-ZÀ-ÿ\s]+$/;
-
-      if (solicitanteNome && (solicitanteNome.value.trim() === "" || !regexNome.test(solicitanteNome.value))) {
-        marcarErro(solicitanteNome);
-      }
-
-      if (!DocValido(cnpjSolicitante)) {
-        marcarErro(solicitanteDoc);
+      // 1. Valida Solicitante (Nome e Documentos)
+      if (!validarSolicitante(marcarErro)) {
+        formValido = false;
       }
 
-      if (!DocValido(documentoRemetente)) {
-        marcarErro(remetenteDoc);
+      // 2. Valida Endereço da Coleta
+      if (!validarEndereco(marcarErro)) {
+        formValido = false;
       }
 
-      if (!DocValido(documentoDestinatario)) {
-        marcarErro(destinatarioDoc);
+      // 3. Valida Mercadoria (Peso, Valor, Volumes e Natureza)
+      if (!validarMercadoria(marcarErro)) {
+        formValido = false;
       }
 
-      // Validação do Endereço de Coleta (exceto complemento)
-      if (state.cep && (state.cep.value.trim() === "" || cepLimpo.length !== 8)) {
-        marcarErro(state.cep);
-      }
-      if (state.logradouro && state.logradouro.value.trim() === "") {
-        marcarErro(state.logradouro);
-      }
-      if (state.numero && state.numero.value.trim() === "") {
-        marcarErro(state.numero);
-      }
-      if (state.bairro && state.bairro.value.trim() === "") {
-        marcarErro(state.bairro);
-      }
-      if (state.cidade && state.cidade.value.trim() === "") {
-        marcarErro(state.cidade);
-      }
-      if (state.estado && state.estado.value.trim() === "") {
-        marcarErro(state.estado);
+      // 4. Valida Horário de Funcionamento
+      if (!validarFuncionamento(marcarErro)) {
+        formValido = false;
       }
 
-      // Validação do Horário de Funcionamento
-      const horarioAbertura = document.getElementById("horarioAbertura");
-      const horarioFechamento = document.getElementById("horarioFechamento");
-
-      if (horarioAbertura && horarioAbertura.value === "") {
-        marcarErro(horarioAbertura);
-      }
-      if (horarioFechamento && horarioFechamento.value === "") {
-        marcarErro(horarioFechamento);
-      }
-      // Validação cronológica (Abertura não pode ser depois do Fechamento)
-      if (horarioAbertura && horarioFechamento && horarioAbertura.value !== "" && horarioFechamento.value !== "") {
-        if (horarioAbertura.value >= horarioFechamento.value) {
-          marcarErro(horarioAbertura);
-          marcarErro(horarioFechamento);
-        }
+      // 5. Valida Cubagem das Caixas (Dimensões dinâmicas)
+      if (!validarCubagem(marcarErro)) {
+        formValido = false;
       }
 
-      // Verifica natureza da mercadoria (Select)
-      const naturezaMercadoria = document.getElementById("naturezaMercadoria");
-      if (naturezaMercadoria.value === "") {
-        marcarErro(naturezaMercadoria);
-      }
-
-      // Verifica se valor da NF é menor/igual a zero, nulo ou NaN
-      if (valorNfLimpo <= 0 || isNaN(valorNfLimpo) || valorNfLimpo === "") {
-        marcarErro(valorNf);
-      }
-
-      // Verifica a quantidade de volumes
-      const qtdVolumes = document.getElementById("qtdVolumes");
-      if (
-        qtdVolumes.value <= 0 ||
-        isNaN(qtdVolumes.value) ||
-        qtdVolumes.value === ""
-      ) {
-        marcarErro(qtdVolumes);
-      }
-
-      // Verifica o peso real
-      if (pesoLimpo <= 0 || isNaN(pesoLimpo) || pesoLimpo === "") {
-        marcarErro(pesoReal);
-      }
-
-      // Verifica as observações
+      // 6. Verifica as observações (Geral)
+      const observacoes = document.getElementById("observacoes");
       if (observacoes && observacoes.value.trim() === "") {
         marcarErro(observacoes);
+        formValido = false;
       }
-
-      // Validação das linhas de cubagem geradas dinamicamente
-      const containerCubagem = document.getElementById("containerCubagem");
-      const totalLinhas = containerCubagem.querySelectorAll(".coluna-cubagem");
-
-      totalLinhas.forEach((linha) => {
-        const comprimento = inline => linha.querySelector(".input-comprimento");
-        const largura = inline => linha.querySelector(".input-largura");
-        const altura = inline => linha.querySelector(".input-altura");
-
-        const compInput = comprimento();
-        const largInput = largura();
-        const altInput = altura();
-
-        if (compInput.value <= 0) compInput.classList.add("erro-input");
-        if (largInput.value <= 0) largInput.classList.add("erro-input");
-        if (altInput.value <= 0) altInput.classList.add("erro-input");
-      });
 
       // --- Tratamento de Erros e Submit Final ---
 
-      // Se houver algum erro, rola a tela suavemente até o primeiro campo inválido e foca nele
-      const primeiroErro = document.querySelector(".erro-input");
-      if (primeiroErro) {
-        primeiroErro.scrollIntoView({ behavior: "smooth", block: "center" });
-        primeiroErro.focus();
-        return; // Interrompe o envio
+      // Se houver algum erro em qualquer seção
+      if (!formValido) {
+        const primeiroErro = document.querySelector(".erro-input");
+        if (primeiroErro) {
+          primeiroErro.scrollIntoView({ behavior: "smooth", block: "center" });
+          primeiroErro.focus();
+        }
+        return; // Interrompe o envio do formulário
       }
 
       // Se passou por todas as validações com sucesso

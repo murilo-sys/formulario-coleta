@@ -1,6 +1,7 @@
-// js/endereco.js
-import { state } from './estado.js';
-import { consultarEmpresaPorCnpj } from './api.js';
+// js/secoes/endereco.js
+import { state } from '../state.js';
+import { consultarEmpresaPorCnpj } from '../api/api.js';
+import { verificarCnpj } from '../utils/utils.js';
 
 export function preencherEndColeta() {
   // Define os campos do endereço com o do Remetente
@@ -23,12 +24,6 @@ export function limparEndColeta() {
       campo.value = "";
     }
   });
-}
-
-// Função na qual verifica se o CNPJ é valido ou não.
-export function verificarCnpj(cnpj) {
-  if (cnpj && cnpj.length !== 14) return false;
-  return true;
 }
 
 // Função de consultar dados do remetente de endereço
@@ -118,6 +113,39 @@ export function recusarEndereco() {
   }
 
   limparEndColeta();
+}
+
+// Executa as validações da seção do endereço de coleta
+export function validarEndereco(marcarErro) {
+  let valido = true;
+  const cepLimpo = state.maskCep ? state.maskCep.unmaskedValue : "";
+
+  if (state.cep && (state.cep.value.trim() === "" || cepLimpo.length !== 8)) {
+    marcarErro(state.cep);
+    valido = false;
+  }
+  if (state.logradouro && state.logradouro.value.trim() === "") {
+    marcarErro(state.logradouro);
+    valido = false;
+  }
+  if (state.numero && state.numero.value.trim() === "") {
+    marcarErro(state.numero);
+    valido = false;
+  }
+  if (state.bairro && state.bairro.value.trim() === "") {
+    marcarErro(state.bairro);
+    valido = false;
+  }
+  if (state.cidade && state.cidade.value.trim() === "") {
+    marcarErro(state.cidade);
+    valido = false;
+  }
+  if (state.estado && state.estado.value.trim() === "") {
+    marcarErro(state.estado);
+    valido = false;
+  }
+
+  return valido;
 }
 
 // Configura os escutadores do Dialog de Confirmação

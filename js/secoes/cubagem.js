@@ -1,5 +1,5 @@
-// js/cubagem.js
-import { blindarInputCubagem } from './mascaras.js';
+// js/secoes/cubagem.js
+import { blindarInputCubagem } from '../masks.js';
 
 document.addEventListener("DOMContentLoaded", () => {
   const qtdVolumes = document.getElementById("qtdVolumes");
@@ -74,3 +74,32 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 });
+
+// Executa as validações das dimensões de cubagem dinâmicas
+export function validarCubagem(marcarErro) {
+  let valido = true;
+  const containerCubagem = document.getElementById("containerCubagem");
+  if (!containerCubagem) return true;
+
+  const totalLinhas = containerCubagem.querySelectorAll(".coluna-cubagem");
+  totalLinhas.forEach((linha) => {
+    const comprimento = linha.querySelector(".input-comprimento");
+    const largura = linha.querySelector(".input-largura");
+    const altura = linha.querySelector(".input-altura");
+
+    if (comprimento && (comprimento.value <= 0 || comprimento.value.trim() === "")) {
+      marcarErro(comprimento);
+      valido = false;
+    }
+    if (largura && (largura.value <= 0 || largura.value.trim() === "")) {
+      marcarErro(largura);
+      valido = false;
+    }
+    if (altura && (altura.value <= 0 || altura.value.trim() === "")) {
+      marcarErro(altura);
+      valido = false;
+    }
+  });
+
+  return valido;
+}

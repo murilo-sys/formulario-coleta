@@ -1,5 +1,5 @@
-// js/mascaras.js
-import { state } from './estado.js';
+// js/masks.js
+import { state } from './state.js';
 
 document.addEventListener("DOMContentLoaded", () => {
   const solicitanteDoc = document.getElementById("solicitanteDoc");

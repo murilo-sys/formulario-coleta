@@ -1,4 +1,4 @@
-// js/api.js
+// js/api/api.js
 
 const URL_API_LOCAL = "/api/consultar-cnpj";
 

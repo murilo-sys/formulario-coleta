@@ -1,6 +1,7 @@
-// js/solicitante.js
-import { state } from './estado.js';
+// js/secoes/solicitante.js
+import { state } from '../state.js';
 import { verificarEndRemetente, limparEndColeta } from './endereco.js';
+import { DocValido } from '../utils/utils.js';
 
 document.addEventListener("DOMContentLoaded", () => {
   const solicitanteDoc = document.getElementById("solicitanteDoc");
@@ -107,3 +108,42 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 });
+
+// Executa as validações da seção do solicitante
+export function validarSolicitante(marcarErro) {
+  let valido = true;
+
+  const solicitanteNome = document.getElementById("solicitanteNome");
+  const solicitanteDoc = document.getElementById("solicitanteDoc");
+  const remetenteDoc = document.getElementById("remetenteDoc");
+  const destinatarioDoc = document.getElementById("destinatarioDoc");
+
+  const cnpjSolicitante = state.maskSolicitante ? state.maskSolicitante.unmaskedValue : "";
+  const documentoRemetente = state.maskRemetente ? state.maskRemetente.unmaskedValue : "";
+  const documentoDestinatario = state.maskDestinatario ? state.maskDestinatario.unmaskedValue : "";
+
+  // Regex que não permite números
+  const regexNome = /^[a-zA-ZÀ-ÿ\s]+$/;
+
+  if (solicitanteNome && (solicitanteNome.value.trim() === "" || !regexNome.test(solicitanteNome.value))) {
+    marcarErro(solicitanteNome);
+    valido = false;
+  }
+
+  if (!DocValido(cnpjSolicitante)) {
+    marcarErro(solicitanteDoc);
+    valido = false;
+  }
+
+  if (!DocValido(documentoRemetente)) {
+    marcarErro(remetenteDoc);
+    valido = false;
+  }
+
+  if (!DocValido(documentoDestinatario)) {
+    marcarErro(destinatarioDoc);
+    valido = false;
+  }
+
+  return valido;
+}
