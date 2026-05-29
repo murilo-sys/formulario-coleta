@@ -9,6 +9,10 @@ import { validarFuncionamento } from './secoes/horarios.js';
 
 document.addEventListener("DOMContentLoaded", () => {
   const formulario = document.querySelector(".formularioColeta");
+  const dialogConfirmacaoEnvio = document.getElementById("dialogConfirmacaoEnvio");
+  const chkConfirmacaoFinal = document.getElementById("chkConfirmacaoFinal");
+  const btnConfirmarEnvioFinal = document.getElementById("btnConfirmarEnvioFinal");
+  const btnCancelarConfirmacao = document.getElementById("btnCancelarConfirmacao");
 
   // ========================================================================= //
   //                           VALIDAÇÃO E ENVIO DO FORMULÁRIO                 //
@@ -91,8 +95,135 @@ document.addEventListener("DOMContentLoaded", () => {
         return; // Interrompe o envio do formulário
       }
 
-      // Se passou por todas as validações com sucesso
-      alert("Formulario enviado");
+      // Se passou por todas as validações com sucesso, abre modal de confirmação (Requisito 1)
+      if (dialogConfirmacaoEnvio) {
+        if (chkConfirmacaoFinal) chkConfirmacaoFinal.checked = false;
+        if (btnConfirmarEnvioFinal) {
+          btnConfirmarEnvioFinal.disabled = true;
+          btnConfirmarEnvioFinal.textContent = "Confirmar Coleta";
+        }
+        dialogConfirmacaoEnvio.showModal();
+      }
+    });
+
+    // Controladores do Dialog de Confirmação de Envio (Requisito 1)
+    if (chkConfirmacaoFinal && btnConfirmarEnvioFinal) {
+      chkConfirmacaoFinal.addEventListener("change", () => {
+        btnConfirmarEnvioFinal.disabled = !chkConfirmacaoFinal.checked;
+      });
+    }
+
+    if (btnCancelarConfirmacao && dialogConfirmacaoEnvio) {
+      btnCancelarConfirmacao.addEventListener("click", () => {
+        dialogConfirmacaoEnvio.close();
+      });
+    }
+
+    if (btnConfirmarEnvioFinal) {
+      btnConfirmarEnvioFinal.addEventListener("click", async () => {
+        btnConfirmarEnvioFinal.disabled = true;
+        btnConfirmarEnvioFinal.textContent = "Enviando...";
+
+        const payload = {
+          solicitanteDoc: document.getElementById("solicitanteDoc")?.value || "",
+          solicitanteNome: document.getElementById("solicitanteNome")?.value || "",
+          tipoSolicitante: document.querySelector('input[name="tipoSolicitante"]:checked')?.value || "",
+          remetenteDoc: document.getElementById("remetenteDoc")?.value || "",
+          destinatarioDoc: document.getElementById("destinatarioDoc")?.value || "",
+          cepColeta: document.getElementById("cepColeta")?.value || "",
+          ruaColeta: document.getElementById("ruaColeta")?.value || "",
+          numeroColeta: document.getElementById("numeroColeta")?.value || "",
+          complementoColeta: document.getElementById("complementoColeta")?.value || "",
+          bairroColeta: document.getElementById("bairroColeta")?.value || "",
+          cidadeColeta: document.getElementById("cidadeColeta")?.value || "",
+          ufColeta: document.getElementById("ufColeta")?.value || "",
+          naturezaMercadoria: document.getElementById("naturezaMercadoria")?.value || "",
+          valorNf: document.getElementById("valorNf")?.value || "",
+          qtdVolumes: document.getElementById("qtdVolumes")?.value || "",
+          pesoReal: document.getElementById("pesoReal")?.value || "",
+          horarioAbertura: document.getElementById("horarioAbertura")?.value || "",
+          horarioFechamento: document.getElementById("horarioFechamento")?.value || "",
+          horarioAlmoco: document.querySelector('input[name="horarioAlmoco"]:checked')?.value || "",
+          observacoes: document.getElementById("observacoes")?.value || ""
+        };
+
+        try {
+          const response = await fetch("/api/solicitar-coleta", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json"
+            },
+            body: JSON.stringify(payload)
+          });
+
+          const result = await response.json();
+
+          if (response.ok) {
+            alert("Solicitação de coleta aberta com sucesso!");
+            if (dialogConfirmacaoEnvio) {
+              dialogConfirmacaoEnvio.close();
+            }
+            formulario.reset();
+          } else {
+            alert(`Erro ao solicitar coleta: ${result.message || "Erro desconhecido"}`);
+            btnConfirmarEnvioFinal.disabled = false;
+            btnConfirmarEnvioFinal.textContent = "Confirmar Coleta";
+          }
+        } catch (err) {
+          alert("Erro de rede. Por favor, tente novamente.");
+          btnConfirmarEnvioFinal.disabled = false;
+          btnConfirmarEnvioFinal.textContent = "Confirmar Coleta";
+        }
+      });
+    }
+
+    // Gerencia o reset do formulário limpando estados, erros e tags
+    formulario.addEventListener("reset", () => {
+      // 1. Remove classes de erro
+      const erros = formulario.querySelectorAll(".erro-input");
+      erros.forEach(el => el.classList.remove("erro-input"));
+
+      // 2. Limpa tags cidade/estado
+      const tags = document.querySelectorAll(".cidade-estado");
+      tags.forEach(tag => {
+        tag.textContent = "";
+        tag.classList.add("oculto");
+      });
+
+      // 3. Reseta readOnly
+      const remetenteDoc = document.getElementById("remetenteDoc");
+      const destinatarioDoc = document.getElementById("destinatarioDoc");
+      if (remetenteDoc) remetenteDoc.readOnly = true;
+      if (destinatarioDoc) destinatarioDoc.readOnly = true;
+
+      // 4. Limpa valores nas máscaras
+      if (state.maskSolicitante) state.maskSolicitante.value = "";
+      if (state.maskRemetente) state.maskRemetente.value = "";
+      if (state.maskDestinatario) state.maskDestinatario.value = "";
+      if (state.maskCep) state.maskCep.value = "";
+      if (state.maskPeso) state.maskPeso.value = "";
+      if (state.maskValor) state.maskValor.value = "";
+
+      // 5. Oculta o grupo de solicitante
+      const grupoEscondidoSolicitante = document.getElementById("grupoEscondidoSolicitante");
+      if (grupoEscondidoSolicitante) {
+        grupoEscondidoSolicitante.classList.add("oculto");
+      }
+
+      // 6. Garante que o botão Solicitar Coleta não permaneça desabilitado
+      const buttonSolicitarColeta = document.getElementById("buttonSolicitarColeta");
+      if (buttonSolicitarColeta) {
+        buttonSolicitarColeta.disabled = false;
+      }
+
+      // 7. Reseta estado central
+      state.cnpjRemetenteConfirmado = "";
+      state.cnpjRemetenteConsultado = "";
+      state.remetenteEndereco = null;
+      state.remetenteVerificado = false;
+      state.destinatarioVerificado = false;
+      state.destinatarioCnpjVerificado = "";
+      state.destinatarioEndereco = null;
     });
   }
 });
