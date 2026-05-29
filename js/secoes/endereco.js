@@ -35,7 +35,6 @@ export async function verificarEndRemetente() {
 
   // 1. Se este CNPJ específico já foi confirmado pelo usuário, preenche direto sem abrir o popup
   if (state.cnpjRemetenteConfirmado && remetenteDocLimpo === state.cnpjRemetenteConfirmado) {
-    console.log("Endereço deste CNPJ já confirmado. Preenchendo diretamente...");
     preencherEndColeta();
     return;
   }
@@ -43,16 +42,12 @@ export async function verificarEndRemetente() {
   // 2. Se já buscamos da API, mas o usuário ainda não confirmou, exibe o popup ou o aviso com dados em cache
   if (state.remetenteVerificado && remetenteDocLimpo === state.cnpjRemetenteConsultado) {
     if (state.remetenteEndereco === null) {
-      console.log("CNPJ já consultado anteriormente e não cadastrado. Exibindo aviso...");
       avisoCadastro("Remetente");
       return;
     }
-    console.log("Dados já salvos em cache, mas não confirmados. Exibindo popup...");
     abrirDialogConfirmacao(state.remetenteEndereco);
     return;
   }
-
-  console.log("Dados não encontrados, consultando na API");
 
   try {
     // Consulta os dados do solicitante.
@@ -66,13 +61,13 @@ export async function verificarEndRemetente() {
     // Verifica se os dados existem
     if (!endereco) {
       avisoCadastro("Remetente");
-      return console.log("Endereço não encontrado e(ou) indisponivel");
+      return;
     }
 
     // Abre o modal de confirmação de endereço
     abrirDialogConfirmacao(endereco);
   } catch (error) {
-    console.log("Deu erro: " + error);
+    // Silencia o erro para manter console limpo
   }
 }
 
