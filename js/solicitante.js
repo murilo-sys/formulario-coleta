@@ -20,6 +20,17 @@ document.addEventListener("DOMContentLoaded", () => {
     grupoEscondidoSolicitante.classList.add('visivel')
   })
 
+  // Consulta o endereço do remetente caso o documento seja digitado manualmente ("no pelo")
+  remetenteDoc.addEventListener('blur', () => {
+    const cnpjRemetente = maskRemetente.unmaskedValue
+
+    // Verifica se é um CNPJ (14 dígitos)
+    if (cnpjRemetente.length !== 14) return
+
+    // Faz a consulta na API e exibe o popup de confirmação
+    verificarEndRemetente()
+  })
+
   // ================================================================================ //
   // CLIQUE ONDE É DEFINIDO O PAPEL DO SOLICITANTE                                    //
   // ================================================================================ //
@@ -49,8 +60,6 @@ document.addEventListener("DOMContentLoaded", () => {
       destinatarioDoc.readOnly = true
 
       limparEndColeta()
-
-      readOnlyEndColeta(false)
     }
 
 
@@ -97,7 +106,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
         console.log("Vestigios de dados do remetente no campo de coleta, limpando...")
 
-        readOnlyEndColeta(false)
         limparEndColeta()
       }
 

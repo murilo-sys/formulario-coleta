@@ -7,6 +7,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const destinatarioDoc = document.getElementById("destinatarioDoc");
   const pesoReal = document.getElementById("pesoReal");
   const valorNf = document.getElementById("valorNf");
+  const observacoes = document.getElementById("observacoes");
 
   // ========================================================================= //
   //                           VALIDAÇÃO E ENVIO DO FORMULÁRIO                 //

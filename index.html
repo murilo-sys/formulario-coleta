@@ -29,29 +29,29 @@
 
       <div class="linhaDupla">
         <div class="coluna-flex-1">
-         <label for="solicitanteDoc" class="perguntaTitulo obrigatorio">Documento do solicitante</label>
-         <input type="text" id="solicitanteDoc" placeholder="CPF ou CNPJ">
+          <label for="solicitanteDoc" class="perguntaTitulo obrigatorio">Documento do solicitante</label>
+          <input type="text" id="solicitanteDoc" placeholder="CPF ou CNPJ">
         </div>
 
         <div class="coluna-flex-1">
-         <label for="solicitanteNome" class="perguntaTitulo obrigatorio">Nome do solicitante</label>
-         <input type="text" id="solicitanteNome" placeholder="Seu nome">
+          <label for="solicitanteNome" class="perguntaTitulo obrigatorio">Nome do solicitante</label>
+          <input type="text" id="solicitanteNome" placeholder="Seu nome">
         </div>
       </div>
-      
+
       <div id="grupoEscondidoSolicitante" class="oculto">
-      <p class="perguntaTitulo">O Solicitante é o...</p>
+        <p class="perguntaTitulo">O Solicitante é o...</p>
 
-      <div class="grupo-opcoes-solicitante">
-        <input type="radio" name="tipoSolicitante" id="solicitanteRemetente" value="remetente">
-        <label for="solicitanteRemetente">Remetente</label>
+        <div class="grupo-opcoes-solicitante">
+          <input type="radio" name="tipoSolicitante" id="solicitanteRemetente" value="remetente">
+          <label for="solicitanteRemetente">Remetente</label>
 
-        <input type="radio" name="tipoSolicitante" id="solicitanteDestinatario" value="destinatario">
-        <label for="solicitanteDestinatario">Destinatário</label>
+          <input type="radio" name="tipoSolicitante" id="solicitanteDestinatario" value="destinatario">
+          <label for="solicitanteDestinatario">Destinatário</label>
 
-        <input type="radio" name="tipoSolicitante" id="solicitanteOutros" value="outros">
-        <label for="solicitanteOutros">Outros</label>
-      </div>
+          <input type="radio" name="tipoSolicitante" id="solicitanteOutros" value="outros">
+          <label for="solicitanteOutros">Outros</label>
+        </div>
       </div>
 
     </div>
@@ -65,7 +65,7 @@
           <label for="remetenteDoc" class="perguntaTitulo obrigatorio">Documento do Remetente</label>
           <input type="text" id="remetenteDoc" placeholder="CPF ou CNPJ">
           <div class="grupo-cidade-estado">
-          <p class="cidade-estado oculto" id="cidadeEstadoRemetente"></p>
+            <p class="cidade-estado oculto" id="cidadeEstadoRemetente"></p>
           </div>
         </div>
 
@@ -73,7 +73,7 @@
           <label for="destinatarioDoc" class="perguntaTitulo obrigatorio">Documento do Destinatário</label>
           <input type="text" id="destinatarioDoc" placeholder="CPF ou CNPJ">
           <div class="grupo-cidade-estado">
-          <p class="cidade-estado oculto" id="cidadeEstadoDestinatario"></p>
+            <p class="cidade-estado oculto" id="cidadeEstadoDestinatario"></p>
           </div>
         </div>
 
@@ -90,12 +90,12 @@
 
         <div class="coluna-flex-1">
           <label for="cepInput" class="perguntaTitulo obrigatorio">CEP</label>
-          <input type="text" id="cepInput" placeholder="00000-000">
+          <input type="text" id="cepInput" placeholder="00000-000" readonly>
         </div>
 
         <div class="coluna-flex-3">
           <label for="logradouroInput" class="perguntaTitulo obrigatorio">Logradouro</label>
-          <input type="text" id="logradouroInput" placeholder="Rua, Avenida, Travessa...">
+          <input type="text" id="logradouroInput" placeholder="Rua, Avenida, Travessa..." readonly>
         </div>
 
       </div>
@@ -104,12 +104,12 @@
 
         <div class="coluna-flex-1">
           <label for="numeroInput" class="perguntaTitulo obrigatorio">Número</label>
-          <input type="text" id="numeroInput" placeholder="Ex: 01">
+          <input type="text" id="numeroInput" placeholder="Ex: 01" readonly>
         </div>
 
         <div class="coluna-flex-3">
           <label for="complementoInput" class="perguntaTitulo">Complemento</label>
-          <input type="text" id="complementoInput" placeholder="Apartamento, sala, bloco...">
+          <input type="text" id="complementoInput" placeholder="Apartamento, sala, bloco..." readonly>
         </div>
 
       </div>
@@ -118,17 +118,17 @@
 
         <div class="coluna-flex-2">
           <label for="bairroInput" class="perguntaTitulo obrigatorio">Bairro</label>
-          <input type="text" id="bairroInput" placeholder="Centro, Vila Mariana...">
+          <input type="text" id="bairroInput" placeholder="Centro, Vila Mariana..." readonly>
         </div>
 
         <div class="coluna-flex-1">
           <label for="cidadeInput" class="perguntaTitulo obrigatorio">Cidade</label>
-          <input type="text" id="cidadeInput" placeholder="São Paulo...">
+          <input type="text" id="cidadeInput" placeholder="São Paulo..." readonly>
         </div>
 
         <div class="coluna-flex-1">
           <label for="estadoInput" class="perguntaTitulo obrigatorio">Estado</label>
-          <input type="text" id="estadoInput" placeholder="SP, RJ...">
+          <input type="text" id="estadoInput" placeholder="SP, RJ..." readonly>
         </div>
 
       </div>
@@ -161,7 +161,7 @@
 
         <div class="coluna-flex-1">
           <label for="qtdVolumes" class="perguntaTitulo obrigatorio">Volumes</label>
-          <input type="number" id="qtdVolumes" placeholder="Qtd. de volumes" >
+          <input type="number" id="qtdVolumes" placeholder="Qtd. de volumes">
         </div>
 
         <div class="coluna-flex-1">
@@ -215,27 +215,27 @@
     <div class="cartaoPerguntas">
       <h3>Horário de funcionamento</h3>
       <p class="resumoCampo">Defina o intervalo e horários em que a transportadora pode realizar a retirada</p>
- 
+
       <div class="linhaDupla">
         <div class="coluna-flex-1">
           <label for="horarioAbertura" class="perguntaTitulo obrigatorio">Horário de abertura</label>
           <input type="time" id="horarioAbertura">
         </div>
- 
+
         <div class="coluna-flex-1">
           <label for="horarioFechamento" class="perguntaTitulo obrigatorio">Horário de fechamento</label>
           <input type="time" id="horarioFechamento">
         </div>
       </div>
- 
+
       <p class="perguntaTitulo" style="margin-top: 15px;">Fechado para almoço?</p>
       <div class="grupo-radio-almoco">
         <input type="radio" name="horarioAlmoco" id="almoco12-13" value="12:00-13:00">
         <label for="almoco12-13">12h às 13h</label>
- 
+
         <input type="radio" name="horarioAlmoco" id="almoco13-14" value="13:00-14:00">
         <label for="almoco13-14">13h às 14h</label>
- 
+
         <input type="radio" name="horarioAlmoco" id="almoco14-15" value="14:00-15:00">
         <label for="almoco14-15">14h às 15h</label>
       </div>
@@ -244,7 +244,7 @@
     <div class="cartaoPerguntas">
       <h3>Instruções adicionais</h3>
       <p class="resumoCampo">Pontos de referência, observações sobre a mercadoria, etc...</p>
- 
+
       <label for="observacoes" class="perguntaTitulo obrigatorio">Observações da coleta</label>
       <input type="text" id="observacoes" placeholder="Ex: Entrar pelos fundos do galpão B...">
     </div>
@@ -280,6 +280,51 @@
       </div>
     </div>
   </template>
+
+  <dialog id="dialogConfirmacao" class="dialog-premium">
+    <div class="dialog-container">
+      <div class="dialog-cabecalho">
+        <span class="dialog-titulo">Confirmar Endereço de Coleta</span>
+        <p class="dialog-subtitulo">Verifique se o endereço retornado do nosso sistema está correto.</p>
+      </div>
+      
+      <div class="dialog-corpo">
+        <div class="dialog-item">
+          <span class="dialog-label">Logradouro:</span>
+          <span id="dialogLogradouro" class="dialog-valor">-</span>
+        </div>
+        <div class="dialog-item">
+          <span class="dialog-label">Número:</span>
+          <span id="dialogNumero" class="dialog-valor">-</span>
+        </div>
+        <div class="dialog-item" id="dialogComplementoContainer">
+          <span class="dialog-label">Complemento:</span>
+          <span id="dialogComplemento" class="dialog-valor">-</span>
+        </div>
+        <div class="dialog-item">
+          <span class="dialog-label">Bairro:</span>
+          <span id="dialogBairro" class="dialog-valor">-</span>
+        </div>
+        <div class="dialog-item">
+          <span class="dialog-label">Cidade / UF:</span>
+          <span id="dialogCidadeEstado" class="dialog-valor">-</span>
+        </div>
+        <div class="dialog-item">
+          <span class="dialog-label">CEP:</span>
+          <span id="dialogCep" class="dialog-valor">-</span>
+        </div>
+      </div>
+
+      <div class="dialog-alerta">
+        ⚠️ Se o endereço estiver incorreto ou desatualizado, entre em contato com o suporte para alteração cadastral.
+      </div>
+
+      <div class="dialog-rodape">
+        <button type="button" id="btnDialogRecusar" class="btn-dialog btn-dialog-recusar">Dados Incorretos</button>
+        <button type="button" id="btnDialogConfirmar" class="btn-dialog btn-dialog-confirmar">Confirmar Endereço</button>
+      </div>
+    </div>
+  </dialog>
 
 </body>
 

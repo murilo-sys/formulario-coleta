@@ -3,20 +3,7 @@
 // FUNÇÕES                                                                          //
 // ================================================================================ //
 
-//Função de "ativar" ou "desativar" EndColeta com readOnly
-function readOnlyEndColeta(valor) {
-  cep.readOnly = valor
-  logradouro.readOnly = valor
-  numero.readOnly = valor
-  complemento.readOnly = valor
-  bairro.readOnly = valor
-  cidade.readOnly = valor
-  estado.readOnly = valor
-}
-
 function preencherEndColeta() {
-
-  readOnlyEndColeta(true)
 
   //Define os campos do endereço com o do Remetente
   maskCep.value = remetenteEndereco.postalCode || ""
@@ -55,14 +42,21 @@ async function verificarEndRemetente() {
 
   const remetenteDocLimpo = maskRemetente.unmaskedValue
 
-  //Verifica se já não foi verificado a api no remetente antes 
-  if (remetenteVerificado && maskRemetente.unmaskedValue == remetenteCnpj) {
-    console.log("Dados já salvos anteriormente, buscando...")
+  if (!verificarCnpj(remetenteDocLimpo)) return
+
+  // 1. Se este CNPJ específico já foi confirmado pelo usuário, preenche direto sem abrir o popup
+  if (cnpjConfirmado && remetenteDocLimpo === cnpjConfirmado) {
+    console.log("Endereço deste CNPJ já confirmado. Preenchendo diretamente...")
     preencherEndColeta()
     return
   }
 
-  if (await !verificarCnpj(remetenteDocLimpo)) return
+  // 2. Se já buscamos da API, mas o usuário ainda não confirmou, exibe o popup com dados em cache
+  if (remetenteVerificado && remetenteDocLimpo === remetenteCnpj) {
+    console.log("Dados já salvos em cache, mas não confirmados. Exibindo popup...")
+    abrirDialogConfirmacao(remetenteEndereco)
+    return
+  }
 
   console.log("Dados não encontrados, consultando na API")
 
@@ -75,10 +69,83 @@ async function verificarEndRemetente() {
   //Define o endereço do remetente com o endereço obtido pela API
   remetenteEndereco = endereco
 
-  //Preenche o end de coleta
-  preencherEndColeta()
+  //Salva o cnpj da consulta (cache temporário)
+  remetenteCnpj = remetenteDocLimpo;
+  remetenteVerificado = true;
 
-  //Remetente já foi verificado marcar como true e guardar o cnpj que foi verificado
-  remetenteVerificado = true
-  remetenteCnpj = maskRemetente.unmaskedValue
+  //Abre o modal de confirmação de endereço
+  abrirDialogConfirmacao(endereco)
 }
+
+function abrirDialogConfirmacao(endereco) {
+  const dialog = document.getElementById("dialogConfirmacao");
+  if (!dialog) return;
+
+  document.getElementById("dialogLogradouro").textContent = endereco.line1 || "-";
+  document.getElementById("dialogNumero").textContent = endereco.number || "-";
+
+  const complemento = endereco.line2;
+  const compContainer = document.getElementById("dialogComplementoContainer");
+  if (complemento && complemento.trim() !== "") {
+    document.getElementById("dialogComplemento").textContent = complemento;
+    compContainer.style.display = "flex";
+  } else {
+    compContainer.style.display = "none";
+  }
+
+  document.getElementById("dialogBairro").textContent = endereco.neighborhood || "-";
+
+  const cidadeNome = endereco.city?.name || "-";
+  const estadoSigla = endereco.city?.state?.code || "-";
+  document.getElementById("dialogCidadeEstado").textContent = `${cidadeNome} / ${estadoSigla}`;
+
+  document.getElementById("dialogCep").textContent = endereco.postalCode || "-";
+
+  dialog.showModal();
+}
+
+function recusarEndereco() {
+  alert("Por favor, entre em contato conosco para atualizar os dados cadastrais antes de solicitar a coleta.");
+
+  // Limpa o remetente
+  if (maskRemetente) {
+    maskRemetente.value = "";
+  }
+  const remetenteDoc = document.getElementById("remetenteDoc");
+  if (remetenteDoc) {
+    remetenteDoc.readOnly = false;
+  }
+
+  limparEndColeta();
+}
+
+// Configura os escutadores do Dialog de Confirmação
+document.addEventListener("DOMContentLoaded", () => {
+  const dialog = document.getElementById("dialogConfirmacao");
+  const btnConfirmar = document.getElementById("btnDialogConfirmar");
+  const btnRecusar = document.getElementById("btnDialogRecusar");
+
+  if (btnConfirmar && dialog) {
+    btnConfirmar.addEventListener("click", () => {
+      dialog.close();
+      preencherEndColeta();
+
+      // Salva o CNPJ que o usuário efetivamente confirmou
+      cnpjConfirmado = maskRemetente.unmaskedValue;
+    });
+  }
+
+  if (btnRecusar && dialog) {
+    btnRecusar.addEventListener("click", () => {
+      dialog.close();
+      recusarEndereco();
+    });
+  }
+
+  if (dialog) {
+    dialog.addEventListener("cancel", (evento) => {
+      // Tratar o ESC no teclado como recusa do endereço para manter o formulário consistente
+      recusarEndereco();
+    });
+  }
+});

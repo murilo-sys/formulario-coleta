@@ -15,8 +15,8 @@ var maskSolicitante,
   maskValor,
   maskVolumes;
 
-//Endereço & cnpj remetente
-var remetenteEndereco, remetenteCnpj;
+//Endereços & cnpj remetente
+var remetenteEndereco, remetenteCnpj, cnpjConfirmado;
 
 //Verificadores
 var solicitanteVerificado,
