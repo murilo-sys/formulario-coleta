@@ -1,8 +1,8 @@
 // js/estado.js
 
-// Centralized state object to manage shared properties and elements across modules
+// Objeto de estado centralizado para gerenciar propriedades e elementos entre os módulos
 export const state = {
-  // DOM Elements (evaluated on access to ensure availability and avoid manual initialization)
+  // Elementos do DOM (avaliados ao acessar para garantir que já existam na tela)
   get cep() { return document.getElementById('cepInput'); },
   get logradouro() { return document.getElementById('logradouroInput'); },
   get numero() { return document.getElementById('numeroInput'); },
@@ -11,7 +11,7 @@ export const state = {
   get cidade() { return document.getElementById('cidadeInput'); },
   get estado() { return document.getElementById('estadoInput'); },
 
-  // IMask Instances
+  // Instâncias de máscaras do IMask
   maskSolicitante: null,
   maskRemetente: null,
   maskDestinatario: null,
@@ -20,7 +20,7 @@ export const state = {
   maskValor: null,
   maskVolumes: null,
 
-  // Business fields
+  // Campos de controle de dados
   remetenteEndereco: null,
   remetenteCnpj: "",
   cnpjConfirmado: "",
