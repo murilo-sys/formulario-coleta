@@ -1,4 +1,6 @@
 // js/cubagem.js
+import { blindarInputCubagem } from './mascaras.js';
+
 document.addEventListener("DOMContentLoaded", () => {
   const qtdVolumes = document.getElementById("qtdVolumes");
 

@@ -1,83 +1,78 @@
 // js/endereco.js
-// ================================================================================ //
-// FUNÇÕES                                                                          //
-// ================================================================================ //
+import { state } from './estado.js';
+import { consultarEmpresaPorCnpj } from './api.js';
 
-function preencherEndColeta() {
-
-  //Define os campos do endereço com o do Remetente
-  maskCep.value = remetenteEndereco.postalCode || ""
-  logradouro.value = remetenteEndereco.line1 || ""
-  numero.value = remetenteEndereco.number || ""
-  complemento.value = remetenteEndereco.line2 || ""
-  bairro.value = remetenteEndereco.neighborhood || ""
-  cidade.value = remetenteEndereco.city?.name || ""
-  estado.value = remetenteEndereco.city?.state.code || ""
+export function preencherEndColeta() {
+  // Define os campos do endereço com o do Remetente
+  state.maskCep.value = state.remetenteEndereco.postalCode || "";
+  state.logradouro.value = state.remetenteEndereco.line1 || "";
+  state.numero.value = state.remetenteEndereco.number || "";
+  state.complemento.value = state.remetenteEndereco.line2 || "";
+  state.bairro.value = state.remetenteEndereco.neighborhood || "";
+  state.cidade.value = state.remetenteEndereco.city?.name || "";
+  state.estado.value = state.remetenteEndereco.city?.state.code || "";
 }
 
-function limparEndColeta() {
+export function limparEndColeta() {
+  // limpa os campos do endereço
+  const campos = [state.maskCep, state.logradouro, state.numero, state.complemento, state.bairro, state.cidade, state.estado];
 
-  //limpa os campos do endereço
-  const campos = [maskCep, logradouro, numero, complemento, bairro, cidade, estado]
-
-  //entra em cada campo e não limpa caso tiver algo
+  // entra em cada campo e não limpa caso tiver algo
   campos.forEach(campo => {
     if (campo) {
-      campo.value = ""
+      campo.value = "";
     }
   });
 }
 
-//Função no qual verifica se o CNPJ é valido ou não.
-function verificarCnpj(cnpj) {
-
-  //Aqui verifica se o cnpj tem 14 caracteres
-  if (cnpj && cnpj.length !== 14) return false
-
-  return true
+// Função na qual verifica se o CNPJ é valido ou não.
+export function verificarCnpj(cnpj) {
+  if (cnpj && cnpj.length !== 14) return false;
+  return true;
 }
 
-//Função de consultar dados do remetente de endereço
-async function verificarEndRemetente() {
+// Função de consultar dados do remetente de endereço
+export async function verificarEndRemetente() {
+  const remetenteDocLimpo = state.maskRemetente.unmaskedValue;
 
-  const remetenteDocLimpo = maskRemetente.unmaskedValue
-
-  if (!verificarCnpj(remetenteDocLimpo)) return
+  if (!verificarCnpj(remetenteDocLimpo)) return;
 
   // 1. Se este CNPJ específico já foi confirmado pelo usuário, preenche direto sem abrir o popup
-  if (cnpjConfirmado && remetenteDocLimpo === cnpjConfirmado) {
-    console.log("Endereço deste CNPJ já confirmado. Preenchendo diretamente...")
-    preencherEndColeta()
-    return
+  if (state.cnpjConfirmado && remetenteDocLimpo === state.cnpjConfirmado) {
+    console.log("Endereço deste CNPJ já confirmado. Preenchendo diretamente...");
+    preencherEndColeta();
+    return;
   }
 
   // 2. Se já buscamos da API, mas o usuário ainda não confirmou, exibe o popup com dados em cache
-  if (remetenteVerificado && remetenteDocLimpo === remetenteCnpj) {
-    console.log("Dados já salvos em cache, mas não confirmados. Exibindo popup...")
-    abrirDialogConfirmacao(remetenteEndereco)
-    return
+  if (state.remetenteVerificado && remetenteDocLimpo === state.remetenteCnpj) {
+    console.log("Dados já salvos em cache, mas não confirmados. Exibindo popup...");
+    abrirDialogConfirmacao(state.remetenteEndereco);
+    return;
   }
 
-  console.log("Dados não encontrados, consultando na API")
+  console.log("Dados não encontrados, consultando na API");
 
-  //Consulta os dados do solicitante.
-  const endereco = await consultarEmpresaPorCnpj(remetenteDocLimpo)
+  // Consulta os dados do solicitante.
+  const endereco = await consultarEmpresaPorCnpj(remetenteDocLimpo);
 
-  //Verifica se os dados existem
-  if (!endereco) { return console.log("Endereço não encontrado e(ou) indisponivel") }
+  // Verifica se os dados existem
+  if (!endereco) {
+    return console.log("Endereço não encontrado e(ou) indisponivel");
+  }
 
-  //Define o endereço do remetente com o endereço obtido pela API
-  remetenteEndereco = endereco
+  // Define o endereço do remetente com o endereço obtido pela API
+  state.remetenteEndereco = endereco;
 
-  //Salva o cnpj da consulta (cache temporário)
-  remetenteCnpj = remetenteDocLimpo;
-  remetenteVerificado = true;
+  // Salva o cnpj da consulta (cache temporário)
+  state.remetenteCnpj = remetenteDocLimpo;
+  state.remetenteVerificado = true;
 
-  //Abre o modal de confirmação de endereço
-  abrirDialogConfirmacao(endereco)
+  // Abre o modal de confirmação de endereço
+  abrirDialogConfirmacao(endereco);
 }
 
-function abrirDialogConfirmacao(endereco) {
+export function abrirDialogConfirmacao(endereco) {
   const dialog = document.getElementById("dialogConfirmacao");
   if (!dialog) return;
 
@@ -104,12 +99,18 @@ function abrirDialogConfirmacao(endereco) {
   dialog.showModal();
 }
 
-function recusarEndereco() {
+export function recusarEndereco() {
   alert("Por favor, entre em contato conosco para atualizar os dados cadastrais antes de solicitar a coleta.");
 
+  // Muda o rádio do solicitante para "Outros" para restaurar os campos
+  const radioOutros = document.getElementById("solicitanteOutros");
+  if (radioOutros) {
+    radioOutros.click();
+  }
+
   // Limpa o remetente
-  if (maskRemetente) {
-    maskRemetente.value = "";
+  if (state.maskRemetente) {
+    state.maskRemetente.value = "";
   }
   const remetenteDoc = document.getElementById("remetenteDoc");
   if (remetenteDoc) {
@@ -131,7 +132,7 @@ document.addEventListener("DOMContentLoaded", () => {
       preencherEndColeta();
 
       // Salva o CNPJ que o usuário efetivamente confirmou
-      cnpjConfirmado = maskRemetente.unmaskedValue;
+      state.cnpjConfirmado = state.maskRemetente.unmaskedValue;
     });
   }
 

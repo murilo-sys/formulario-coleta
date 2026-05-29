@@ -1,4 +1,6 @@
 // js/validacao.js
+import { state } from './estado.js';
+
 document.addEventListener("DOMContentLoaded", () => {
   const formulario = document.querySelector(".formularioColeta");
   const solicitanteNome = document.getElementById("solicitanteNome");
@@ -37,12 +39,12 @@ document.addEventListener("DOMContentLoaded", () => {
       evento.preventDefault();
 
       // Puxando os valores reais (sem a formatação da máscara) para validação
-      const cnpjSolicitante = maskSolicitante ? maskSolicitante.unmaskedValue : "";
-      const documentoRemetente = maskRemetente ? maskRemetente.unmaskedValue : "";
-      const documentoDestinatario = maskDestinatario ? maskDestinatario.unmaskedValue : "";
-      const cepLimpo = maskCep ? maskCep.unmaskedValue : "";
-      const pesoLimpo = maskPeso ? maskPeso.unmaskedValue : "";
-      const valorNfLimpo = maskValor ? maskValor.unmaskedValue : "";
+      const cnpjSolicitante = state.maskSolicitante ? state.maskSolicitante.unmaskedValue : "";
+      const documentoRemetente = state.maskRemetente ? state.maskRemetente.unmaskedValue : "";
+      const documentoDestinatario = state.maskDestinatario ? state.maskDestinatario.unmaskedValue : "";
+      const cepLimpo = state.maskCep ? state.maskCep.unmaskedValue : "";
+      const pesoLimpo = state.maskPeso ? state.maskPeso.unmaskedValue : "";
+      const valorNfLimpo = state.maskValor ? state.maskValor.unmaskedValue : "";
 
       // Função auxiliar para verificar se o documento tem o tamanho correto (CPF = 11, CNPJ = 14)
       function DocValido(doc) {
@@ -61,10 +63,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
       // --- Início das Validações Individuais ---
 
-      //Regex que não permite números
-      const regexNome = /^[a-zA-ZÀ-ÿ\s]+$/
+      // Regex que não permite números
+      const regexNome = /^[a-zA-ZÀ-ÿ\s]+$/;
 
-      if (solicitanteNome && (solicitanteNome.value.trim() == "" || !regexNome.test(solicitanteNome.value))) {
+      if (solicitanteNome && (solicitanteNome.value.trim() === "" || !regexNome.test(solicitanteNome.value))) {
         marcarErro(solicitanteNome);
       }
 
@@ -81,33 +83,33 @@ document.addEventListener("DOMContentLoaded", () => {
       }
 
       // Validação do Endereço de Coleta (exceto complemento)
-      if (cep && (cep.value.trim() == "" || cepLimpo.length !== 8)) {
-        marcarErro(cep);
+      if (state.cep && (state.cep.value.trim() === "" || cepLimpo.length !== 8)) {
+        marcarErro(state.cep);
       }
-      if (logradouro && logradouro.value.trim() == "") {
-        marcarErro(logradouro);
+      if (state.logradouro && state.logradouro.value.trim() === "") {
+        marcarErro(state.logradouro);
       }
-      if (numero && numero.value.trim() == "") {
-        marcarErro(numero);
+      if (state.numero && state.numero.value.trim() === "") {
+        marcarErro(state.numero);
       }
-      if (bairro && bairro.value.trim() == "") {
-        marcarErro(bairro);
+      if (state.bairro && state.bairro.value.trim() === "") {
+        marcarErro(state.bairro);
       }
-      if (cidade && cidade.value.trim() == "") {
-        marcarErro(cidade);
+      if (state.cidade && state.cidade.value.trim() === "") {
+        marcarErro(state.cidade);
       }
-      if (estado && estado.value.trim() == "") {
-        marcarErro(estado);
+      if (state.estado && state.estado.value.trim() === "") {
+        marcarErro(state.estado);
       }
 
       // Validação do Horário de Funcionamento
       const horarioAbertura = document.getElementById("horarioAbertura");
       const horarioFechamento = document.getElementById("horarioFechamento");
 
-      if (horarioAbertura && horarioAbertura.value == "") {
+      if (horarioAbertura && horarioAbertura.value === "") {
         marcarErro(horarioAbertura);
       }
-      if (horarioFechamento && horarioFechamento.value == "") {
+      if (horarioFechamento && horarioFechamento.value === "") {
         marcarErro(horarioFechamento);
       }
       // Validação cronológica (Abertura não pode ser depois do Fechamento)
@@ -120,12 +122,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
       // Verifica natureza da mercadoria (Select)
       const naturezaMercadoria = document.getElementById("naturezaMercadoria");
-      if (naturezaMercadoria.value == "") {
+      if (naturezaMercadoria.value === "") {
         marcarErro(naturezaMercadoria);
       }
 
       // Verifica se valor da NF é menor/igual a zero, nulo ou NaN
-      if (valorNfLimpo <= 0 || isNaN(valorNfLimpo) || valorNfLimpo == "") {
+      if (valorNfLimpo <= 0 || isNaN(valorNfLimpo) || valorNfLimpo === "") {
         marcarErro(valorNf);
       }
 
@@ -134,18 +136,18 @@ document.addEventListener("DOMContentLoaded", () => {
       if (
         qtdVolumes.value <= 0 ||
         isNaN(qtdVolumes.value) ||
-        qtdVolumes.value == ""
+        qtdVolumes.value === ""
       ) {
         marcarErro(qtdVolumes);
       }
 
       // Verifica o peso real
-      if (pesoLimpo <= 0 || isNaN(pesoLimpo) || pesoLimpo == "") {
+      if (pesoLimpo <= 0 || isNaN(pesoLimpo) || pesoLimpo === "") {
         marcarErro(pesoReal);
       }
 
-      //Verifica as observações
-      if (observacoes && observacoes.value.trim() == "") {
+      // Verifica as observações
+      if (observacoes && observacoes.value.trim() === "") {
         marcarErro(observacoes);
       }
 
@@ -154,13 +156,17 @@ document.addEventListener("DOMContentLoaded", () => {
       const totalLinhas = containerCubagem.querySelectorAll(".coluna-cubagem");
 
       totalLinhas.forEach((linha) => {
-        const comprimento = linha.querySelector(".input-comprimento");
-        const largura = linha.querySelector(".input-largura");
-        const altura = linha.querySelector(".input-altura");
+        const comprimento = inline => linha.querySelector(".input-comprimento");
+        const largura = inline => linha.querySelector(".input-largura");
+        const altura = inline => linha.querySelector(".input-altura");
 
-        if (comprimento.value <= 0) comprimento.classList.add("erro-input");
-        if (largura.value <= 0) largura.classList.add("erro-input");
-        if (altura.value <= 0) altura.classList.add("erro-input");
+        const compInput = comprimento();
+        const largInput = largura();
+        const altInput = altura();
+
+        if (compInput.value <= 0) compInput.classList.add("erro-input");
+        if (largInput.value <= 0) largInput.classList.add("erro-input");
+        if (altInput.value <= 0) altInput.classList.add("erro-input");
       });
 
       // --- Tratamento de Erros e Submit Final ---

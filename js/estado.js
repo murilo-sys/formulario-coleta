@@ -1,24 +1,28 @@
 // js/estado.js
-// ========================================================================= //
-//                          VARIÁVEIS GLOBAIS DE MÁSCARAS                    //
-// ========================================================================= //
 
-//Endereços
-var cep, logradouro, numero, complemento, bairro, cidade, estado;
+// Centralized state object to manage shared properties and elements across modules
+export const state = {
+  // DOM Elements (evaluated on access to ensure availability and avoid manual initialization)
+  get cep() { return document.getElementById('cepInput'); },
+  get logradouro() { return document.getElementById('logradouroInput'); },
+  get numero() { return document.getElementById('numeroInput'); },
+  get complemento() { return document.getElementById('complementoInput'); },
+  get bairro() { return document.getElementById('bairroInput'); },
+  get cidade() { return document.getElementById('cidadeInput'); },
+  get estado() { return document.getElementById('estadoInput'); },
 
-//Mascaras do IMASK
-var maskSolicitante,
-  maskRemetente,
-  maskDestinatario,
-  maskCep,
-  maskPeso,
-  maskValor,
-  maskVolumes;
+  // IMask Instances
+  maskSolicitante: null,
+  maskRemetente: null,
+  maskDestinatario: null,
+  maskCep: null,
+  maskPeso: null,
+  maskValor: null,
+  maskVolumes: null,
 
-//Endereços & cnpj remetente
-var remetenteEndereco, remetenteCnpj, cnpjConfirmado;
-
-//Verificadores
-var solicitanteVerificado,
-  remetenteVerificado,
-  destinatarioVerificado;
+  // Business fields
+  remetenteEndereco: null,
+  remetenteCnpj: "",
+  cnpjConfirmado: "",
+  remetenteVerificado: false
+};

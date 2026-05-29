@@ -1,129 +1,109 @@
 // js/solicitante.js
+import { state } from './estado.js';
+import { verificarEndRemetente, limparEndColeta } from './endereco.js';
+
 document.addEventListener("DOMContentLoaded", () => {
   const solicitanteDoc = document.getElementById("solicitanteDoc");
   const remetenteDoc = document.getElementById("remetenteDoc");
   const destinatarioDoc = document.getElementById("destinatarioDoc");
-  const grupoEscondidoSolicitante = document.getElementById('grupoEscondidoSolicitante')
+  const grupoEscondidoSolicitante = document.getElementById('grupoEscondidoSolicitante');
 
-  // ================================================================================ //
-  // CAMPO DINAMICO QUE FICA OCULTO E APARECEM EM SEGUIDA                             //
-  // ================================================================================ //
-
-  //Verifica se pode aparecer o campo que pergunta papel do solicitante
+  // Verifica se pode aparecer o campo que pergunta papel do solicitante
   solicitanteDoc.addEventListener('blur', () => {
-    const cnpjSolicitante = maskSolicitante.unmaskedValue
+    const cnpjSolicitante = state.maskSolicitante.unmaskedValue;
 
-    //Aqui verifica se o cnpj tem 14 caracteres
-    if (cnpjSolicitante.length !== 14) return
+    // Aqui verifica se o cnpj tem 14 caracteres
+    if (cnpjSolicitante.length !== 14) return;
 
-    //Abre div escondida para selecionar o papel do solicitante
-    grupoEscondidoSolicitante.classList.add('visivel')
-  })
+    // Abre div escondida para selecionar o papel do solicitante
+    grupoEscondidoSolicitante.classList.add('visivel');
+  });
 
   // Consulta o endereço do remetente caso o documento seja digitado manualmente ("no pelo")
   remetenteDoc.addEventListener('blur', () => {
-    const cnpjRemetente = maskRemetente.unmaskedValue
+    const cnpjRemetente = state.maskRemetente.unmaskedValue;
 
     // Verifica se é um CNPJ (14 dígitos)
-    if (cnpjRemetente.length !== 14) return
+    if (cnpjRemetente.length !== 14) return;
 
     // Faz a consulta na API e exibe o popup de confirmação
-    verificarEndRemetente()
-  })
+    verificarEndRemetente();
+  });
 
-  // ================================================================================ //
-  // CLIQUE ONDE É DEFINIDO O PAPEL DO SOLICITANTE                                    //
-  // ================================================================================ //
+  // Lógica de alternância do papel do solicitante utilizando o evento 'change' nos rádios
+  const radiosSolicitante = document.querySelectorAll('input[name="tipoSolicitante"]');
+  radiosSolicitante.forEach(radio => {
+    radio.addEventListener('change', (evento) => {
+      const valor = evento.target.value;
 
-  //Verifica o botão clicado no grupo que solicita o papel do solicitante
-  grupoEscondidoSolicitante.addEventListener('click', (evento) => {
+      if (valor === 'destinatario') {
+        // Verifica se o valor do remetente é igual a do solicitante
+        if (state.maskRemetente.unmaskedValue === state.maskSolicitante.unmaskedValue) {
+          state.maskRemetente.value = "";
+        }
 
-    //Se clicou no destinatario
-    if (evento.target.value == 'destinatario') {
+        // Ativa o campo remetente caso tiver desativado
+        if (remetenteDoc.readOnly === true) {
+          remetenteDoc.readOnly = false;
+        }
 
-      //Verifica se o valor do remetente é igual a do solicitante
-      if (maskRemetente.unmaskedValue == maskSolicitante.unmaskedValue) {
+        // Coloca o valor do solicitante no destinatario
+        state.maskDestinatario.value = solicitanteDoc.value;
 
-        //se for igual ele vai limpar
-        maskRemetente.value = ""
+        // Desativa o campo destinatario
+        destinatarioDoc.readOnly = true;
+
+        limparEndColeta();
       }
 
-      //Ativa o campo remetente caso tiver desativado
-      if (remetenteDoc.readOnly == true) {
-        remetenteDoc.readOnly = false
+      if (valor === 'remetente') {
+        // Verifica se o valor do destinatario é igual a do solicitante
+        if (state.maskDestinatario.unmaskedValue === state.maskSolicitante.unmaskedValue) {
+          state.maskDestinatario.value = "";
+        }
+
+        // Ativa o campo destinatario caso tiver desativado
+        if (destinatarioDoc.readOnly === true) {
+          destinatarioDoc.readOnly = false;
+        }
+
+        // Coloca o valor do solicitante no remetente
+        state.maskRemetente.value = solicitanteDoc.value;
+
+        // Faz a requisição da api para preencher campo de endereço de coleta
+        verificarEndRemetente();
+
+        // Desativa o campo remetente
+        remetenteDoc.readOnly = true;
       }
 
-      //Coloca o valor do solicitante no destinatario
-      maskDestinatario.value = solicitanteDoc.value
+      if (valor === 'outros') {
+        // Ativa o campo destinatario caso tiver desativado
+        if (destinatarioDoc.readOnly === true) {
+          destinatarioDoc.readOnly = false;
+        }
 
-      //Desativa o campo destinatario
-      destinatarioDoc.readOnly = true
+        // Ativa o campo remetente caso tiver desativado
+        if (remetenteDoc.readOnly === true) {
+          remetenteDoc.readOnly = false;
+        }
 
-      limparEndColeta()
-    }
+        // Confere o campo de coleta (especificamente pelo cep), e se tiver algo ele limpa tudo
+        if (state.maskCep.unmaskedValue.trim() !== "" && state.maskCep.unmaskedValue.trim() === state.remetenteEndereco?.postalCode) {
+          console.log("Vestigios de dados do remetente no campo de coleta, limpando...");
+          limparEndColeta();
+        }
 
+        // Verifica se o valor do destinatario é igual a do solicitante
+        if (state.maskDestinatario.unmaskedValue === state.maskSolicitante.unmaskedValue) {
+          state.maskDestinatario.value = "";
+        }
 
-    //Se clicou no remetente
-    if (evento.target.value == 'remetente') {
-
-      //Verifica se o valor do destinatario é igual a do solicitante
-      if (maskDestinatario.unmaskedValue == maskSolicitante.unmaskedValue) {
-
-        //se for igual ele vai limpar
-        maskDestinatario.value = ""
+        // Verifica se o valor do remetente é igual a do solicitante
+        if (state.maskRemetente.unmaskedValue === state.maskSolicitante.unmaskedValue) {
+          state.maskRemetente.value = "";
+        }
       }
-
-      //Ativa o campo destinatario caso tiver desativado
-      if (destinatarioDoc.readOnly == true) {
-        destinatarioDoc.readOnly = false
-      }
-
-      //Coloca o valor do solicitante no remetente
-      maskRemetente.value = solicitanteDoc.value
-
-      //Faz a requisição da api para preencher campo de endereço de coleta
-      verificarEndRemetente()
-
-      //Desativa o campo remetente
-      remetenteDoc.readOnly = true
-
-    }
-
-    if (evento.target.value == 'outros') {
-
-      //Ativa o campo destinatario caso tiver desativado
-      if (destinatarioDoc.readOnly == true) {
-        destinatarioDoc.readOnly = false
-      }
-
-      //Ativa o campo remetente caso tiver desativado
-      if (remetenteDoc.readOnly == true) {
-        remetenteDoc.readOnly = false
-      }
-
-      //Confere o campo de coleta (especificamente pelo cep), e se tiver algo ele limpa tudo
-      if (maskCep.unmaskedValue.trim() != "" && maskCep.unmaskedValue.trim() == remetenteEndereco?.postalCode && cep.readOnly == true) {
-
-        console.log("Vestigios de dados do remetente no campo de coleta, limpando...")
-
-        limparEndColeta()
-      }
-
-      //Verifica se o valor do destinatario é igual a do solicitante
-      if (maskDestinatario.unmaskedValue == maskSolicitante.unmaskedValue) {
-
-        //se for igual ele vai limpar
-        maskDestinatario.value = ""
-      }
-
-      //Verifica se o valor do remetente é igual a do solicitante
-      if (maskRemetente.unmaskedValue == maskSolicitante.unmaskedValue) {
-
-        //se for igual ele vai limpar
-        maskRemetente.value = ""
-      }
-
-
-    }
-  })
+    });
+  });
 });
