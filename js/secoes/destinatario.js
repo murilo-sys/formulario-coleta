@@ -12,17 +12,15 @@ destinatarioDoc.addEventListener('blur', async () => {
 
     // 1. Verifica se é um CNPJ válido (14 dígitos) antes de qualquer outra lógica
     if (!verificarCnpj(destinatarioDocLimpo)) {
-      return console.log("CNPJ inválido ou vazio");
+      return;
     }
 
     // 2. Certifica que ele não foi verificado antes (seja com sucesso ou com falha)
     if (state.destinatarioCnpjVerificado === destinatarioDocLimpo) {
       if (state.destinatarioVerificado === false) {
-        console.log("Destinatário já verificado anteriormente (não cadastrado). Exibindo aviso...");
         avisoCadastro("Destinatário");
         return;
       }
-      console.log("Destinatario já verificado antes");
       return;
     }
 
@@ -36,14 +34,12 @@ destinatarioDoc.addEventListener('blur', async () => {
 
     if (!destinatarioInfos) {
       avisoCadastro("Destinatário");
-      return console.log("Destinatario não cadastrado");
+      return;
     }
-
-    console.log(destinatarioInfos);
 
     state.destinatarioVerificado = true;
   } catch (error) {
-    console.log("Deu erro: " + error);
+    // Silencia o erro para manter console limpo
   }
 
 })
