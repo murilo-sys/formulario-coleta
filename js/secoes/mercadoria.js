@@ -1,6 +1,46 @@
 // js/secoes/mercadoria.js
 import { state } from '../state.js';
 
+export const NATUREZAS_BLOQUEADAS = ["liquido", "quimica_diversos", "artigos_perigosos"];
+
+// Listener para gerenciar a seleção de naturezas de carga bloqueadas (Requisitos 3 e 4)
+document.addEventListener("DOMContentLoaded", () => {
+  const naturezaSelect = document.getElementById("naturezaMercadoria");
+  const buttonSolicitarColeta = document.getElementById("buttonSolicitarColeta");
+  const dialogNaturezaBloqueada = document.getElementById("dialogNaturezaBloqueada");
+  const btnFecharNaturezaBloqueada = document.getElementById("btnFecharNaturezaBloqueada");
+
+  if (naturezaSelect) {
+    // Valida o estado inicial na carga da página
+    if (NATUREZAS_BLOQUEADAS.includes(naturezaSelect.value)) {
+      if (buttonSolicitarColeta) {
+        buttonSolicitarColeta.disabled = true;
+      }
+    }
+
+    naturezaSelect.addEventListener("change", () => {
+      if (NATUREZAS_BLOQUEADAS.includes(naturezaSelect.value)) {
+        if (buttonSolicitarColeta) {
+          buttonSolicitarColeta.disabled = true;
+        }
+        if (dialogNaturezaBloqueada) {
+          dialogNaturezaBloqueada.showModal();
+        }
+      } else {
+        if (buttonSolicitarColeta) {
+          buttonSolicitarColeta.disabled = false;
+        }
+      }
+    });
+  }
+
+  if (btnFecharNaturezaBloqueada && dialogNaturezaBloqueada) {
+    btnFecharNaturezaBloqueada.addEventListener("click", () => {
+      dialogNaturezaBloqueada.close();
+    });
+  }
+});
+
 // Executa as validações da seção de mercadoria
 export function validarMercadoria(marcarErro) {
   let valido = true;
@@ -13,8 +53,8 @@ export function validarMercadoria(marcarErro) {
   const pesoLimpo = state.maskPeso ? state.maskPeso.unmaskedValue : "";
   const valorNfLimpo = state.maskValor ? state.maskValor.unmaskedValue : "";
 
-  // Verifica a seleção da natureza da carga
-  if (naturezaMercadoria.value === "") {
+  // Verifica a seleção da natureza da carga (não pode ser vazia ou bloqueada)
+  if (naturezaMercadoria.value === "" || NATUREZAS_BLOQUEADAS.includes(naturezaMercadoria.value)) {
     marcarErro(naturezaMercadoria);
     valido = false;
   }
