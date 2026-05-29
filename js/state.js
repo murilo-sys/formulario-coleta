@@ -34,6 +34,7 @@ export const state = {
   remetenteVerificado: false,
 
   //Destinatario
+  destinatarioEndereco: null,
   destinatarioVerificado: false,
   destinatarioCnpjVerificado: "",
 
