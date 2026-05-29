@@ -2,9 +2,19 @@
 
 //Função dessa rota
 module.exports = async function (req, res) {
+  // CORS Headers para Vercel
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
 
-  //Verifica o metodo utilização na requisição -- Pode utilizar apenas POST
-  if (req.method !== "POST") { return res.status(405).json({ error: "Metodo não autorizado" }) }
+  if (req.method === 'OPTIONS') {
+    return res.status(204).end();
+  }
+
+  // Verifica o metodo utilização na requisição -- Pode utilizar apenas POST
+  if (req.method !== "POST") {
+    return res.status(405).json({ error: "Metodo não autorizado" });
+  }
 
   // Garante que o corpo está em formato de objeto mesmo se não vier pré-parseado
   let body = req.body;

@@ -11,17 +11,16 @@ document.addEventListener("DOMContentLoaded", () => {
   const btnFecharNaturezaBloqueada = document.getElementById("btnFecharNaturezaBloqueada");
 
   if (naturezaSelect) {
-    // Valida o estado inicial na carga da página
+    // Valida o estado inicial na carga da página (desfaz se for inválido de início)
     if (NATUREZAS_BLOQUEADAS.includes(naturezaSelect.value)) {
-      if (buttonSolicitarColeta) {
-        buttonSolicitarColeta.disabled = true;
-      }
+      naturezaSelect.value = "";
     }
 
     naturezaSelect.addEventListener("change", () => {
       if (NATUREZAS_BLOQUEADAS.includes(naturezaSelect.value)) {
+        naturezaSelect.value = ""; // Desfaz a seleção
         if (buttonSolicitarColeta) {
-          buttonSolicitarColeta.disabled = true;
+          buttonSolicitarColeta.disabled = false; // Garante que não permaneça travado
         }
         if (dialogNaturezaBloqueada) {
           dialogNaturezaBloqueada.showModal();
