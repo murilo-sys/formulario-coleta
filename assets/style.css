@@ -498,3 +498,38 @@ input[type="number"] {
 .btn-dialog-confirmar:active {
   transform: translateY(0);
 }
+
+/* --- GRUPO E TAG CIDADE/ESTADO --- */
+.grupo-cidade-estado {
+  margin-top: 6px;
+  display: flex;
+}
+
+.cidade-estado {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 11px;
+  color: #1a3a6b;
+  background-color: #eff6ff;
+  border: 1px solid #bfdbfe;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-weight: bold;
+  animation: tagFadeIn 0.2s ease-out;
+}
+
+.cidade-estado.oculto {
+  display: none !important;
+}
+
+@keyframes tagFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-2px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
