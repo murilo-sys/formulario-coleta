@@ -16,8 +16,8 @@ document.addEventListener("DOMContentLoaded", () => {
     const radios = document.querySelectorAll('input[name="tipoSolicitante"]');
     radios.forEach(r => r.checked = false);
 
-    remetenteDoc.readOnly = false;
-    destinatarioDoc.readOnly = false;
+    remetenteDoc.readOnly = true;
+    destinatarioDoc.readOnly = true;
 
     state.maskRemetente.value = "";
     state.maskDestinatario.value = "";
