@@ -96,7 +96,15 @@ document.addEventListener("DOMContentLoaded", () => {
   solicitanteDoc.addEventListener('blur', async () => {
     const docSolicitante = state.maskSolicitante ? state.maskSolicitante.unmaskedValue : "";
 
-    if (docSolicitante === "") return;
+    // Se o documento estiver vazio ou com tamanho inválido (nem 11 nem 14), limpa tudo
+    if (docSolicitante === "" || (docSolicitante.length !== 11 && docSolicitante.length !== 14)) {
+      state.solicitanteVerificado = false;
+      state.cnpjSolicitanteConsultado = "";
+      state.solicitanteEndereco = null;
+      grupoEscondidoSolicitante.classList.remove('visivel');
+      resetaCamposDependentes();
+      return;
+    }
 
     // Se o documento já foi consultado e deu certo, apenas exibe a div de opções e retorna
     if (state.solicitanteVerificado && state.cnpjSolicitanteConsultado === docSolicitante) {
@@ -114,11 +122,6 @@ document.addEventListener("DOMContentLoaded", () => {
       grupoEscondidoSolicitante.classList.remove('visivel');
 
       resetaCamposDependentes();
-      return;
-    }
-
-    // Se o formato não for nem CPF (11) nem CNPJ (14)
-    if (docSolicitante.length !== 14) {
       return;
     }
 
