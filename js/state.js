@@ -22,6 +22,11 @@ export const state = {
 
   // Campos de controle de dados
 
+  //Solicitante
+  solicitanteEndereco: null,
+  cnpjSolicitanteConsultado: "",
+  solicitanteVerificado: false,
+
   //Remetente
   remetenteEndereco: null,
   cnpjRemetenteConsultado: "",
