@@ -1,7 +1,9 @@
 // js/secoes/solicitante.js
 import { state } from '../state.js';
-import { verificarEndRemetente, limparEndColeta } from './endereco.js';
+import { verificarEndRemetente, limparEndColeta, preencherEndColeta, abrirDialogConfirmacao } from './endereco.js';
 import { DocValido } from '../utils/utils.js';
+import { consultarEmpresaPorCnpj } from '../api/api.js';
+import { avisoCadastro } from './avisoCadastro.js';
 
 document.addEventListener("DOMContentLoaded", () => {
   const solicitanteDoc = document.getElementById("solicitanteDoc");
@@ -9,25 +11,169 @@ document.addEventListener("DOMContentLoaded", () => {
   const destinatarioDoc = document.getElementById("destinatarioDoc");
   const grupoEscondidoSolicitante = document.getElementById('grupoEscondidoSolicitante');
 
-  // Verifica se pode aparecer o campo que pergunta papel do solicitante
-  solicitanteDoc.addEventListener('blur', () => {
-    const cnpjSolicitante = state.maskSolicitante.unmaskedValue;
+  // Helper para resetar os campos dependentes na falha/mudança de solicitante (Furo 5)
+  function resetaCamposDependentes() {
+    const radios = document.querySelectorAll('input[name="tipoSolicitante"]');
+    radios.forEach(r => r.checked = false);
 
-    // Aqui verifica se o cnpj tem 14 caracteres
-    if (cnpjSolicitante.length !== 14) return;
+    remetenteDoc.readOnly = false;
+    destinatarioDoc.readOnly = false;
 
-    // Abre div escondida para selecionar o papel do solicitante
-    grupoEscondidoSolicitante.classList.add('visivel');
+    state.maskRemetente.value = "";
+    state.maskDestinatario.value = "";
+
+    limparEndColeta();
+
+    // Reseta flags de verificação
+    state.cnpjRemetenteConfirmado = "";
+    state.cnpjRemetenteConsultado = "";
+    state.remetenteEndereco = null;
+    state.remetenteVerificado = false;
+
+    state.destinatarioVerificado = false;
+    state.destinatarioCnpjVerificado = "";
+  }
+
+  // Helper para sobrepor e preencher os dados dependendo do papel ativo (Furo 2, 5 e 6)
+  function aplicarPapelSolicitante(valor) {
+    const docSolicitante = state.maskSolicitante.value;
+    const docSolicitanteLimpo = state.maskSolicitante.unmaskedValue;
+
+    if (valor === 'destinatario') {
+      if (state.maskRemetente.unmaskedValue === docSolicitanteLimpo) {
+        state.maskRemetente.value = "";
+        limparEndColeta();
+        state.cnpjRemetenteConfirmado = "";
+        state.cnpjRemetenteConsultado = "";
+        state.remetenteEndereco = null;
+        state.remetenteVerificado = false;
+      }
+
+      remetenteDoc.readOnly = false;
+
+      state.maskDestinatario.value = docSolicitante;
+      destinatarioDoc.readOnly = true;
+
+      state.destinatarioVerificado = true;
+      state.destinatarioCnpjVerificado = docSolicitanteLimpo;
+    }
+
+    if (valor === 'remetente') {
+      if (state.maskDestinatario.unmaskedValue === docSolicitanteLimpo) {
+        state.maskDestinatario.value = "";
+        state.destinatarioVerificado = false;
+        state.destinatarioCnpjVerificado = "";
+      }
+
+      destinatarioDoc.readOnly = false;
+
+      state.maskRemetente.value = docSolicitante;
+      remetenteDoc.readOnly = true;
+
+      state.cnpjRemetenteConsultado = docSolicitanteLimpo;
+      state.remetenteEndereco = state.solicitanteEndereco;
+      state.remetenteVerificado = true;
+
+      // Furo 6: Exibe modal de confirmação para o novo endereço do Solicitante que virou Remetente
+      if (state.cnpjRemetenteConfirmado && docSolicitanteLimpo === state.cnpjRemetenteConfirmado) {
+        preencherEndColeta();
+      } else {
+        abrirDialogConfirmacao(state.solicitanteEndereco);
+      }
+    }
+
+    if (valor === 'outros') {
+      destinatarioDoc.readOnly = false;
+      remetenteDoc.readOnly = false;
+
+      if (state.maskDestinatario.unmaskedValue === docSolicitanteLimpo) {
+        state.maskDestinatario.value = "";
+        state.destinatarioVerificado = false;
+        state.destinatarioCnpjVerificado = "";
+      }
+
+      if (state.maskRemetente.unmaskedValue === docSolicitanteLimpo) {
+        state.maskRemetente.value = "";
+        limparEndColeta();
+        state.cnpjRemetenteConfirmado = "";
+        state.cnpjRemetenteConsultado = "";
+        state.remetenteEndereco = null;
+        state.remetenteVerificado = false;
+      }
+    }
+  }
+
+  // Evento Blur do Solicitante para validar na hora (Furo 3, 4, 5 e 6)
+  solicitanteDoc.addEventListener('blur', async () => {
+    const docSolicitante = state.maskSolicitante ? state.maskSolicitante.unmaskedValue : "";
+
+    if (docSolicitante === "") return;
+
+    // Se o documento já foi consultado e deu certo, apenas exibe a div de opções e retorna
+    if (state.solicitanteVerificado && state.cnpjSolicitanteConsultado === docSolicitante) {
+      grupoEscondidoSolicitante.classList.add('visivel');
+      return;
+    }
+
+    // Furo 3: Se for Pessoa Física (CPF), abre o aviso de suporte e bloqueia o fluxo
+    if (docSolicitante.length === 11) {
+      console.log("Pessoa física (CPF) no solicitante. Abrindo aviso...");
+      avisoCadastro("Pessoa Física");
+
+      state.solicitanteVerificado = false;
+      state.cnpjSolicitanteConsultado = docSolicitante;
+      state.solicitanteEndereco = null;
+      grupoEscondidoSolicitante.classList.remove('visivel');
+
+      resetaCamposDependentes();
+      return;
+    }
+
+    // Se o formato não for nem CPF (11) nem CNPJ (14)
+    if (docSolicitante.length !== 14) {
+      return;
+    }
+
+    // Furo 4: Se for CNPJ, faz a busca na API
+    console.log("Consultando CNPJ do solicitante na API...");
+    try {
+      const endereco = await consultarEmpresaPorCnpj(docSolicitante);
+
+      state.cnpjSolicitanteConsultado = docSolicitante;
+      state.solicitanteEndereco = endereco;
+
+      if (!endereco) {
+        console.log("CNPJ do Solicitante não cadastrado.");
+        avisoCadastro("Solicitante");
+        
+        state.solicitanteVerificado = false;
+        grupoEscondidoSolicitante.classList.remove('visivel');
+        
+        resetaCamposDependentes();
+        return;
+      }
+
+      // Validação com sucesso
+      state.solicitanteVerificado = true;
+      grupoEscondidoSolicitante.classList.add('visivel');
+
+      // Se já houver um rádio ativado, aplica a sobreposição (Furo 2 e 5)
+      const radioAtivo = document.querySelector('input[name="tipoSolicitante"]:checked');
+      if (radioAtivo) {
+        aplicarPapelSolicitante(radioAtivo.value);
+      }
+
+    } catch (error) {
+      console.log("Erro ao consultar solicitante: " + error);
+    }
   });
 
-  // Consulta o endereço do remetente caso o documento seja digitado manualmente ("no pelo")
+  // Consulta o endereço do remetente caso o documento seja digitado manualmente
   remetenteDoc.addEventListener('blur', () => {
     const cnpjRemetente = state.maskRemetente.unmaskedValue;
 
-    // Verifica se é um CNPJ (14 dígitos)
     if (cnpjRemetente.length !== 14) return;
 
-    // Faz a consulta na API e exibe o popup de confirmação
     verificarEndRemetente();
   });
 
@@ -35,76 +181,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const radiosSolicitante = document.querySelectorAll('input[name="tipoSolicitante"]');
   radiosSolicitante.forEach(radio => {
     radio.addEventListener('change', (evento) => {
-      const valor = evento.target.value;
-
-      if (valor === 'destinatario') {
-        // Verifica se o valor do remetente é igual a do solicitante
-        if (state.maskRemetente.unmaskedValue === state.maskSolicitante.unmaskedValue) {
-          state.maskRemetente.value = "";
-        }
-
-        // Ativa o campo remetente caso tiver desativado
-        if (remetenteDoc.readOnly === true) {
-          remetenteDoc.readOnly = false;
-        }
-
-        // Coloca o valor do solicitante no destinatario
-        state.maskDestinatario.value = solicitanteDoc.value;
-
-        // Desativa o campo destinatario
-        destinatarioDoc.readOnly = true;
-
-        limparEndColeta();
-      }
-
-      if (valor === 'remetente') {
-        // Verifica se o valor do destinatario é igual a do solicitante
-        if (state.maskDestinatario.unmaskedValue === state.maskSolicitante.unmaskedValue) {
-          state.maskDestinatario.value = "";
-        }
-
-        // Ativa o campo destinatario caso tiver desativado
-        if (destinatarioDoc.readOnly === true) {
-          destinatarioDoc.readOnly = false;
-        }
-
-        // Coloca o valor do solicitante no remetente
-        state.maskRemetente.value = solicitanteDoc.value;
-
-        // Faz a requisição da api para preencher campo de endereço de coleta
-        verificarEndRemetente();
-
-        // Desativa o campo remetente
-        remetenteDoc.readOnly = true;
-      }
-
-      if (valor === 'outros') {
-        // Ativa o campo destinatario caso tiver desativado
-        if (destinatarioDoc.readOnly === true) {
-          destinatarioDoc.readOnly = false;
-        }
-
-        // Ativa o campo remetente caso tiver desativado
-        if (remetenteDoc.readOnly === true) {
-          remetenteDoc.readOnly = false;
-        }
-
-        // Confere o campo de coleta (especificamente pelo cep), e se tiver algo ele limpa tudo
-        if (state.maskCep.unmaskedValue.trim() !== "" && state.maskCep.unmaskedValue.trim() === state.remetenteEndereco?.postalCode) {
-          console.log("Vestigios de dados do remetente no campo de coleta, limpando...");
-          limparEndColeta();
-        }
-
-        // Verifica se o valor do destinatario é igual a do solicitante
-        if (state.maskDestinatario.unmaskedValue === state.maskSolicitante.unmaskedValue) {
-          state.maskDestinatario.value = "";
-        }
-
-        // Verifica se o valor do remetente é igual a do solicitante
-        if (state.maskRemetente.unmaskedValue === state.maskSolicitante.unmaskedValue) {
-          state.maskRemetente.value = "";
-        }
-      }
+      aplicarPapelSolicitante(evento.target.value);
     });
   });
 });
@@ -122,7 +199,6 @@ export function validarSolicitante(marcarErro) {
   const documentoRemetente = state.maskRemetente ? state.maskRemetente.unmaskedValue : "";
   const documentoDestinatario = state.maskDestinatario ? state.maskDestinatario.unmaskedValue : "";
 
-  // Regex que não permite números
   const regexNome = /^[a-zA-ZÀ-ÿ\s]+$/;
 
   if (solicitanteNome && (solicitanteNome.value.trim() === "" || !regexNome.test(solicitanteNome.value))) {
@@ -130,7 +206,7 @@ export function validarSolicitante(marcarErro) {
     valido = false;
   }
 
-  if (!DocValido(cnpjSolicitante)) {
+  if (!DocValido(cnpjSolicitante) || state.solicitanteVerificado !== true) {
     marcarErro(solicitanteDoc);
     valido = false;
   }
@@ -143,6 +219,23 @@ export function validarSolicitante(marcarErro) {
   if (!DocValido(documentoDestinatario)) {
     marcarErro(destinatarioDoc);
     valido = false;
+  }
+
+  // BLINDAGEM DE SEGURANÇA:
+  // Se o remetente for CNPJ, ele deve estar verificado e o CNPJ atual no input deve corresponder ao confirmado
+  if (documentoRemetente.length === 14) {
+    if (state.cnpjRemetenteConfirmado !== documentoRemetente) {
+      marcarErro(remetenteDoc);
+      valido = false;
+    }
+  }
+
+  // Se o destinatário for CNPJ, ele deve estar verificado
+  if (documentoDestinatario.length === 14) {
+    if (state.destinatarioVerificado !== true || state.destinatarioCnpjVerificado !== documentoDestinatario) {
+      marcarErro(destinatarioDoc);
+      valido = false;
+    }
   }
 
   return valido;
