@@ -13,6 +13,15 @@ export function preencherEndColeta() {
   state.bairro.value = state.remetenteEndereco.neighborhood || "";
   state.cidade.value = state.remetenteEndereco.city?.name || "";
   state.estado.value = state.remetenteEndereco.city?.state.code || "";
+
+  // Preenche a cidade e estado resumidos abaixo do CNPJ do remetente
+  const elCidadeEstado = document.getElementById("cidadeEstadoRemetente");
+  if (elCidadeEstado && state.remetenteEndereco?.city) {
+    const cidadeNome = state.remetenteEndereco.city.name || "-";
+    const estadoSigla = state.remetenteEndereco.city.state?.code || "-";
+    elCidadeEstado.innerHTML = `🏢 ${cidadeNome} / ${estadoSigla}`;
+    elCidadeEstado.classList.remove("oculto");
+  }
 }
 
 export function limparEndColeta() {
@@ -25,6 +34,13 @@ export function limparEndColeta() {
       campo.value = "";
     }
   });
+
+  // Limpa também o texto resumido de cidade/estado do remetente
+  const elCidadeEstado = document.getElementById("cidadeEstadoRemetente");
+  if (elCidadeEstado) {
+    elCidadeEstado.textContent = "";
+    elCidadeEstado.classList.add("oculto");
+  }
 }
 
 // Função de consultar dados do remetente de endereço
