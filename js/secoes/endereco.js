@@ -2,6 +2,7 @@
 import { state } from '../state.js';
 import { consultarEmpresaPorCnpj } from '../api/api.js';
 import { verificarCnpj } from '../utils/utils.js';
+import { avisoCadastro } from './avisoCadastro.js'
 
 export function preencherEndColeta() {
   // Define os campos do endereço com o do Remetente
@@ -33,14 +34,19 @@ export async function verificarEndRemetente() {
   if (!verificarCnpj(remetenteDocLimpo)) return;
 
   // 1. Se este CNPJ específico já foi confirmado pelo usuário, preenche direto sem abrir o popup
-  if (state.cnpjConfirmado && remetenteDocLimpo === state.cnpjConfirmado) {
+  if (state.cnpjRemetenteConfirmado && remetenteDocLimpo === state.cnpjRemetenteConfirmado) {
     console.log("Endereço deste CNPJ já confirmado. Preenchendo diretamente...");
     preencherEndColeta();
     return;
   }
 
-  // 2. Se já buscamos da API, mas o usuário ainda não confirmou, exibe o popup com dados em cache
-  if (state.remetenteVerificado && remetenteDocLimpo === state.remetenteCnpj) {
+  // 2. Se já buscamos da API, mas o usuário ainda não confirmou, exibe o popup ou o aviso com dados em cache
+  if (state.remetenteVerificado && remetenteDocLimpo === state.cnpjRemetenteConsultado) {
+    if (state.remetenteEndereco === null) {
+      console.log("CNPJ já consultado anteriormente e não cadastrado. Exibindo aviso...");
+      avisoCadastro("Remetente");
+      return;
+    }
     console.log("Dados já salvos em cache, mas não confirmados. Exibindo popup...");
     abrirDialogConfirmacao(state.remetenteEndereco);
     return;
@@ -48,23 +54,26 @@ export async function verificarEndRemetente() {
 
   console.log("Dados não encontrados, consultando na API");
 
-  // Consulta os dados do solicitante.
-  const endereco = await consultarEmpresaPorCnpj(remetenteDocLimpo);
+  try {
+    // Consulta os dados do solicitante.
+    const endereco = await consultarEmpresaPorCnpj(remetenteDocLimpo);
 
-  // Verifica se os dados existem
-  if (!endereco) {
-    return console.log("Endereço não encontrado e(ou) indisponivel");
+    // Salva no cache a consulta, mesmo se o resultado for nulo (não cadastrado)
+    state.cnpjRemetenteConsultado = remetenteDocLimpo;
+    state.remetenteVerificado = true;
+    state.remetenteEndereco = endereco;
+
+    // Verifica se os dados existem
+    if (!endereco) {
+      avisoCadastro("Remetente");
+      return console.log("Endereço não encontrado e(ou) indisponivel");
+    }
+
+    // Abre o modal de confirmação de endereço
+    abrirDialogConfirmacao(endereco);
+  } catch (error) {
+    console.log("Deu erro: " + error);
   }
-
-  // Define o endereço do remetente com o endereço obtido pela API
-  state.remetenteEndereco = endereco;
-
-  // Salva o cnpj da consulta (cache temporário)
-  state.remetenteCnpj = remetenteDocLimpo;
-  state.remetenteVerificado = true;
-
-  // Abre o modal de confirmação de endereço
-  abrirDialogConfirmacao(endereco);
 }
 
 export function abrirDialogConfirmacao(endereco) {
@@ -160,7 +169,7 @@ document.addEventListener("DOMContentLoaded", () => {
       preencherEndColeta();
 
       // Salva o CNPJ que o usuário efetivamente confirmou
-      state.cnpjConfirmado = state.maskRemetente.unmaskedValue;
+      state.cnpjRemetenteConfirmado = state.maskRemetente.unmaskedValue;
     });
   }
 

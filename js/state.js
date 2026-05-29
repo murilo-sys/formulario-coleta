@@ -21,8 +21,15 @@ export const state = {
   maskVolumes: null,
 
   // Campos de controle de dados
+
+  //Remetente
   remetenteEndereco: null,
-  remetenteCnpj: "",
-  cnpjConfirmado: "",
-  remetenteVerificado: false
+  cnpjRemetenteConsultado: "",
+  cnpjRemetenteConfirmado: "",
+  remetenteVerificado: false,
+
+  //Destinatario
+  destinatarioVerificado: false,
+  destinatarioCnpjVerificado: "",
+
 };
