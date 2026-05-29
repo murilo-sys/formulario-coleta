@@ -35,6 +35,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   // Helper para sobrepor e preencher os dados dependendo do papel ativo (Furo 2, 5 e 6)
+  // NOTA: Não limpamos a confirmação em cache (state.cnpjRemetenteConfirmado) ao alternar para evitar re-confirmações repetitivas.
   function aplicarPapelSolicitante(valor) {
     const docSolicitante = state.maskSolicitante.value;
     const docSolicitanteLimpo = state.maskSolicitante.unmaskedValue;
@@ -43,10 +44,6 @@ document.addEventListener("DOMContentLoaded", () => {
       if (state.maskRemetente.unmaskedValue === docSolicitanteLimpo) {
         state.maskRemetente.value = "";
         limparEndColeta();
-        state.cnpjRemetenteConfirmado = "";
-        state.cnpjRemetenteConsultado = "";
-        state.remetenteEndereco = null;
-        state.remetenteVerificado = false;
       }
 
       remetenteDoc.readOnly = false;
@@ -61,8 +58,6 @@ document.addEventListener("DOMContentLoaded", () => {
     if (valor === 'remetente') {
       if (state.maskDestinatario.unmaskedValue === docSolicitanteLimpo) {
         state.maskDestinatario.value = "";
-        state.destinatarioVerificado = false;
-        state.destinatarioCnpjVerificado = "";
       }
 
       destinatarioDoc.readOnly = false;
@@ -88,17 +83,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
       if (state.maskDestinatario.unmaskedValue === docSolicitanteLimpo) {
         state.maskDestinatario.value = "";
-        state.destinatarioVerificado = false;
-        state.destinatarioCnpjVerificado = "";
       }
 
       if (state.maskRemetente.unmaskedValue === docSolicitanteLimpo) {
         state.maskRemetente.value = "";
         limparEndColeta();
-        state.cnpjRemetenteConfirmado = "";
-        state.cnpjRemetenteConsultado = "";
-        state.remetenteEndereco = null;
-        state.remetenteVerificado = false;
       }
     }
   }
@@ -117,7 +106,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Furo 3: Se for Pessoa Física (CPF), abre o aviso de suporte e bloqueia o fluxo
     if (docSolicitante.length === 11) {
-      console.log("Pessoa física (CPF) no solicitante. Abrindo aviso...");
       avisoCadastro("Pessoa Física");
 
       state.solicitanteVerificado = false;
@@ -135,7 +123,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     // Furo 4: Se for CNPJ, faz a busca na API
-    console.log("Consultando CNPJ do solicitante na API...");
     try {
       const endereco = await consultarEmpresaPorCnpj(docSolicitante);
 
@@ -143,7 +130,6 @@ document.addEventListener("DOMContentLoaded", () => {
       state.solicitanteEndereco = endereco;
 
       if (!endereco) {
-        console.log("CNPJ do Solicitante não cadastrado.");
         avisoCadastro("Solicitante");
         
         state.solicitanteVerificado = false;
@@ -164,7 +150,7 @@ document.addEventListener("DOMContentLoaded", () => {
       }
 
     } catch (error) {
-      console.log("Erro ao consultar solicitante: " + error);
+      // Silencia o erro para manter console limpo
     }
   });
 
