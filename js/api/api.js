@@ -3,6 +3,7 @@
 const URL_API_LOCAL = "/api/consultar-cnpj";
 
 export async function consultarEmpresaPorCnpj(cnpjLimpo) {
+  console.log("Consultando CNPJ na API...");
   try {
     const resposta = await fetch(URL_API_LOCAL, {
       method: 'POST',
@@ -20,7 +21,6 @@ export async function consultarEmpresaPorCnpj(cnpjLimpo) {
     }
     return null;
   } catch (erro) {
-    console.error("Erro na comunicação:", erro);
     return null;
   }
 }
