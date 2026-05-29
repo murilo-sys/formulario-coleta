@@ -10,6 +10,18 @@ destinatarioDoc.addEventListener('blur', async () => {
   try {
     const destinatarioDocLimpo = state.maskDestinatario.unmaskedValue;
 
+    // Se o campo estiver vazio, apenas reseta os estados e limpa o campo de cidade/estado
+    if (destinatarioDocLimpo === "") {
+      state.destinatarioVerificado = false;
+      state.destinatarioCnpjVerificado = "";
+      const cidadeEstadoDestinatario = document.getElementById('cidadeEstadoDestinatario');
+      if (cidadeEstadoDestinatario) {
+        cidadeEstadoDestinatario.textContent = "";
+        cidadeEstadoDestinatario.classList.add('oculto');
+      }
+      return;
+    }
+
     // 1. Verifica se é um CNPJ válido (14 dígitos) antes de qualquer outra lógica
     if (!verificarCnpj(destinatarioDocLimpo)) {
       return;
