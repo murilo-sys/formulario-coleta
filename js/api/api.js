@@ -13,8 +13,8 @@ export async function consultarEmpresaPorCnpj(cnpjLimpo) {
 
   // 2. Cooldown de segurança do cliente: impede spam de requisições de rede
   const agora = Date.now();
-  if (agora - ultimoTimestampConsulta < 2000) {
-    alert("Por razões de segurança, aguarde pelo menos 2 segundos entre as consultas de CNPJ.");
+  if (agora - ultimoTimestampConsulta < 3000) {
+    alert("Por razões de segurança, aguarde pelo menos 3 segundos entre as consultas de CNPJ.");
     return null;
   }
   ultimoTimestampConsulta = agora;
@@ -31,7 +31,7 @@ export async function consultarEmpresaPorCnpj(cnpjLimpo) {
 
     // Se receber rate limit do backend
     if (resposta.status === 429) {
-      alert("Consultas muito frequentes. Aguarde pelo menos 2 segundos.");
+      alert("Consultas muito frequentes. Aguarde pelo menos 3 segundos.");
       return null;
     }
 

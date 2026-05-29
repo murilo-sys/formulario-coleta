@@ -18,23 +18,23 @@ module.exports = async function (req, res) {
     return res.status(405).json({ error: "Metodo não autorizado" });
   }
 
-  // Rate Limiter de 2 segundos por IP (Gatilho de segurança backend)
+  // Rate Limiter de 3 segundos por IP (Gatilho de segurança backend)
   const ip = req.headers['x-forwarded-for'] || req.socket.remoteAddress || 'unknown';
   const agora = Date.now();
   
   // Limpeza preventiva contra estouro de memória (Memory Leak)
   for (const [key, value] of cooldowns.entries()) {
-    if (agora - value > 2000) {
+    if (agora - value > 3000) {
       cooldowns.delete(key);
     }
   }
 
   if (cooldowns.has(ip)) {
     const ultimoAcesso = cooldowns.get(ip);
-    if (agora - ultimoAcesso < 2000) {
+    if (agora - ultimoAcesso < 3000) {
       return res.status(429).json({
         error: "Too Many Requests",
-        message: "Por razões de segurança, aguarde pelo menos 2 segundos entre as consultas de CNPJ."
+        message: "Por razões de segurança, aguarde pelo menos 3 segundos entre as consultas de CNPJ."
       });
     }
   }
