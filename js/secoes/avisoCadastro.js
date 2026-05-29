@@ -10,6 +10,11 @@ export function avisoCadastro(participante, tipoErro = "nao_encontrado") {
     if (subtitulo) {
       subtitulo.textContent = "Para alterar ou editar seus dados cadastrais, entre em contato conosco.";
     }
+  } else if (participante === "Pessoa Física") {
+    if (titulo) titulo.textContent = "Pessoa Física";
+    if (subtitulo) {
+      subtitulo.textContent = "A solicitação direta via formulário não é permitida para Pessoa Física. Entre em contato com nosso atendimento para suporte.";
+    }
   } else {
     if (titulo) titulo.textContent = `${participante} Não Encontrado`;
     if (subtitulo) {
