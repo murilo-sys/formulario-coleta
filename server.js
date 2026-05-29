@@ -76,6 +76,10 @@ const server = http.createServer((req, res) => {
       
       // Mock Vercel response helper
       const resMock = {
+        setHeader(name, value) {
+          res.setHeader(name, value);
+          return this;
+        },
         status(statusCode) {
           res.statusCode = statusCode;
           return this;
@@ -125,6 +129,10 @@ const server = http.createServer((req, res) => {
       }
       
       const resMock = {
+        setHeader(name, value) {
+          res.setHeader(name, value);
+          return this;
+        },
         status(statusCode) {
           res.statusCode = statusCode;
           return this;
