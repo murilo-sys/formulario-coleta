@@ -31,6 +31,10 @@ destinatarioDoc.addEventListener('blur', async () => {
     if (state.destinatarioCnpjVerificado === destinatarioDocLimpo) {
       if (state.destinatarioVerificado === false) {
         avisoCadastro("Destinatário");
+        if (state.maskDestinatario) {
+          state.maskDestinatario.value = "";
+        }
+        state.destinatarioCnpjVerificado = "";
         return;
       }
       // Restaura a exibição visual da tag se estiver preenchido com sucesso
@@ -55,6 +59,10 @@ destinatarioDoc.addEventListener('blur', async () => {
 
     if (!destinatarioInfos) {
       avisoCadastro("Destinatário");
+      if (state.maskDestinatario) {
+        state.maskDestinatario.value = "";
+      }
+      state.destinatarioCnpjVerificado = "";
       return;
     }
 

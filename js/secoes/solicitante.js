@@ -151,9 +151,12 @@ document.addEventListener("DOMContentLoaded", () => {
     // Furo 3: Se for Pessoa Física (CPF), abre o aviso de suporte e bloqueia o fluxo
     if (docSolicitante.length === 11) {
       avisoCadastro("Pessoa Física");
+      if (state.maskSolicitante) {
+        state.maskSolicitante.value = "";
+      }
 
       state.solicitanteVerificado = false;
-      state.cnpjSolicitanteConsultado = docSolicitante;
+      state.cnpjSolicitanteConsultado = "";
       state.solicitanteEndereco = null;
       grupoEscondidoSolicitante.classList.remove('visivel');
 
@@ -170,8 +173,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
       if (!endereco) {
         avisoCadastro("Solicitante");
+        if (state.maskSolicitante) {
+          state.maskSolicitante.value = "";
+        }
         
         state.solicitanteVerificado = false;
+        state.cnpjSolicitanteConsultado = "";
         grupoEscondidoSolicitante.classList.remove('visivel');
         
         resetaCamposDependentes();

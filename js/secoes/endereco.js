@@ -59,6 +59,10 @@ export async function verificarEndRemetente() {
   if (state.remetenteVerificado && remetenteDocLimpo === state.cnpjRemetenteConsultado) {
     if (state.remetenteEndereco === null) {
       avisoCadastro("Remetente");
+      if (state.maskRemetente) {
+        state.maskRemetente.value = "";
+      }
+      state.cnpjRemetenteConsultado = "";
       return;
     }
     abrirDialogConfirmacao(state.remetenteEndereco);
@@ -77,6 +81,10 @@ export async function verificarEndRemetente() {
     // Verifica se os dados existem
     if (!endereco) {
       avisoCadastro("Remetente");
+      if (state.maskRemetente) {
+        state.maskRemetente.value = "";
+      }
+      state.cnpjRemetenteConsultado = "";
       return;
     }
 
