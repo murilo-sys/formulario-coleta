@@ -16,13 +16,23 @@ export function preencherEndColeta() {
 
   // Preenche a cidade e estado resumidos abaixo do CNPJ do remetente
   const elCidadeEstado = document.getElementById("cidadeEstadoRemetente");
-  if (elCidadeEstado && state.remetenteEndereco?.city) {
-    const cidadeNome = state.remetenteEndereco.city.name || "-";
-    const estadoSigla = state.remetenteEndereco.city.state?.code || "-";
-    const razaoSocial = state.remetenteEndereco.razaoSocial || "";
-    const prefixoNome = razaoSocial ? `${razaoSocial} | ` : "";
-    elCidadeEstado.innerHTML = `🏢 ${prefixoNome}${cidadeNome} / ${estadoSigla}`;
-    elCidadeEstado.classList.remove("oculto");
+  const elRazaoSocial = document.getElementById("razaoSolicitanteRemetente");
+  if (state.remetenteEndereco) {
+    if (elRazaoSocial) {
+      const razaoSocial = state.remetenteEndereco.razaoSocial || "";
+      if (razaoSocial) {
+        elRazaoSocial.innerHTML = `🏢 ${razaoSocial}`;
+        elRazaoSocial.classList.remove("oculto");
+      } else {
+        elRazaoSocial.classList.add("oculto");
+      }
+    }
+    if (elCidadeEstado && state.remetenteEndereco.city) {
+      const cidadeNome = state.remetenteEndereco.city.name || "-";
+      const estadoSigla = state.remetenteEndereco.city.state?.code || "-";
+      elCidadeEstado.innerHTML = `📍 ${cidadeNome} / ${estadoSigla}`;
+      elCidadeEstado.classList.remove("oculto");
+    }
   }
 }
 
@@ -39,9 +49,14 @@ export function limparEndColeta() {
 
   // Limpa também o texto resumido de cidade/estado do remetente
   const elCidadeEstado = document.getElementById("cidadeEstadoRemetente");
+  const elRazao = document.getElementById("razaoSolicitanteRemetente");
   if (elCidadeEstado) {
     elCidadeEstado.textContent = "";
     elCidadeEstado.classList.add("oculto");
+  }
+  if (elRazao) {
+    elRazao.textContent = "";
+    elRazao.classList.add("oculto");
   }
 }
 

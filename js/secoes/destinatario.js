@@ -19,6 +19,11 @@ destinatarioDoc.addEventListener('blur', async () => {
         cidadeEstadoDestinatario.textContent = "";
         cidadeEstadoDestinatario.classList.add('oculto');
       }
+      const elRazao = document.getElementById("razaoSolicitanteDestinatario");
+      if (elRazao) {
+        elRazao.textContent = "";
+        elRazao.classList.add('oculto');
+      }
       return;
     }
 
@@ -38,12 +43,20 @@ destinatarioDoc.addEventListener('blur', async () => {
         return;
       }
       // Restaura a exibição visual da tag se estiver preenchido com sucesso
+      const elRazaoSocial = document.getElementById("razaoSolicitanteDestinatario");
+      if (elRazaoSocial) {
+        const razaoSocial = state.destinatarioEndereco?.razaoSocial || "";
+        if (razaoSocial) {
+          elRazaoSocial.innerHTML = `🏢 ${razaoSocial}`;
+          elRazaoSocial.classList.remove("oculto");
+        } else {
+          elRazaoSocial.classList.add("oculto");
+        }
+      }
       if (cidadeEstadoDestinatario && state.destinatarioEndereco?.city) {
         const cidadeNome = state.destinatarioEndereco.city.name || "-";
         const estadoSigla = state.destinatarioEndereco.city.state?.code || "-";
-        const razaoSocial = state.destinatarioEndereco.razaoSocial || "";
-        const prefixoNome = razaoSocial ? `${razaoSocial} | ` : "";
-        cidadeEstadoDestinatario.innerHTML = `🏢 ${prefixoNome}${cidadeNome} / ${estadoSigla}`;
+        cidadeEstadoDestinatario.innerHTML = `📍 ${cidadeNome} / ${estadoSigla}`;
         cidadeEstadoDestinatario.classList.remove('oculto');
       }
       return;
@@ -69,12 +82,20 @@ destinatarioDoc.addEventListener('blur', async () => {
     }
 
     // Preenche cidade e estado no elemento HTML correspondente para feedback visual
+    const elRazaoSocial = document.getElementById("razaoSolicitanteDestinatario");
+    if (elRazaoSocial) {
+      const razaoSocial = destinatarioInfos.razaoSocial || "";
+      if (razaoSocial) {
+        elRazaoSocial.innerHTML = `🏢 ${razaoSocial}`;
+        elRazaoSocial.classList.remove("oculto");
+      } else {
+        elRazaoSocial.classList.add("oculto");
+      }
+    }
     if (cidadeEstadoDestinatario && destinatarioInfos.city) {
       const cidadeNome = destinatarioInfos.city.name || "-";
       const estadoSigla = destinatarioInfos.city.state?.code || "-";
-      const razaoSocial = destinatarioInfos.razaoSocial || "";
-      const prefixoNome = razaoSocial ? `${razaoSocial} | ` : "";
-      cidadeEstadoDestinatario.innerHTML = `🏢 ${prefixoNome}${cidadeNome} / ${estadoSigla}`;
+      cidadeEstadoDestinatario.innerHTML = `📍 ${cidadeNome} / ${estadoSigla}`;
       cidadeEstadoDestinatario.classList.remove('oculto');
     }
 
