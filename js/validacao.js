@@ -1,11 +1,11 @@
 // js/validacao.js
-import { state } from './estado.js';
+import { state } from './state.js';
 import { DocValido } from './utils/utils.js';
 import { validarSolicitante } from './secoes/solicitante.js';
 import { validarEndereco } from './secoes/endereco.js';
 import { validarMercadoria } from './secoes/mercadoria.js';
 import { validarCubagem } from './secoes/cubagem.js';
-import { validarFuncionamento } from './secoes/funcionamento.js';
+import { validarFuncionamento } from './secoes/horarios.js';
 
 document.addEventListener("DOMContentLoaded", () => {
   const formulario = document.querySelector(".formularioColeta");
