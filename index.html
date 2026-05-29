@@ -132,15 +132,21 @@
       <h3>Dados da mercadoria</h3>
       <label for="naturezaMercadoria" class="perguntaTitulo obrigatorio">Natureza da mercadoria</label>
       <select id="naturezaMercadoria">
-        <option value disabled selected>Selecione o tipo de carga...</option>
-        <option value="alimentos">Alimentos não perecíveis</option>
-        <option value="eletronicos">Eletrônicos e Informática</option>
-        <option value="texteis">Têxteis e Confecções</option>
-        <option value="pecas">Peças Automotivas / Maquinário</option>
-        <option value="medicamentos">Medicamentos e Cosméticos</option>
-
-        <option value="perigosos_quimicos">Químicos / Inflamáveis</option>
-        <option value="perigosos_explosivos">Explosivos / Munições</option>
+        <option value="" disabled selected>Selecione o tipo de carga...</option>
+        <option value="cosmetico_geral">Cosmético em geral</option>
+        <option value="material_eletrico">Material elétrico em geral</option>
+        <option value="alimenticio_geral">Produto alimentício em geral</option>
+        <option value="saude_correlato">Produto saúde – correlato em geral</option>
+        <option value="liquido" class="opcao-bloqueada">Líquido (Não Permitido)</option>
+        <option value="produto_saude">Produto saúde</option>
+        <option value="quimica_diversos" class="opcao-bloqueada">Produtos diversos da indústria química (Não Permitido)</option>
+        <option value="confeccoes_tecidos">Confecções / tecidos</option>
+        <option value="artigos_perigosos" class="opcao-bloqueada">Outros artigos perigosos (Não Permitido)</option>
+        <option value="autopecas">Autopeças</option>
+        <option value="propaganda_visual">Material de propaganda / visual</option>
+        <option value="eletroeletronicos">Equipamentos eletroeletrônicos</option>
+        <option value="informatica">Material de informática</option>
+        <option value="pecas_geral">Peças em geral</option>
       </select>
 
       <div class="linhaDupla">
@@ -358,6 +364,61 @@
           class="btn-dialog btn-dialog-confirmar"
           style="background-color: #c2410c; width: 100%; text-align: center; border: none;">
           Entendido
+        </button>
+      </div>
+    </div>
+  </dialog>
+
+  <!-- Dialog Natureza Bloqueada -->
+  <dialog id="dialogNaturezaBloqueada" class="dialog-premium">
+    <div class="dialog-container">
+      <div class="dialog-cabecalho" style="text-align: center; border-bottom: none; padding-bottom: 0;">
+        <div style="font-size: 40px; margin-bottom: 12px;">⚠️</div>
+        <span class="dialog-titulo" style="color: #dc2626; font-size: 20px;">Carga Não Permitida</span>
+      </div>
+
+      <div class="dialog-corpo" style="background-color: #fef2f2; border-color: #fee2e2; padding: 20px;">
+        <p style="font-size: 14px; color: #991b1b; margin: 0; text-align: center; font-weight: 500; line-height: 1.5;">
+          Esta natureza de carga não é permitida para solicitação de coleta. Por favor, selecione outra opção para continuar.
+        </p>
+      </div>
+
+      <div class="dialog-rodape" style="justify-content: center; margin-top: 8px;">
+        <button type="button" id="btnFecharNaturezaBloqueada"
+          class="btn-dialog btn-dialog-confirmar"
+          style="background-color: #dc2626; width: 100%; text-align: center; border: none;">
+          Entendido
+        </button>
+      </div>
+    </div>
+  </dialog>
+
+  <!-- Dialog Confirmação de Envio -->
+  <dialog id="dialogConfirmacaoEnvio" class="dialog-premium">
+    <div class="dialog-container">
+      <div class="dialog-cabecalho" style="text-align: center; border-bottom: none; padding-bottom: 0;">
+        <div style="font-size: 40px; margin-bottom: 12px;">📋</div>
+        <span class="dialog-titulo" style="color: #1a3a6b; font-size: 20px;">Confirmação de Envio</span>
+        <p class="dialog-subtitulo" style="font-size: 14px; margin-top: 6px;">
+          Os dados preenchidos serão utilizados para abertura da solicitação de coleta.
+        </p>
+      </div>
+
+      <div class="dialog-corpo" style="background-color: #f8fafc; border-color: #e2e8f0; padding: 20px;">
+        <div style="display: flex; align-items: flex-start; gap: 10px;">
+          <input type="checkbox" id="chkConfirmacaoFinal" style="margin-top: 3px; cursor: pointer; width: 18px; height: 18px;">
+          <label for="chkConfirmacaoFinal" style="font-size: 14px; color: #334155; font-weight: 500; cursor: pointer; line-height: 1.4; user-select: none;">
+            Confirmo que todas as informações estão corretas
+          </label>
+        </div>
+      </div>
+
+      <div class="dialog-rodape" style="margin-top: 8px;">
+        <button type="button" id="btnCancelarConfirmacao" class="btn-dialog btn-dialog-recusar" style="width: 50%; text-align: center;">
+          Cancelar
+        </button>
+        <button type="button" id="btnConfirmarEnvioFinal" class="btn-dialog btn-dialog-confirmar" style="width: 50%; text-align: center;" disabled>
+          Confirmar Coleta
         </button>
       </div>
     </div>

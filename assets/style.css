@@ -533,3 +533,8 @@ input[type="number"] {
     transform: translateY(0);
   }
 }
+
+.opcao-bloqueada {
+  color: #dc2626 !important;
+  font-weight: 500;
+}
