@@ -3,12 +3,21 @@
 const URL_API_LOCAL = "/api/consultar-cnpj";
 
 const cacheCnpj = new Map(); // Cache centralizado na memória para evitar chamadas de API repetidas
+let ultimoTimestampConsulta = 0; // Controle de tempo do cliente (cooldown de 2 segundos)
 
 export async function consultarEmpresaPorCnpj(cnpjLimpo) {
   // 1. Se o CNPJ já foi pesquisado antes (seja sucesso ou falha), retorna o resultado em cache
   if (cacheCnpj.has(cnpjLimpo)) {
     return cacheCnpj.get(cnpjLimpo);
   }
+
+  // 2. Cooldown de segurança do cliente: impede spam de requisições de rede
+  const agora = Date.now();
+  if (agora - ultimoTimestampConsulta < 2000) {
+    alert("Por razões de segurança, aguarde pelo menos 2 segundos entre as consultas de CNPJ.");
+    return null;
+  }
+  ultimoTimestampConsulta = agora;
 
   console.log("Consultando CNPJ na API...");
   try {
@@ -19,6 +28,12 @@ export async function consultarEmpresaPorCnpj(cnpjLimpo) {
       },
       body: JSON.stringify({ cnpj: cnpjLimpo })
     });
+
+    // Se receber rate limit do backend
+    if (resposta.status === 429) {
+      alert("Consultas muito frequentes. Aguarde pelo menos 2 segundos.");
+      return null;
+    }
 
     const resultado = await resposta.json();
     const empresas = resultado.data?.company?.edges;

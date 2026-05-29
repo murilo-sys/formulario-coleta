@@ -1,4 +1,4 @@
-// api/consultar-cnpj.js
+const cooldowns = new Map(); // ip -> timestamp
 
 //Função dessa rota
 module.exports = async function (req, res) {
@@ -17,6 +17,28 @@ module.exports = async function (req, res) {
   if (req.method !== "POST") {
     return res.status(405).json({ error: "Metodo não autorizado" });
   }
+
+  // Rate Limiter de 2 segundos por IP (Gatilho de segurança backend)
+  const ip = req.headers['x-forwarded-for'] || req.socket.remoteAddress || 'unknown';
+  const agora = Date.now();
+  
+  // Limpeza preventiva contra estouro de memória (Memory Leak)
+  for (const [key, value] of cooldowns.entries()) {
+    if (agora - value > 2000) {
+      cooldowns.delete(key);
+    }
+  }
+
+  if (cooldowns.has(ip)) {
+    const ultimoAcesso = cooldowns.get(ip);
+    if (agora - ultimoAcesso < 2000) {
+      return res.status(429).json({
+        error: "Too Many Requests",
+        message: "Por razões de segurança, aguarde pelo menos 2 segundos entre as consultas de CNPJ."
+      });
+    }
+  }
+  cooldowns.set(ip, agora);
 
   // Garante que o corpo está em formato de objeto mesmo se não vier pré-parseado
   let body = req.body;
