@@ -44,6 +44,7 @@ document.addEventListener("DOMContentLoaded", () => {
       // Função reutilizável para aplicar o estilo de erro com animação
       function marcarErro(elemento) {
         if (!elemento) return;
+        elemento.classList.remove("erro-input");
         void elemento.offsetWidth; // Força reflow para reiniciar animações CSS
         elemento.classList.add("erro-input");
       }
@@ -130,13 +131,13 @@ document.addEventListener("DOMContentLoaded", () => {
           tipoSolicitante: document.querySelector('input[name="tipoSolicitante"]:checked')?.value || "",
           remetenteDoc: document.getElementById("remetenteDoc")?.value || "",
           destinatarioDoc: document.getElementById("destinatarioDoc")?.value || "",
-          cepColeta: document.getElementById("cepColeta")?.value || "",
-          ruaColeta: document.getElementById("ruaColeta")?.value || "",
-          numeroColeta: document.getElementById("numeroColeta")?.value || "",
-          complementoColeta: document.getElementById("complementoColeta")?.value || "",
-          bairroColeta: document.getElementById("bairroColeta")?.value || "",
-          cidadeColeta: document.getElementById("cidadeColeta")?.value || "",
-          ufColeta: document.getElementById("ufColeta")?.value || "",
+          cepColeta: document.getElementById("cepInput")?.value || "",
+          ruaColeta: document.getElementById("logradouroInput")?.value || "",
+          numeroColeta: document.getElementById("numeroInput")?.value || "",
+          complementoColeta: document.getElementById("complementoInput")?.value || "",
+          bairroColeta: document.getElementById("bairroInput")?.value || "",
+          cidadeColeta: document.getElementById("cidadeInput")?.value || "",
+          ufColeta: document.getElementById("estadoInput")?.value || "",
           naturezaMercadoria: document.getElementById("naturezaMercadoria")?.value || "",
           valorNf: document.getElementById("valorNf")?.value || "",
           qtdVolumes: document.getElementById("qtdVolumes")?.value || "",
