@@ -125,6 +125,25 @@ document.addEventListener("DOMContentLoaded", () => {
         btnConfirmarEnvioFinal.disabled = true;
         btnConfirmarEnvioFinal.textContent = "Enviando...";
 
+        // Captura itens de cubagem dinâmicos
+        const cubagemItens = [];
+        const containerCubagem = document.getElementById("containerCubagem");
+        if (containerCubagem) {
+          const linhas = containerCubagem.querySelectorAll(".coluna-cubagem");
+          linhas.forEach(linha => {
+            const comprimentoVal = linha.querySelector(".input-comprimento")?.value || "";
+            const larguraVal = linha.querySelector(".input-largura")?.value || "";
+            const alturaVal = linha.querySelector(".input-altura")?.value || "";
+            if (comprimentoVal || larguraVal || alturaVal) {
+              cubagemItens.push({
+                comprimento: parseFloat(comprimentoVal) || 0,
+                largura: parseFloat(larguraVal) || 0,
+                altura: parseFloat(alturaVal) || 0
+              });
+            }
+          });
+        }
+
         const payload = {
           solicitanteDoc: document.getElementById("solicitanteDoc")?.value || "",
           solicitanteNome: document.getElementById("solicitanteNome")?.value || "",
@@ -142,6 +161,7 @@ document.addEventListener("DOMContentLoaded", () => {
           valorNf: document.getElementById("valorNf")?.value || "",
           qtdVolumes: document.getElementById("qtdVolumes")?.value || "",
           pesoReal: document.getElementById("pesoReal")?.value || "",
+          cubagemItens, // Adicionado ao payload
           horarioAbertura: document.getElementById("horarioAbertura")?.value || "",
           horarioFechamento: document.getElementById("horarioFechamento")?.value || "",
           horarioAlmoco: document.querySelector('input[name="horarioAlmoco"]:checked')?.value || "",

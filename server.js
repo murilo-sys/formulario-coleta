@@ -55,10 +55,19 @@ const server = http.createServer((req, res) => {
   // Route API requests
   if (pathname === '/api/consultar-cnpj' && req.method === 'POST') {
     let body = '';
+    let tooLarge = false;
     req.on('data', chunk => {
       body += chunk.toString();
+      if (body.length > 1024 * 1024) { // 1MB Limit
+        tooLarge = true;
+        res.statusCode = 413;
+        res.setHeader('Content-Type', 'application/json');
+        res.end(JSON.stringify({ error: 'Payload Too Large', message: 'O tamanho da requisição excede o limite de 1MB.' }));
+        req.destroy();
+      }
     });
     req.on('end', async () => {
+      if (tooLarge) return;
       try {
         req.body = JSON.parse(body);
       } catch (e) {
@@ -96,10 +105,19 @@ const server = http.createServer((req, res) => {
 
   if (pathname === '/api/solicitar-coleta' && req.method === 'POST') {
     let body = '';
+    let tooLarge = false;
     req.on('data', chunk => {
       body += chunk.toString();
+      if (body.length > 1024 * 1024) { // 1MB Limit
+        tooLarge = true;
+        res.statusCode = 413;
+        res.setHeader('Content-Type', 'application/json');
+        res.end(JSON.stringify({ error: 'Payload Too Large', message: 'O tamanho da requisição excede o limite de 1MB.' }));
+        req.destroy();
+      }
     });
     req.on('end', async () => {
+      if (tooLarge) return;
       try {
         req.body = JSON.parse(body);
       } catch (e) {

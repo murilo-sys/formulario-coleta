@@ -2,6 +2,12 @@
 
 const NATUREZAS_BLOQUEADAS = ["liquido", "quimica_diversos", "artigos_perigosos"];
 
+// Helper simples para higienização contra XSS e injeção de HTML
+const sanitizeInput = str => {
+  if (typeof str !== 'string') return '';
+  return str.replace(/<[^>]*>/g, '').trim();
+};
+
 module.exports = async function (req, res) {
   // Apenas aceita método POST
   if (req.method !== "POST") {
@@ -22,15 +28,27 @@ module.exports = async function (req, res) {
     return res.status(400).json({ message: "Corpo da requisição vazio" });
   }
 
-  // 1. Validação de Natureza Bloqueada (Requisito 5 - Segurança no Backend)
-  const natureza = body.naturezaMercadoria;
-  if (NATUREZAS_BLOQUEADAS.includes(natureza)) {
+  // 1. Sanitização básica contra HTML/XSS nos inputs textuais livres
+  body.solicitanteNome = sanitizeInput(body.solicitanteNome);
+  body.observacoes = sanitizeInput(body.observacoes);
+
+  // 2. Validação de Pessoa Física (Bypass de segurança)
+  const solicitanteDocLimpo = String(body.solicitanteDoc || "").replace(/\D/g, "");
+  if (solicitanteDocLimpo.length === 11) {
     return res.status(400).json({
-      message: "Esta natureza de carga não é permitida para solicitação de coleta. Por favor, selecione outra opção para continuar."
+      message: "A solicitação direta via formulário não é permitida para Pessoa Física. Entre em contato com nosso atendimento para suporte pelos telefones: (11) 3017-8990 ou (11) 2222-1260."
     });
   }
 
-  // 2. Validação de Campos Obrigatórios
+  // 3. Validação de Natureza Bloqueada
+  const natureza = body.naturezaMercadoria;
+  if (NATUREZAS_BLOQUEADAS.includes(natureza)) {
+    return res.status(400).json({
+      message: "Esta natureza de carga não é permitida para solicitação de coleta. Por favor, entre em contato direto com o nosso suporte para mercadorias restritas."
+    });
+  }
+
+  // 4. Validação de Campos Obrigatórios
   const camposObrigatorios = [
     { campo: "solicitanteDoc", nome: "Documento do solicitante" },
     { campo: "solicitanteNome", nome: "Nome do solicitante" },
@@ -58,6 +76,24 @@ module.exports = async function (req, res) {
       return res.status(400).json({
         message: `O campo '${item.nome}' é obrigatório e deve ser preenchido.`
       });
+    }
+  }
+
+  // 5. Validação redundante do Array de Cubagem no Backend (Defense in Depth)
+  const cubagem = body.cubagemItens;
+  if (cubagem !== undefined) {
+    if (!Array.isArray(cubagem)) {
+      return res.status(400).json({ message: "Os dados de cubagem fornecidos são inválidos." });
+    }
+    for (let i = 0; i < cubagem.length; i++) {
+      const item = cubagem[i];
+      if (typeof item.comprimento !== 'number' || item.comprimento <= 0 ||
+          typeof item.largura !== 'number' || item.largura <= 0 ||
+          typeof item.altura !== 'number' || item.altura <= 0) {
+        return res.status(400).json({
+          message: `As dimensões da cubagem no volume ${i + 1} devem ser números válidos maiores que zero.`
+        });
+      }
     }
   }
 
