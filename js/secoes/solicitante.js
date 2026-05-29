@@ -32,6 +32,14 @@ document.addEventListener("DOMContentLoaded", () => {
 
     state.destinatarioVerificado = false;
     state.destinatarioCnpjVerificado = "";
+    state.destinatarioEndereco = null;
+
+    // Limpa a tag de cidade/estado do Destinatário
+    const elCidadeEstadoDest = document.getElementById("cidadeEstadoDestinatario");
+    if (elCidadeEstadoDest) {
+      elCidadeEstadoDest.textContent = "";
+      elCidadeEstadoDest.classList.add("oculto");
+    }
   }
 
   // Helper para sobrepor e preencher os dados dependendo do papel ativo (Furo 2, 5 e 6)
@@ -53,11 +61,30 @@ document.addEventListener("DOMContentLoaded", () => {
 
       state.destinatarioVerificado = true;
       state.destinatarioCnpjVerificado = docSolicitanteLimpo;
+      state.destinatarioEndereco = state.solicitanteEndereco;
+
+      // Mostra a tag de cidade/estado do Destinatário
+      const elCidadeEstado = document.getElementById("cidadeEstadoDestinatario");
+      if (elCidadeEstado && state.solicitanteEndereco?.city) {
+        const cidadeNome = state.solicitanteEndereco.city.name || "-";
+        const estadoSigla = state.solicitanteEndereco.city.state?.code || "-";
+        elCidadeEstado.innerHTML = `🏢 ${cidadeNome} / ${estadoSigla}`;
+        elCidadeEstado.classList.remove("oculto");
+      }
     }
 
     if (valor === 'remetente') {
       if (state.maskDestinatario.unmaskedValue === docSolicitanteLimpo) {
         state.maskDestinatario.value = "";
+        state.destinatarioVerificado = false;
+        state.destinatarioCnpjVerificado = "";
+        state.destinatarioEndereco = null;
+
+        const elCidadeEstado = document.getElementById("cidadeEstadoDestinatario");
+        if (elCidadeEstado) {
+          elCidadeEstado.textContent = "";
+          elCidadeEstado.classList.add("oculto");
+        }
       }
 
       destinatarioDoc.readOnly = false;
@@ -83,6 +110,15 @@ document.addEventListener("DOMContentLoaded", () => {
 
       if (state.maskDestinatario.unmaskedValue === docSolicitanteLimpo) {
         state.maskDestinatario.value = "";
+        state.destinatarioVerificado = false;
+        state.destinatarioCnpjVerificado = "";
+        state.destinatarioEndereco = null;
+
+        const elCidadeEstado = document.getElementById("cidadeEstadoDestinatario");
+        if (elCidadeEstado) {
+          elCidadeEstado.textContent = "";
+          elCidadeEstado.classList.add("oculto");
+        }
       }
 
       if (state.maskRemetente.unmaskedValue === docSolicitanteLimpo) {
