@@ -17,6 +17,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const btnFecharSucesso = document.getElementById("btnFecharSucesso");
   const sucessoOrdemColeta = document.getElementById("sucessoOrdemColeta");
   const sucessoTelefoneContato = document.getElementById("sucessoTelefoneContato");
+  const sucessoEmailContato = document.getElementById("sucessoEmailContato");
   const confirmacaoEmailContato = document.getElementById("confirmacaoEmailContato");
   const confirmacaoTelefoneContato = document.getElementById("confirmacaoTelefoneContato");
 
@@ -233,6 +234,9 @@ document.addEventListener("DOMContentLoaded", () => {
           if (response.ok) {
             if (sucessoOrdemColeta) {
               sucessoOrdemColeta.textContent = result.data?.protocolo || "Sem Ordem de Coleta";
+            }
+            if (sucessoEmailContato) {
+              sucessoEmailContato.textContent = state.solicitanteEndereco?.email || "Não localizado (fale com o suporte)";
             }
             if (sucessoTelefoneContato) {
               const tel = state.solicitanteEndereco?.phoneNumber || state.solicitanteEndereco?.mobileNumber;
