@@ -1,6 +1,5 @@
 // js/secoes/solicitante.js
 import { state } from '../state.js';
-import { verificarEndRemetente, limparEndColeta, preencherEndColeta, abrirDialogConfirmacao } from './endereco.js';
 import { DocValido } from '../utils/utils.js';
 import { consultarEmpresaPorCnpj } from '../api/api.js';
 import { avisoCadastro } from './avisoCadastro.js';
@@ -8,23 +7,14 @@ import { avisoCadastro } from './avisoCadastro.js';
 document.addEventListener("DOMContentLoaded", () => {
   const solicitanteDoc = document.getElementById("solicitanteDoc");
   const remetenteDoc = document.getElementById("remetenteDoc");
-  const destinatarioDoc = document.getElementById("destinatarioDoc");
   const grupoEscondidoSolicitante = document.getElementById('grupoEscondidoSolicitante');
 
-  // Helper para resetar os campos dependentes na falha/mudança de solicitante (Furo 5)
+  // Helper para resetar os campos dependentes na falha/mudança de solicitante
   function resetaCamposDependentes() {
     const radios = document.querySelectorAll('input[name="tipoSolicitante"]');
     radios.forEach(r => r.checked = false);
 
-    remetenteDoc.readOnly = true;
-    destinatarioDoc.readOnly = true;
-
-    state.maskRemetente.value = "";
-    state.maskDestinatario.value = "";
-
-    limparEndColeta();
-
-    // Reseta flags de verificação
+    // Reseta flags de verificação relacionadas ao solicitante
     state.cnpjRemetenteConfirmado = "";
     state.cnpjRemetenteConsultado = "";
     state.remetenteEndereco = null;
@@ -34,101 +24,27 @@ document.addEventListener("DOMContentLoaded", () => {
     state.destinatarioCnpjVerificado = "";
     state.destinatarioEndereco = null;
 
-    // Limpa a tag de cidade/estado do Destinatário
-    const elCidadeEstadoDest = document.getElementById("cidadeEstadoDestinatario");
-    if (elCidadeEstadoDest) {
-      elCidadeEstadoDest.textContent = "";
-      elCidadeEstadoDest.classList.add("oculto");
-    }
+    // Dispara evento de reset para que as outras seções limpem seus DOMs e máscaras
+    document.dispatchEvent(new CustomEvent('solicitante:reset'));
   }
 
-  // Helper para sobrepor e preencher os dados dependendo do papel ativo (Furo 2, 5 e 6)
-  // NOTA: Não limpamos a confirmação em cache (state.cnpjRemetenteConfirmado) ao alternar para evitar re-confirmações repetitivas.
+  // Helper para disparar alteração de papel ativo
   function aplicarPapelSolicitante(valor) {
     const docSolicitante = state.maskSolicitante.value;
     const docSolicitanteLimpo = state.maskSolicitante.unmaskedValue;
 
-    if (valor === 'destinatario') {
-      if (state.maskRemetente.unmaskedValue === docSolicitanteLimpo) {
-        state.maskRemetente.value = "";
-        limparEndColeta();
+    // Dispara evento customizado para que destinatario e endereco escutem e atualizem a UI
+    document.dispatchEvent(new CustomEvent('solicitante:papel-alterado', {
+      detail: {
+        papel: valor,
+        doc: docSolicitante,
+        docLimpo: docSolicitanteLimpo,
+        endereco: state.solicitanteEndereco
       }
-
-      remetenteDoc.readOnly = false;
-
-      state.maskDestinatario.value = docSolicitante;
-      destinatarioDoc.readOnly = true;
-
-      state.destinatarioVerificado = true;
-      state.destinatarioCnpjVerificado = docSolicitanteLimpo;
-      state.destinatarioEndereco = state.solicitanteEndereco;
-
-      // Mostra a tag de cidade/estado do Destinatário
-      const elCidadeEstado = document.getElementById("cidadeEstadoDestinatario");
-      if (elCidadeEstado && state.solicitanteEndereco?.city) {
-        const cidadeNome = state.solicitanteEndereco.city.name || "-";
-        const estadoSigla = state.solicitanteEndereco.city.state?.code || "-";
-        elCidadeEstado.innerHTML = `🏢 ${cidadeNome} / ${estadoSigla}`;
-        elCidadeEstado.classList.remove("oculto");
-      }
-    }
-
-    if (valor === 'remetente') {
-      if (state.maskDestinatario.unmaskedValue === docSolicitanteLimpo) {
-        state.maskDestinatario.value = "";
-        state.destinatarioVerificado = false;
-        state.destinatarioCnpjVerificado = "";
-        state.destinatarioEndereco = null;
-
-        const elCidadeEstado = document.getElementById("cidadeEstadoDestinatario");
-        if (elCidadeEstado) {
-          elCidadeEstado.textContent = "";
-          elCidadeEstado.classList.add("oculto");
-        }
-      }
-
-      destinatarioDoc.readOnly = false;
-
-      state.maskRemetente.value = docSolicitante;
-      remetenteDoc.readOnly = true;
-
-      state.cnpjRemetenteConsultado = docSolicitanteLimpo;
-      state.remetenteEndereco = state.solicitanteEndereco;
-      state.remetenteVerificado = true;
-
-      // Furo 6: Exibe modal de confirmação para o novo endereço do Solicitante que virou Remetente
-      if (state.cnpjRemetenteConfirmado && docSolicitanteLimpo === state.cnpjRemetenteConfirmado) {
-        preencherEndColeta();
-      } else {
-        abrirDialogConfirmacao(state.solicitanteEndereco);
-      }
-    }
-
-    if (valor === 'outros') {
-      destinatarioDoc.readOnly = false;
-      remetenteDoc.readOnly = false;
-
-      if (state.maskDestinatario.unmaskedValue === docSolicitanteLimpo) {
-        state.maskDestinatario.value = "";
-        state.destinatarioVerificado = false;
-        state.destinatarioCnpjVerificado = "";
-        state.destinatarioEndereco = null;
-
-        const elCidadeEstado = document.getElementById("cidadeEstadoDestinatario");
-        if (elCidadeEstado) {
-          elCidadeEstado.textContent = "";
-          elCidadeEstado.classList.add("oculto");
-        }
-      }
-
-      if (state.maskRemetente.unmaskedValue === docSolicitanteLimpo) {
-        state.maskRemetente.value = "";
-        limparEndColeta();
-      }
-    }
+    }));
   }
 
-  // Evento Blur do Solicitante para validar na hora (Furo 3, 4, 5 e 6)
+  // Evento Blur do Solicitante para validar na hora
   solicitanteDoc.addEventListener('blur', async () => {
     const docSolicitante = state.maskSolicitante ? state.maskSolicitante.unmaskedValue : "";
 
@@ -148,7 +64,7 @@ document.addEventListener("DOMContentLoaded", () => {
       return;
     }
 
-    // Furo 3: Se for Pessoa Física (CPF), abre o aviso de suporte e bloqueia o fluxo
+    // Se for Pessoa Física (CPF), abre o aviso de suporte e bloqueia o fluxo
     if (docSolicitante.length === 11) {
       avisoCadastro("Pessoa Física");
       if (state.maskSolicitante) {
@@ -164,7 +80,7 @@ document.addEventListener("DOMContentLoaded", () => {
       return;
     }
 
-    // Furo 4: Se for CNPJ, faz a busca na API
+    // Se for CNPJ, faz a busca na API
     try {
       const endereco = await consultarEmpresaPorCnpj(docSolicitante);
 
@@ -189,7 +105,7 @@ document.addEventListener("DOMContentLoaded", () => {
       state.solicitanteVerificado = true;
       grupoEscondidoSolicitante.classList.add('visivel');
 
-      // Se já houver um rádio ativado, aplica a sobreposição (Furo 2 e 5)
+      // Se já houver um rádio ativado, aplica a sobreposição
       const radioAtivo = document.querySelector('input[name="tipoSolicitante"]:checked');
       if (radioAtivo) {
         aplicarPapelSolicitante(radioAtivo.value);
@@ -206,7 +122,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (cnpjRemetente.length !== 14) return;
 
-    verificarEndRemetente();
+    // Dispara evento para o endereço verificar o CNPJ remetente
+    document.dispatchEvent(new CustomEvent('remetente:cnpj-blur'));
   });
 
   // Lógica de alternância do papel do solicitante utilizando o evento 'change' nos rádios

@@ -1,4 +1,5 @@
 // server.js
+process.env.NODE_ENV = 'development';
 const http = require('http');
 const fs = require('fs');
 const path = require('path');

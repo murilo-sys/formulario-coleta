@@ -101,6 +101,16 @@ document.addEventListener("DOMContentLoaded", () => {
 
       // Se passou por todas as validações com sucesso, abre modal de confirmação (Requisito 1)
       if (dialogConfirmacaoEnvio) {
+        // Validação preliminar do reCAPTCHA v2 antes de abrir o modal de confirmação
+        if (typeof grecaptcha !== 'undefined') {
+          const recaptchaToken = grecaptcha.getResponse();
+          const temRecaptchaDiv = document.querySelector('.g-recaptcha');
+          if (temRecaptchaDiv && !recaptchaToken) {
+            alert("Por favor, marque a caixa de seleção do reCAPTCHA para provar que você não é um robô.");
+            return;
+          }
+        }
+
         if (chkConfirmacaoFinal) chkConfirmacaoFinal.checked = false;
         if (btnConfirmarEnvioFinal) {
           btnConfirmarEnvioFinal.disabled = true;
@@ -161,6 +171,12 @@ document.addEventListener("DOMContentLoaded", () => {
           });
         }
 
+        // Captura o token do Google reCAPTCHA v2 se a biblioteca estiver carregada
+        let recaptchaToken = "";
+        if (typeof grecaptcha !== 'undefined') {
+          recaptchaToken = grecaptcha.getResponse();
+        }
+
         const payload = {
           solicitanteDoc: document.getElementById("solicitanteDoc")?.value || "",
           solicitanteNome: document.getElementById("solicitanteNome")?.value || "",
@@ -187,7 +203,8 @@ document.addEventListener("DOMContentLoaded", () => {
           horarioAbertura: document.getElementById("horarioAbertura")?.value || "",
           horarioFechamento: document.getElementById("horarioFechamento")?.value || "",
           horarioAlmoco: document.querySelector('input[name="horarioAlmoco"]:checked')?.value || "",
-          observacoes: document.getElementById("observacoes")?.value || ""
+          observacoes: document.getElementById("observacoes")?.value || "",
+          recaptchaToken // Envia o token opcional de reCAPTCHA
         };
 
         try {
@@ -211,6 +228,9 @@ document.addEventListener("DOMContentLoaded", () => {
             if (dialogSucesso) {
               dialogSucesso.showModal();
             }
+            if (typeof grecaptcha !== 'undefined') {
+              grecaptcha.reset();
+            }
             formulario.reset();
           } else {
             alert(`Erro ao solicitar coleta: ${result.message || "Erro desconhecido"}`);
@@ -227,6 +247,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Gerencia o reset do formulário limpando estados, erros e tags
     formulario.addEventListener("reset", () => {
+      // Reseta o widget do reCAPTCHA v2 se a biblioteca estiver disponível
+      if (typeof grecaptcha !== 'undefined') {
+        grecaptcha.reset();
+      }
+
       // 1. Remove classes de erro
       const erros = formulario.querySelectorAll(".erro-input");
       erros.forEach(el => el.classList.remove("erro-input"));

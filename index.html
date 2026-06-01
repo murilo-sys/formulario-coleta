@@ -11,6 +11,8 @@
   <script src="https://unpkg.com/imask"></script>
 
   <script type="module" src="js/index.js"></script>
+
+  <script src="https://www.google.com/recaptcha/api.js" async defer></script>
 </head>
 
 <body>
@@ -277,6 +279,10 @@
       <input type="text" id="observacoes" placeholder="Ex: Entrar pelos fundos do galpão B...">
     </div>
 
+    <div class="grupo-recaptcha" style="display: flex; justify-content: center; margin-bottom: 20px;">
+      <div class="g-recaptcha" data-sitekey="6LcGpgctAAAAAB07T4-pR2bqlYQCmoxcuV6EWFoR"></div>
+    </div>
+
     <div class="coluna-botao-agendar">
       <button id="buttonLimparForm" type="reset">Limpar Formulário</button>
       <button id="buttonSolicitarColeta" type="submit">Solicitar Coleta</button>
@@ -488,15 +494,19 @@
         <div style="font-size: 50px; margin-bottom: 12px;">✅</div>
         <span class="dialog-titulo" style="color: #16a34a; font-size: 20px;">Coleta Solicitada com Sucesso!</span>
         <p class="dialog-subtitulo" style="font-size: 14px; margin-top: 6px; font-weight: 600;">
-          Protocolo: <span id="sucessoProtocolo" style="color: #1e293b; background-color: #f1f5f9; padding: 2px 8px; border-radius: 4px; font-family: monospace;">-</span>
+          Protocolo: <span id="sucessoProtocolo"
+            style="color: #1e293b; background-color: #f1f5f9; padding: 2px 8px; border-radius: 4px; font-family: monospace;">-</span>
         </p>
       </div>
 
-      <div class="dialog-corpo" style="background-color: #f0fdf4; border-color: #bbf7d0; padding: 20px; font-size: 14px; color: #166534; line-height: 1.6; gap: 12px; text-align: left;">
+      <div class="dialog-corpo"
+        style="background-color: #f0fdf4; border-color: #bbf7d0; padding: 20px; font-size: 14px; color: #166534; line-height: 1.6; gap: 12px; text-align: left;">
         <p style="margin: 0; font-weight: 500;">
-          Sua solicitação de coleta foi registrada no sistema. Você terá um retorno em até <strong>48 horas</strong> informando se a mesma será realizada ou não.
+          Sua solicitação de coleta foi registrada no sistema. Você terá um retorno em até <strong>48 horas</strong>
+          informando se a mesma será realizada ou não.
         </p>
-        <div style="border-top: 1px solid #bbf7d0; padding-top: 12px; margin-top: 4px; font-size: 13px; color: #1e3a1e;">
+        <div
+          style="border-top: 1px solid #bbf7d0; padding-top: 12px; margin-top: 4px; font-size: 13px; color: #1e3a1e;">
           <p style="margin: 0 0 6px 0; font-weight: bold;">Para mais informações, ligue para:</p>
           <ul style="margin: 0; padding-left: 20px; font-weight: 600; list-style-type: disc;">
             <li>(11) 3017-8990</li>

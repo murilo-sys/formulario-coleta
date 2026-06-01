@@ -4,6 +4,8 @@ import { consultarEmpresaPorCnpj } from '../api/api.js';
 import { verificarCnpj } from '../utils/utils.js';
 import { avisoCadastro } from './avisoCadastro.js'
 
+const remetenteDoc = document.getElementById("remetenteDoc");
+
 export function preencherEndColeta() {
   // Define os campos do endereço com o do Remetente
   state.maskCep.value = state.remetenteEndereco.postalCode || "";
@@ -152,7 +154,6 @@ export function recusarEndereco() {
   if (state.maskRemetente) {
     state.maskRemetente.value = "";
   }
-  const remetenteDoc = document.getElementById("remetenteDoc");
   if (remetenteDoc) {
     remetenteDoc.readOnly = false;
   }
@@ -193,7 +194,7 @@ export function validarEndereco(marcarErro) {
   return valido;
 }
 
-// Configura os escutadores do Dialog de Confirmação
+// Configura os escutadores do Dialog de Confirmação e Eventos Customizados
 document.addEventListener("DOMContentLoaded", () => {
   const dialog = document.getElementById("dialogConfirmacao");
   const btnConfirmar = document.getElementById("btnDialogConfirmar");
@@ -222,4 +223,43 @@ document.addEventListener("DOMContentLoaded", () => {
       recusarEndereco();
     });
   }
+
+  // Listener para evento customizado de alteração de papel do solicitante
+  document.addEventListener('solicitante:papel-alterado', (e) => {
+    const { papel, doc, docLimpo, endereco } = e.detail;
+
+    if (papel === 'remetente') {
+      state.maskRemetente.value = doc;
+      remetenteDoc.readOnly = true;
+
+      state.cnpjRemetenteConsultado = docLimpo;
+      state.remetenteEndereco = endereco;
+      state.remetenteVerificado = true;
+
+      if (state.cnpjRemetenteConfirmado && docLimpo === state.cnpjRemetenteConfirmado) {
+        preencherEndColeta();
+      } else {
+        abrirDialogConfirmacao(endereco);
+      }
+    } else {
+      // Se mudou para destinatario ou outros, e o remetente era o solicitante, limpa o remetente
+      if (state.maskRemetente.unmaskedValue === docLimpo) {
+        state.maskRemetente.value = "";
+        limparEndColeta();
+      }
+      remetenteDoc.readOnly = false;
+    }
+  });
+
+  // Listener para evento customizado de reset do solicitante
+  document.addEventListener('solicitante:reset', () => {
+    remetenteDoc.readOnly = true;
+    state.maskRemetente.value = "";
+    limparEndColeta();
+  });
+
+  // Listener para evento de desfazer/verificar remetente manualmente via blur
+  document.addEventListener('remetente:cnpj-blur', () => {
+    verificarEndRemetente();
+  });
 });

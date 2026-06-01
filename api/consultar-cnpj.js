@@ -22,10 +22,12 @@ module.exports = async function (req, res) {
   const ip = req.headers['x-forwarded-for'] || req.socket.remoteAddress || 'unknown';
   const agora = Date.now();
   
-  // Limpeza preventiva contra estouro de memória (Memory Leak)
-  for (const [key, value] of cooldowns.entries()) {
-    if (agora - value > 3000) {
-      cooldowns.delete(key);
+  // Limpeza preventiva otimizada (evita varredura O(N) em todas as requisições)
+  if (cooldowns.size > 5000) {
+    for (const [key, value] of cooldowns.entries()) {
+      if (agora - value > 3000) {
+        cooldowns.delete(key);
+      }
     }
   }
 
@@ -56,13 +58,16 @@ module.exports = async function (req, res) {
   }
 
   //Coloca o body.cnpj em uma variavel
-  const { cnpj } = body;
+  const cnpj = body ? body.cnpj : undefined;
 
   //Verifica se a variavel cnpj existe
-  if (!cnpj) { return res.status(400).json({ error: "Cnpj inválido ou está incompleto" }) }
+  if (cnpj === undefined || cnpj === null) { return res.status(400).json({ error: "Cnpj inválido ou está incompleto" }) }
+
+  //Garante que o CNPJ seja uma string antes de formatar
+  const cnpjString = String(cnpj);
 
   //Limpa a variavel deixando apenas os numeros
-  const cnpjLimpo = cnpj.replace(/\D/g, "")
+  const cnpjLimpo = cnpjString.replace(/\D/g, "")
 
   //Verifica se o cnpj está limpo e valido
   if (!cnpjLimpo || cnpjLimpo.length !== 14 || isNaN(cnpjLimpo)) {
@@ -99,6 +104,9 @@ module.exports = async function (req, res) {
     variables: { params: { cnpj: cnpjLimpo } }
   };
 
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), 8000); // Timeout de 8 segundos
+
   try {
     const token = process.env.TOKEN_API;
 
@@ -108,7 +116,8 @@ module.exports = async function (req, res) {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${token}`
       },
-      body: JSON.stringify(corpoGraphQL)
+      body: JSON.stringify(corpoGraphQL),
+      signal: controller.signal
     });
 
     const rawText = await respostaESL.text();
@@ -123,6 +132,12 @@ module.exports = async function (req, res) {
     return res.status(200).json(dados);
 
   } catch (erro) {
-    return res.status(500).json({ error: "Erro na comunicação com a ESL", details: erro.message });
+    let msgErro = erro.message;
+    if (erro.name === 'AbortError') {
+      msgErro = "Tempo limite de requisição excedido ao contatar a ESL (Timeout).";
+    }
+    return res.status(500).json({ error: "Erro na comunicação com a ESL", details: msgErro });
+  } finally {
+    clearTimeout(timeoutId);
   }
 }

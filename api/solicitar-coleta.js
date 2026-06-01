@@ -30,10 +30,12 @@ module.exports = async function (req, res) {
   const ip = req.headers['x-forwarded-for'] || req.socket.remoteAddress || 'unknown';
   const agora = Date.now();
 
-  // Limpeza preventiva contra Memory Leak
-  for (const [key, value] of cooldowns.entries()) {
-    if (agora - value > 3000) {
-      cooldowns.delete(key);
+  // Limpeza preventiva otimizada (evita varredura O(N) em todas as requisições)
+  if (cooldowns.size > 5000) {
+    for (const [key, value] of cooldowns.entries()) {
+      if (agora - value > 3000) {
+        cooldowns.delete(key);
+      }
     }
   }
 
@@ -61,9 +63,31 @@ module.exports = async function (req, res) {
     return res.status(400).json({ message: "Corpo da requisição vazio" });
   }
 
-  // 1. Sanitização básica contra HTML/XSS nos inputs textuais livres
-  body.solicitanteNome = sanitizeInput(body.solicitanteNome);
-  body.observacoes = sanitizeInput(body.observacoes);
+  // 1. Sanitização básica contra HTML/XSS nos inputs textuais livres (com coerção segura de tipo)
+  body.solicitanteNome = sanitizeInput(body.solicitanteNome !== undefined && body.solicitanteNome !== null ? String(body.solicitanteNome) : "");
+  body.observacoes = sanitizeInput(body.observacoes !== undefined && body.observacoes !== null ? String(body.observacoes) : "");
+
+  // Validação opcional de Google reCAPTCHA v3 (Ativa apenas se a chave estiver configurada no .env)
+  const recaptchaSecret = process.env.RECAPTCHA_SECRET_KEY;
+  if (recaptchaSecret) {
+    const token = body.recaptchaToken;
+    if (!token) {
+      return res.status(400).json({ message: "Validação de segurança (reCAPTCHA) ausente." });
+    }
+    try {
+      const responseGoogle = await fetch(`https://www.google.com/recaptcha/api/siteverify`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: `secret=${recaptchaSecret}&response=${token}`
+      });
+      const googleResult = await responseGoogle.json();
+      if (!googleResult.success || googleResult.score < 0.5) {
+        return res.status(400).json({ message: "Validação de segurança falhou. Comportamento automatizado suspeito." });
+      }
+    } catch (e) {
+      console.error("Erro na comunicação com a API do reCAPTCHA:", e);
+    }
+  }
 
   // 2. Validação de Pessoa Física (Bypass de segurança)
   const solicitanteDocLimpo = String(body.solicitanteDoc || "").replace(/\D/g, "");
@@ -205,7 +229,7 @@ module.exports = async function (req, res) {
       pickTypeId: body.pickTypeId ? parseInt(body.pickTypeId, 10) : 866,
       requester: body.solicitanteNome,
       customer: {
-        document: body.solicitanteDoc.replace(/\D/g, ""),
+        document: String(body.solicitanteDoc || "").replace(/\D/g, ""),
         name: body.solicitanteNome
       },
       requestDate: todayISO,
@@ -217,7 +241,7 @@ module.exports = async function (req, res) {
       lunchBreakEndHour: lunchEnd,
       comments: `${body.observacoes ? body.observacoes.trim() : "Sem observações"} | Numero da NF-e: ${body.numeroNf} | Informações verdadeiras confirmadas pelo cliente`,
       pickAddressAttributes: {
-        postalCode: body.cepColeta.replace(/\D/g, ""),
+        postalCode: String(body.cepColeta || "").replace(/\D/g, ""),
         line1: body.ruaColeta,
         number: body.numeroColeta,
         line2: body.complementoColeta || "",
@@ -230,7 +254,7 @@ module.exports = async function (req, res) {
       pickItemsAttributes: [
         {
           sender: {
-            document: body.remetenteDoc.replace(/\D/g, ""),
+            document: String(body.remetenteDoc || "").replace(/\D/g, ""),
             name: body.remetenteNome || "Remetente da Coleta"
           },
           senderCity: {
@@ -238,16 +262,16 @@ module.exports = async function (req, res) {
             stateCode: body.ufColeta
           },
           recipient: {
-            document: body.destinatarioDoc.replace(/\D/g, ""),
+            document: String(body.destinatarioDoc || "").replace(/\D/g, ""),
             name: body.destinatarioNome || "Destinatário da Coleta"
           },
           recipientCity: (body.destinatarioCidade && body.destinatarioUf) ? {
             name: body.destinatarioCidade,
             stateCode: body.destinatarioUf
           } : undefined,
-          invoicesValue: parseFloat(body.valorNf.replace(/\./g, "").replace(",", ".")) || 0,
+          invoicesValue: parseFloat(String(body.valorNf || "").replace(/\./g, "").replace(",", ".")) || 0,
           invoicesVolumes: parseInt(body.qtdVolumes, 10) || 0,
-          invoicesRealWeight: parseFloat(body.pesoReal.replace(/\./g, "").replace(",", ".")) || 0,
+          invoicesRealWeight: parseFloat(String(body.pesoReal || "").replace(/\./g, "").replace(",", ".")) || 0,
           productClassificationId: productClassificationId,
           pickItemCubagesAttributes: cubages
         }
@@ -255,9 +279,8 @@ module.exports = async function (req, res) {
     }
   };
 
-  // Identifica se a requisição está rodando em ambiente local (desenvolvimento)
-  const host = req.headers.host || "";
-  const isLocal = host.includes("localhost") || host.includes("127.0.0.1");
+  // Identifica se a requisição está rodando em ambiente local (desenvolvimento) por variáveis de ambiente seguras
+  const isLocal = process.env.NODE_ENV === 'development' || process.env.IS_LOCAL === 'true';
 
   // Se o Modo Simulação estiver ativo pelo painel de testes local (apenas em ambiente local)
   if (isLocal && body.debugSimulate) {
@@ -270,6 +293,9 @@ module.exports = async function (req, res) {
       debugInfo: body.debugMode ? { query: queryGraphQL, variables } : undefined
     });
   }
+
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), 8000); // Timeout de 8 segundos
 
   try {
     const token = process.env.TOKEN_API;
@@ -284,7 +310,8 @@ module.exports = async function (req, res) {
       body: JSON.stringify({
         query: queryGraphQL,
         variables
-      })
+      }),
+      signal: controller.signal
     });
 
     const resultado = await respostaESL.json();
@@ -327,10 +354,16 @@ module.exports = async function (req, res) {
     throw new Error("Resposta da API ESL não continha dados de pickCreate.");
 
   } catch (erro) {
+    let msgErro = erro.message;
+    if (erro.name === 'AbortError') {
+      msgErro = "Tempo limite de requisição excedido ao contatar a ESL Cloud (Timeout).";
+    }
     return res.status(500).json({
       message: "Erro na comunicação com a ESL Cloud",
-      details: erro.message,
+      details: msgErro,
       debugInfo: (isLocal && body.debugMode) ? { query: queryGraphQL, variables } : undefined
     });
+  } finally {
+    clearTimeout(timeoutId);
   }
 };
