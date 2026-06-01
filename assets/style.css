@@ -24,6 +24,34 @@ select {
   color: gray;
   width: 100%;
   background-color: rgba(0, 0, 0, 0.041);
+  transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+
+/* Visual differentiation for readonly fields to show they are locked/read-only */
+input[readonly] {
+  background-color: #f1f5f9 !important; /* Soft slate/gray background */
+  color: #64748b !important;            /* Muted text color */
+  border: 1px solid #cbd5e1 !important; /* Slate border */
+  cursor: not-allowed !important;
+  opacity: 0.85;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke-width='1.5' stroke='%2394a3b8'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z' /%3E%3C/svg%3E") !important;
+  background-repeat: no-repeat !important;
+  background-position: right 8px center !important;
+  background-size: 14px 14px !important;
+  padding-right: 28px !important;
+}
+
+input[readonly]:focus {
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+/* Premium, high-contrast focus outlines for enhanced keyboard accessibility */
+input:focus,
+select:focus,
+button:focus {
+  outline: 2px solid rgb(26, 58, 107) !important; /* Matches theme navy blue color */
+  outline-offset: 2px;
 }
 
 .participante {
@@ -715,4 +743,33 @@ input[type="number"] {
 .input-volumes {
   font-weight: bold !important;
   text-align: center;
+}
+
+/* Banner de Aviso Importante Premium */
+.alerta-importante-card {
+  background-color: #fffbeb; /* Light amber/yellow */
+  border-left: 4px solid #d97706; /* Dark amber line */
+  border-radius: 8px;
+  padding: 12px 16px;
+  margin: 15px 10px;
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.alerta-importante-icone {
+  font-size: 18px;
+  line-height: 1;
+}
+
+.alerta-importante-conteudo {
+  font-size: 13px;
+  color: #78350f; /* Warm dark brown */
+  line-height: 1.5;
+  text-align: left;
+}
+
+.alerta-importante-conteudo strong {
+  color: #92400e;
 }

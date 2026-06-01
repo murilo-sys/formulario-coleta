@@ -1,4 +1,5 @@
 // js/api/api.js
+import { mostrarAlerta } from '../utils/utils.js';
 
 const URL_API_LOCAL = "/api/consultar-cnpj";
 
@@ -14,7 +15,7 @@ export async function consultarEmpresaPorCnpj(cnpjLimpo) {
   // 2. Cooldown de segurança do cliente: impede spam de requisições de rede
   const agora = Date.now();
   if (agora - ultimoTimestampConsulta < 3000) {
-    alert("Por razões de segurança, aguarde pelo menos 3 segundos entre as consultas de CNPJ.");
+    mostrarAlerta("Por razões de segurança, aguarde pelo menos 3 segundos entre as consultas de CNPJ.", "Aviso de Segurança", "🛡️");
     return null;
   }
   ultimoTimestampConsulta = agora;
@@ -31,7 +32,7 @@ export async function consultarEmpresaPorCnpj(cnpjLimpo) {
 
     // Se receber rate limit do backend
     if (resposta.status === 429) {
-      alert("Consultas muito frequentes. Aguarde pelo menos 3 segundos.");
+      mostrarAlerta("Consultas muito frequentes. Aguarde pelo menos 3 segundos.", "Aviso de Segurança", "🛡️");
       return null;
     }
 

@@ -1,6 +1,6 @@
 // js/validacao.js
 import { state } from './state.js';
-import { DocValido } from './utils/utils.js';
+import { DocValido, mostrarAlerta } from './utils/utils.js';
 import { validarSolicitante } from './secoes/solicitante.js';
 import { validarEndereco } from './secoes/endereco.js';
 import { validarMercadoria } from './secoes/mercadoria.js';
@@ -15,7 +15,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const btnCancelarConfirmacao = document.getElementById("btnCancelarConfirmacao");
   const dialogSucesso = document.getElementById("dialogSucesso");
   const btnFecharSucesso = document.getElementById("btnFecharSucesso");
-  const sucessoProtocolo = document.getElementById("sucessoProtocolo");
+  const sucessoOrdemColeta = document.getElementById("sucessoOrdemColeta");
 
   // ========================================================================= //
   //                           VALIDAÇÃO E ENVIO DO FORMULÁRIO                 //
@@ -106,7 +106,7 @@ document.addEventListener("DOMContentLoaded", () => {
           const recaptchaToken = grecaptcha.getResponse();
           const temRecaptchaDiv = document.querySelector('.g-recaptcha');
           if (temRecaptchaDiv && !recaptchaToken) {
-            alert("Por favor, marque a caixa de seleção do reCAPTCHA para provar que você não é um robô.");
+            mostrarAlerta("Por favor, marque a caixa de seleção do reCAPTCHA para provar que você não é um robô.", "Verificação de Segurança", "🤖");
             return;
           }
         }
@@ -221,8 +221,8 @@ document.addEventListener("DOMContentLoaded", () => {
           const result = await response.json();
 
           if (response.ok) {
-            if (sucessoProtocolo) {
-              sucessoProtocolo.textContent = result.data?.protocolo || "Sem Protocolo";
+            if (sucessoOrdemColeta) {
+              sucessoOrdemColeta.textContent = result.data?.protocolo || "Sem Ordem de Coleta";
             }
             if (dialogConfirmacaoEnvio) {
               dialogConfirmacaoEnvio.close();
@@ -235,12 +235,12 @@ document.addEventListener("DOMContentLoaded", () => {
             }
             formulario.reset();
           } else {
-            alert(`Erro ao solicitar coleta: ${result.message || "Erro desconhecido"}`);
+            mostrarAlerta(result.message || "Erro desconhecido", "Erro ao Solicitar Coleta", "❌");
             btnConfirmarEnvioFinal.disabled = false;
             btnConfirmarEnvioFinal.textContent = "Confirmar Coleta";
           }
         } catch (err) {
-          alert("Erro de rede. Por favor, tente novamente.");
+          mostrarAlerta("Erro de rede. Por favor, tente novamente.", "Erro de Rede", "🌐");
           btnConfirmarEnvioFinal.disabled = false;
           btnConfirmarEnvioFinal.textContent = "Confirmar Coleta";
         }
