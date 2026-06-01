@@ -17,6 +17,8 @@ document.addEventListener("DOMContentLoaded", () => {
   const btnFecharSucesso = document.getElementById("btnFecharSucesso");
   const sucessoOrdemColeta = document.getElementById("sucessoOrdemColeta");
   const sucessoTelefoneContato = document.getElementById("sucessoTelefoneContato");
+  const confirmacaoEmailContato = document.getElementById("confirmacaoEmailContato");
+  const confirmacaoTelefoneContato = document.getElementById("confirmacaoTelefoneContato");
 
   // ========================================================================= //
   //                           VALIDAÇÃO E ENVIO DO FORMULÁRIO                 //
@@ -112,6 +114,13 @@ document.addEventListener("DOMContentLoaded", () => {
           }
         }
 
+        if (confirmacaoEmailContato) {
+          confirmacaoEmailContato.textContent = state.solicitanteEndereco?.email || "Não cadastrado";
+        }
+        if (confirmacaoTelefoneContato) {
+          const tel = state.solicitanteEndereco?.phoneNumber || state.solicitanteEndereco?.mobileNumber;
+          confirmacaoTelefoneContato.textContent = tel ? tel.trim() : "Não cadastrado";
+        }
         if (chkConfirmacaoFinal) chkConfirmacaoFinal.checked = false;
         if (btnConfirmarEnvioFinal) {
           btnConfirmarEnvioFinal.disabled = true;
