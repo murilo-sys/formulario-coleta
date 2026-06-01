@@ -86,12 +86,12 @@
 
         <div class="coluna-flex-1">
           <label for="cepInput" class="perguntaTitulo obrigatorio">CEP</label>
-          <input type="text" id="cepInput" placeholder="00000-000" readonly>
+          <input type="text" id="cepInput" placeholder="00000-000" readonly tabindex="-1">
         </div>
 
         <div class="coluna-flex-3">
           <label for="logradouroInput" class="perguntaTitulo obrigatorio">Logradouro</label>
-          <input type="text" id="logradouroInput" placeholder="Rua, Avenida, Travessa..." readonly>
+          <input type="text" id="logradouroInput" placeholder="Rua, Avenida, Travessa..." readonly tabindex="-1">
         </div>
 
       </div>
@@ -100,12 +100,12 @@
 
         <div class="coluna-flex-1">
           <label for="numeroInput" class="perguntaTitulo obrigatorio">Número</label>
-          <input type="text" id="numeroInput" placeholder="Ex: 01" readonly>
+          <input type="text" id="numeroInput" placeholder="Ex: 01" readonly tabindex="-1">
         </div>
 
         <div class="coluna-flex-3">
           <label for="complementoInput" class="perguntaTitulo">Complemento</label>
-          <input type="text" id="complementoInput" placeholder="Apartamento, sala, bloco..." readonly>
+          <input type="text" id="complementoInput" placeholder="Apartamento, sala, bloco..." readonly tabindex="-1">
         </div>
 
       </div>
@@ -114,17 +114,17 @@
 
         <div class="coluna-flex-2">
           <label for="bairroInput" class="perguntaTitulo obrigatorio">Bairro</label>
-          <input type="text" id="bairroInput" placeholder="Centro, Vila Mariana..." readonly>
+          <input type="text" id="bairroInput" placeholder="Centro, Vila Mariana..." readonly tabindex="-1">
         </div>
 
         <div class="coluna-flex-1">
           <label for="cidadeInput" class="perguntaTitulo obrigatorio">Cidade</label>
-          <input type="text" id="cidadeInput" placeholder="São Paulo..." readonly>
+          <input type="text" id="cidadeInput" placeholder="São Paulo..." readonly tabindex="-1">
         </div>
 
         <div class="coluna-flex-1">
           <label for="estadoInput" class="perguntaTitulo obrigatorio">Estado</label>
-          <input type="text" id="estadoInput" placeholder="SP, RJ..." readonly>
+          <input type="text" id="estadoInput" placeholder="SP, RJ..." readonly tabindex="-1">
         </div>
 
       </div>
@@ -154,6 +154,11 @@
       <div class="linhaDupla">
 
         <div class="coluna-flex-1">
+          <label for="numeroNf" class="perguntaTitulo obrigatorio">Número da NF</label>
+          <input type="text" id="numeroNf" placeholder="000.000.000">
+        </div>
+
+        <div class="coluna-flex-1">
           <label for="valorNf" class="perguntaTitulo obrigatorio">Valor da NF (R$)</label>
           <div class="input-grupo-sufixo">
             <span class="sufixo"> R$ |</span>
@@ -161,13 +166,17 @@
           </div>
         </div>
 
+      </div>
+
+      <div class="linhaDupla">
+
         <div class="coluna-flex-1">
           <label for="qtdVolumes" class="perguntaTitulo obrigatorio">Volumes</label>
           <input type="number" id="qtdVolumes" placeholder="Qtd. de volumes">
         </div>
 
         <div class="coluna-flex-1">
-          <label for="pesoReal" class="perguntaTitulo obrigatorio">Peso Real</label>
+          <label for="pesoReal" class="perguntaTitulo obrigatorio">Peso Real Total</label>
           <div class="input-grupo-sufixo">
             <input type="text" id="pesoReal" placeholder="0,00">
             <span class="sufixo">| KG</span>
@@ -176,42 +185,59 @@
 
       </div>
 
-      <div class="linhaDuplaCubagem">
-
+      <div class="linhaDuplaCubagem"
+        style="align-items: center; justify-content: space-between; flex-wrap: wrap; width: 100%;">
         <div>
           <p class="pergunta-cubagem-titulo">Dimensões da embalagem</p>
-          <p class="subTitulo">Medidas em centímetros (cm)</p>
+          <p class="subTitulo">Medidas em metros (m)</p>
         </div>
+        <div id="statusAlocacaoVolumes" class="status-alocacao"></div>
       </div>
 
       <div id="containerCubagem">
         <div class="coluna-cubagem">
+          <div class="coluna-flex-1">
+            <p class="pergunta-cubagem">VOLUMES</p>
+            <div class="input-grupo-sufixo">
+              <input class="input-volumes" type="text" placeholder="0" value="1">
+              <span class="sufixo">| un</span>
+            </div>
+          </div>
 
           <div class="coluna-flex-1">
             <p class="pergunta-cubagem">COMPRIMENTO</p>
             <div class="input-grupo-sufixo">
-              <input class="input-comprimento" type="number" placeholder="0">
-              <span class="sufixo">| cm</span>
+              <input class="input-comprimento" type="text" placeholder="0">
+              <span class="sufixo">| m</span>
             </div>
           </div>
 
           <div class="coluna-flex-1">
             <p class="pergunta-cubagem">LARGURA</p>
             <div class="input-grupo-sufixo">
-              <input class="input-largura" type="number" placeholder="0">
-              <span class="sufixo">| cm</span>
+              <input class="input-largura" type="text" placeholder="0">
+              <span class="sufixo">| m</span>
             </div>
           </div>
 
           <div class="coluna-flex-1">
             <p class="pergunta-cubagem">ALTURA</p>
             <div class="input-grupo-sufixo">
-              <input class="input-altura" type="number" placeholder="0">
-              <span class="sufixo">| cm</span>
+              <input class="input-altura" type="text" placeholder="0">
+              <span class="sufixo">| m</span>
             </div>
           </div>
+
+
         </div>
       </div>
+
+
+
+      <p id="erroSomaCubagem" class="oculto"
+        style="color: rgb(240, 113, 113); font-size: 13px; font-weight: bold; margin-top: 10px;"></p>
+
+
     </div>
 
     <div class="cartaoPerguntas">
@@ -260,26 +286,34 @@
   <template id="template-cubagem">
     <div class="coluna-cubagem">
       <div class="coluna-flex-1">
+        <p class="pergunta-cubagem">VOLUMES</p>
+        <div class="input-grupo-sufixo">
+          <input class="input-volumes" placeholder="0">
+          <span class="sufixo">| un</span>
+        </div>
+      </div>
+      <div class="coluna-flex-1">
         <p class="pergunta-cubagem">COMPRIMENTO</p>
         <div class="input-grupo-sufixo">
           <input class="input-comprimento" placeholder="0">
-          <span class="sufixo">| cm</span>
+          <span class="sufixo">| m</span>
         </div>
       </div>
       <div class="coluna-flex-1">
         <p class="pergunta-cubagem">LARGURA</p>
         <div class="input-grupo-sufixo">
           <input class="input-largura" placeholder="0">
-          <span class="sufixo">| cm</span>
+          <span class="sufixo">| m</span>
         </div>
       </div>
       <div class="coluna-flex-1">
         <p class="pergunta-cubagem">ALTURA</p>
         <div class="input-grupo-sufixo">
           <input class="input-altura" placeholder="0">
-          <span class="sufixo">| cm</span>
+          <span class="sufixo">| m</span>
         </div>
       </div>
+
     </div>
   </template>
 
@@ -377,7 +411,8 @@
       <div class="dialog-cabecalho" style="text-align: center; border-bottom: none; padding-bottom: 0;">
         <div style="font-size: 40px; margin-bottom: 12px;">⚠️</div>
         <span class="dialog-titulo" style="color: #c2410c; font-size: 20px;">Carga Restrita</span>
-        <p class="dialog-subtitulo" style="font-size: 14px; margin-top: 6px;">Esta natureza de carga não é permitida para solicitação direta.</p>
+        <p class="dialog-subtitulo" style="font-size: 14px; margin-top: 6px;">Esta natureza de carga não é permitida
+          para solicitação direta.</p>
       </div>
 
       <div class="dialog-corpo" style="background-color: #fff9f5; border-color: #ffedd5; padding: 20px;">
@@ -404,8 +439,7 @@
       </div>
 
       <div class="dialog-rodape" style="justify-content: center; margin-top: 8px;">
-        <button type="button" id="btnFecharNaturezaBloqueada"
-          class="btn-dialog btn-dialog-confirmar"
+        <button type="button" id="btnFecharNaturezaBloqueada" class="btn-dialog btn-dialog-confirmar"
           style="background-color: #c2410c; width: 100%; text-align: center; border: none;">
           Entendido
         </button>
@@ -426,18 +460,22 @@
 
       <div class="dialog-corpo" style="background-color: #f8fafc; border-color: #e2e8f0; padding: 20px;">
         <div style="display: flex; align-items: flex-start; gap: 10px;">
-          <input type="checkbox" id="chkConfirmacaoFinal" style="margin-top: 3px; cursor: pointer; width: 18px; height: 18px;">
-          <label for="chkConfirmacaoFinal" style="font-size: 14px; color: #334155; font-weight: 500; cursor: pointer; line-height: 1.4; user-select: none;">
+          <input type="checkbox" id="chkConfirmacaoFinal"
+            style="margin-top: 3px; cursor: pointer; width: 18px; height: 18px;">
+          <label for="chkConfirmacaoFinal"
+            style="font-size: 14px; color: #334155; font-weight: 500; cursor: pointer; line-height: 1.4; user-select: none;">
             Confirmo que todas as informações estão corretas
           </label>
         </div>
       </div>
 
       <div class="dialog-rodape" style="margin-top: 8px;">
-        <button type="button" id="btnCancelarConfirmacao" class="btn-dialog btn-dialog-recusar" style="width: 50%; text-align: center;">
+        <button type="button" id="btnCancelarConfirmacao" class="btn-dialog btn-dialog-recusar"
+          style="width: 50%; text-align: center;">
           Cancelar
         </button>
-        <button type="button" id="btnConfirmarEnvioFinal" class="btn-dialog btn-dialog-confirmar" style="width: 50%; text-align: center;" disabled>
+        <button type="button" id="btnConfirmarEnvioFinal" class="btn-dialog btn-dialog-confirmar"
+          style="width: 50%; text-align: center;" disabled>
           Confirmar Coleta
         </button>
       </div>

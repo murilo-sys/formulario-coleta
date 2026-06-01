@@ -46,15 +46,23 @@ export function validarMercadoria(marcarErro) {
 
   const pesoReal = document.getElementById("pesoReal");
   const valorNf = document.getElementById("valorNf");
+  const numeroNf = document.getElementById("numeroNf");
   const qtdVolumes = document.getElementById("qtdVolumes");
   const naturezaMercadoria = document.getElementById("naturezaMercadoria");
 
   const pesoLimpo = state.maskPeso ? state.maskPeso.unmaskedValue : "";
   const valorNfLimpo = state.maskValor ? state.maskValor.unmaskedValue : "";
+  const numeroNfValor = numeroNf ? numeroNf.value.trim() : "";
 
   // Verifica a seleção da natureza da carga (não pode ser vazia ou bloqueada)
   if (naturezaMercadoria.value === "" || NATUREZAS_BLOQUEADAS.includes(naturezaMercadoria.value)) {
     marcarErro(naturezaMercadoria);
+    valido = false;
+  }
+
+  // Verifica se o número da NF está preenchido
+  if (!numeroNf || numeroNfValor === "") {
+    if (numeroNf) marcarErro(numeroNf);
     valido = false;
   }
 

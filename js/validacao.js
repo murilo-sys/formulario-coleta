@@ -131,14 +131,22 @@ document.addEventListener("DOMContentLoaded", () => {
         if (containerCubagem) {
           const linhas = containerCubagem.querySelectorAll(".coluna-cubagem");
           linhas.forEach(linha => {
+            const volumesVal = linha.querySelector(".input-volumes")?.value || "";
             const comprimentoVal = linha.querySelector(".input-comprimento")?.value || "";
             const larguraVal = linha.querySelector(".input-largura")?.value || "";
             const alturaVal = linha.querySelector(".input-altura")?.value || "";
-            if (comprimentoVal || larguraVal || alturaVal) {
+            
+            // Substitui a vírgula decimal por ponto para converter em número flutuante
+            const compLimpo = comprimentoVal.replace(",", ".");
+            const largLimpo = larguraVal.replace(",", ".");
+            const altLimpo = alturaVal.replace(",", ".");
+
+            if (volumesVal || comprimentoVal || larguraVal || alturaVal) {
               cubagemItens.push({
-                comprimento: parseFloat(comprimentoVal) || 0,
-                largura: parseFloat(larguraVal) || 0,
-                altura: parseFloat(alturaVal) || 0
+                volumes: parseInt(volumesVal, 10) || 0,
+                comprimento: parseFloat(compLimpo) || 0,
+                largura: parseFloat(largLimpo) || 0,
+                altura: parseFloat(altLimpo) || 0
               });
             }
           });
@@ -158,6 +166,7 @@ document.addEventListener("DOMContentLoaded", () => {
           cidadeColeta: document.getElementById("cidadeInput")?.value || "",
           ufColeta: document.getElementById("estadoInput")?.value || "",
           naturezaMercadoria: document.getElementById("naturezaMercadoria")?.value || "",
+          numeroNf: document.getElementById("numeroNf")?.value || "",
           valorNf: document.getElementById("valorNf")?.value || "",
           qtdVolumes: document.getElementById("qtdVolumes")?.value || "",
           pesoReal: document.getElementById("pesoReal")?.value || "",
@@ -245,6 +254,37 @@ document.addEventListener("DOMContentLoaded", () => {
       state.destinatarioVerificado = false;
       state.destinatarioCnpjVerificado = "";
       state.destinatarioEndereco = null;
+
+      // 8. Reseta os grupos de cubagem
+      const containerCubagem = document.getElementById("containerCubagem");
+      if (containerCubagem) {
+        const linhas = containerCubagem.querySelectorAll(".coluna-cubagem");
+        linhas.forEach((linha, index) => {
+          if (index === 0) {
+            const inputVol = linha.querySelector(".input-volumes");
+            if (inputVol) inputVol.value = "1";
+            const inputComp = linha.querySelector(".input-comprimento");
+            if (inputComp) inputComp.value = "";
+            const inputLarg = linha.querySelector(".input-largura");
+            if (inputLarg) inputLarg.value = "";
+            const inputAlt = linha.querySelector(".input-altura");
+            if (inputAlt) inputAlt.value = "";
+          } else {
+            linha.remove();
+          }
+        });
+      }
+      const erroSomaCubagem = document.getElementById("erroSomaCubagem");
+      if (erroSomaCubagem) {
+        erroSomaCubagem.textContent = "";
+        erroSomaCubagem.classList.add("oculto");
+        erroSomaCubagem.classList.remove("visivel");
+      }
+
+      // Força a atualização reativa da UI de cubagem após o reset
+      if (typeof window.recalcularCubagemTotal === "function") {
+        window.recalcularCubagemTotal();
+      }
     });
   }
 });

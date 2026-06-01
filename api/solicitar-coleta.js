@@ -73,6 +73,7 @@ module.exports = async function (req, res) {
     { campo: "cidadeColeta", nome: "Cidade de coleta" },
     { campo: "ufColeta", nome: "Estado (UF) de coleta" },
     { campo: "naturezaMercadoria", nome: "Natureza da mercadoria" },
+    { campo: "numeroNf", nome: "Número da Nota Fiscal" },
     { campo: "valorNf", nome: "Valor da NF" },
     { campo: "qtdVolumes", nome: "Quantidade de volumes" },
     { campo: "pesoReal", nome: "Peso real" },
@@ -92,19 +93,30 @@ module.exports = async function (req, res) {
 
   // 5. Validação redundante do Array de Cubagem no Backend (Defense in Depth)
   const cubagem = body.cubagemItens;
+  const totalVolumesPayload = parseInt(body.qtdVolumes, 10) || 0;
+
   if (cubagem !== undefined) {
     if (!Array.isArray(cubagem)) {
       return res.status(400).json({ message: "Os dados de cubagem fornecidos são inválidos." });
     }
+    let somaVolumes = 0;
     for (let i = 0; i < cubagem.length; i++) {
       const item = cubagem[i];
-      if (typeof item.comprimento !== 'number' || item.comprimento <= 0 ||
+      if (typeof item.volumes !== 'number' || item.volumes <= 0 ||
+          typeof item.comprimento !== 'number' || item.comprimento <= 0 ||
           typeof item.largura !== 'number' || item.largura <= 0 ||
           typeof item.altura !== 'number' || item.altura <= 0) {
         return res.status(400).json({
-          message: `As dimensões da cubagem no volume ${i + 1} devem ser números válidos maiores que zero.`
+          message: `O grupo de cubagem ${i + 1} deve possuir quantidade de volumes e dimensões válidas e maiores que zero.`
         });
       }
+      somaVolumes += item.volumes;
+    }
+
+    if (somaVolumes !== totalVolumesPayload) {
+      return res.status(400).json({
+        message: `A soma das quantidades de volumes dos grupos de cubagem (${somaVolumes}) deve ser igual ao total de volumes informado (${totalVolumesPayload}).`
+      });
     }
   }
 

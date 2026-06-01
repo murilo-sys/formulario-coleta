@@ -70,13 +70,34 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
+  const numeroNf = document.getElementById("numeroNf");
+  if (numeroNf) {
+    numeroNf.addEventListener("keydown", (evento) => {
+      const teclasPermitidas = [
+        "Backspace", "Delete", "ArrowLeft", "ArrowRight", "Tab", 
+        "Enter", "Escape", "Home", "End"
+      ];
+      if (teclasPermitidas.includes(evento.key) || evento.ctrlKey || evento.metaKey) {
+        return;
+      }
+      if (!/^[0-9]$/.test(evento.key)) {
+        evento.preventDefault();
+      }
+    });
+
+    numeroNf.addEventListener("input", () => {
+      numeroNf.value = numeroNf.value.replace(/\D/g, "");
+    });
+  }
+
   blindarInputCubagem(volumes);
 
   const primeiraLinhaHTML = document.querySelector(".coluna-cubagem");
   if (primeiraLinhaHTML) {
-    blindarInputCubagem(primeiraLinhaHTML.querySelector(".input-comprimento"));
-    blindarInputCubagem(primeiraLinhaHTML.querySelector(".input-largura"));
-    blindarInputCubagem(primeiraLinhaHTML.querySelector(".input-altura"));
+    blindarInputCubagem(primeiraLinhaHTML.querySelector(".input-volumes"));
+    blindarInputMetro(primeiraLinhaHTML.querySelector(".input-comprimento"));
+    blindarInputMetro(primeiraLinhaHTML.querySelector(".input-largura"));
+    blindarInputMetro(primeiraLinhaHTML.querySelector(".input-altura"));
   }
 });
 
@@ -104,5 +125,48 @@ export function blindarInputCubagem(inputElement) {
       if (str === "-") return "";
       return str;
     }
+  });
+}
+
+export function blindarInputMetro(inputElement) {
+  if (!inputElement) return;
+
+  // Keydown block para garantir apenas números e comandos
+  inputElement.addEventListener("keydown", (evento) => {
+    const teclasPermitidas = [
+      "Backspace", "Delete", "ArrowLeft", "ArrowRight", "Tab", 
+      "Enter", "Escape", "Home", "End"
+    ];
+    
+    if (teclasPermitidas.includes(evento.key) || evento.ctrlKey || evento.metaKey) {
+      return;
+    }
+
+    if (!/^[0-9]$/.test(evento.key)) {
+      evento.preventDefault();
+    }
+  });
+
+  // Formatação tipo monetário (direita para a esquerda) ao digitar
+  inputElement.addEventListener("input", () => {
+    let apenasNumeros = inputElement.value.replace(/\D/g, "");
+    apenasNumeros = apenasNumeros.replace(/^0+/, "");
+
+    if (apenasNumeros === "") {
+      inputElement.value = "";
+      return;
+    }
+
+    while (apenasNumeros.length < 3) {
+      apenasNumeros = "0" + apenasNumeros;
+    }
+
+    const parteInteira = apenasNumeros.slice(0, -2);
+    const parteDecimal = apenasNumeros.slice(-2);
+
+    inputElement.value = parseInt(parteInteira, 10) + "," + parteDecimal;
+
+    // Mantém o cursor sempre no final do input
+    inputElement.setSelectionRange(inputElement.value.length, inputElement.value.length);
   });
 }
