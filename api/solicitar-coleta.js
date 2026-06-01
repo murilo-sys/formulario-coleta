@@ -243,6 +243,10 @@ module.exports = async function (req, res) {
         document: String(body.solicitanteDoc || "").replace(/\D/g, ""),
         name: body.solicitanteNome
       },
+      pickupLocation: {
+        document: String(body.remetenteDoc || "").replace(/\D/g, ""),
+        name: body.remetenteNome || "Remetente da Coleta"
+      },
       requestDate: todayISO,
       requestHour: timeISO,
       serviceDate: todayISO,
