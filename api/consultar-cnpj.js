@@ -2,9 +2,20 @@ const cooldowns = new Map(); // ip -> timestamp
 
 //Função dessa rota
 module.exports = async function (req, res) {
-  // CORS Headers para Vercel
+  // CORS Headers para Vercel com restrição de origem (Secure by Default)
   if (res && typeof res.setHeader === 'function') {
-    res.setHeader('Access-Control-Allow-Origin', '*');
+    const origin = req.headers.origin;
+    const isLocal = process.env.NODE_ENV === 'development' || process.env.IS_LOCAL === 'true';
+    const allowedOrigin = process.env.ALLOWED_ORIGIN; // Sem fallback para '*'
+
+    if (isLocal && origin && (origin.includes('localhost') || origin.includes('127.0.0.1'))) {
+      res.setHeader('Access-Control-Allow-Origin', origin);
+    } else if (allowedOrigin && origin === allowedOrigin) {
+      res.setHeader('Access-Control-Allow-Origin', origin);
+    } else {
+      // Bloqueia por padrão caso a origem não coincida ou ALLOWED_ORIGIN não esteja configurada
+      res.setHeader('Access-Control-Allow-Origin', allowedOrigin || 'https://blocked-by-cors.invalid');
+    }
     res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
     res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
   }
