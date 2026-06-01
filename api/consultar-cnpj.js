@@ -94,6 +94,9 @@ module.exports = async function (req, res) {
           node {
             name
             cnpj
+            email
+            phoneNumber
+            mobileNumber
             mainAddress {
               postalCode
               line1

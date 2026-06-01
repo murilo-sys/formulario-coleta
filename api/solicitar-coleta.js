@@ -76,6 +76,8 @@ module.exports = async function (req, res) {
 
   // 1. Sanitização básica contra HTML/XSS nos inputs textuais livres (com coerção segura de tipo)
   body.solicitanteNome = sanitizeInput(body.solicitanteNome !== undefined && body.solicitanteNome !== null ? String(body.solicitanteNome) : "");
+  body.solicitanteEmail = sanitizeInput(body.solicitanteEmail !== undefined && body.solicitanteEmail !== null ? String(body.solicitanteEmail) : "");
+  body.solicitanteTelefone = sanitizeInput(body.solicitanteTelefone !== undefined && body.solicitanteTelefone !== null ? String(body.solicitanteTelefone) : "");
   body.observacoes = sanitizeInput(body.observacoes !== undefined && body.observacoes !== null ? String(body.observacoes) : "");
 
   // Validação opcional de Google reCAPTCHA v3 (Ativa apenas se a chave estiver configurada no .env)
@@ -239,6 +241,8 @@ module.exports = async function (req, res) {
       corporationId: body.corporationId ? parseInt(body.corporationId, 10) : 107892,
       pickTypeId: body.pickTypeId ? parseInt(body.pickTypeId, 10) : 866,
       requester: body.solicitanteNome,
+      notificationPhone: body.solicitanteTelefone || null,
+      notificationEmail: body.solicitanteEmail || null,
       customer: {
         document: String(body.solicitanteDoc || "").replace(/\D/g, ""),
         name: body.solicitanteNome

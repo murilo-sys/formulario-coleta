@@ -180,6 +180,8 @@ document.addEventListener("DOMContentLoaded", () => {
         const payload = {
           solicitanteDoc: document.getElementById("solicitanteDoc")?.value || "",
           solicitanteNome: document.getElementById("solicitanteNome")?.value || "",
+          solicitanteEmail: state.solicitanteEndereco?.email || "",
+          solicitanteTelefone: state.solicitanteEndereco?.phoneNumber || state.solicitanteEndereco?.mobileNumber || "",
           tipoSolicitante: document.querySelector('input[name="tipoSolicitante"]:checked')?.value || "",
           remetenteDoc: document.getElementById("remetenteDoc")?.value || "",
           remetenteNome: state.remetenteEndereco?.razaoSocial || "",

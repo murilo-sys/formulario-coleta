@@ -43,6 +43,9 @@ export async function consultarEmpresaPorCnpj(cnpjLimpo) {
       endereco = empresas[0].node.mainAddress || null;
       if (endereco) {
         endereco.razaoSocial = empresas[0].node.name || "";
+        endereco.email = empresas[0].node.email || "";
+        endereco.phoneNumber = empresas[0].node.phoneNumber || "";
+        endereco.mobileNumber = empresas[0].node.mobileNumber || "";
       }
     }
 
