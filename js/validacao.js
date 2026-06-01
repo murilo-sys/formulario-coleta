@@ -13,6 +13,9 @@ document.addEventListener("DOMContentLoaded", () => {
   const chkConfirmacaoFinal = document.getElementById("chkConfirmacaoFinal");
   const btnConfirmarEnvioFinal = document.getElementById("btnConfirmarEnvioFinal");
   const btnCancelarConfirmacao = document.getElementById("btnCancelarConfirmacao");
+  const dialogSucesso = document.getElementById("dialogSucesso");
+  const btnFecharSucesso = document.getElementById("btnFecharSucesso");
+  const sucessoProtocolo = document.getElementById("sucessoProtocolo");
 
   // ========================================================================= //
   //                           VALIDAÇÃO E ENVIO DO FORMULÁRIO                 //
@@ -120,6 +123,12 @@ document.addEventListener("DOMContentLoaded", () => {
       });
     }
 
+    if (btnFecharSucesso && dialogSucesso) {
+      btnFecharSucesso.addEventListener("click", () => {
+        dialogSucesso.close();
+      });
+    }
+
     if (btnConfirmarEnvioFinal) {
       btnConfirmarEnvioFinal.addEventListener("click", async () => {
         btnConfirmarEnvioFinal.disabled = true;
@@ -157,7 +166,11 @@ document.addEventListener("DOMContentLoaded", () => {
           solicitanteNome: document.getElementById("solicitanteNome")?.value || "",
           tipoSolicitante: document.querySelector('input[name="tipoSolicitante"]:checked')?.value || "",
           remetenteDoc: document.getElementById("remetenteDoc")?.value || "",
+          remetenteNome: state.remetenteEndereco?.razaoSocial || "",
           destinatarioDoc: document.getElementById("destinatarioDoc")?.value || "",
+          destinatarioNome: state.destinatarioEndereco?.razaoSocial || "",
+          destinatarioCidade: state.destinatarioEndereco?.city?.name || "",
+          destinatarioUf: state.destinatarioEndereco?.city?.state?.code || "",
           cepColeta: document.getElementById("cepInput")?.value || "",
           ruaColeta: document.getElementById("logradouroInput")?.value || "",
           numeroColeta: document.getElementById("numeroInput")?.value || "",
@@ -189,9 +202,14 @@ document.addEventListener("DOMContentLoaded", () => {
           const result = await response.json();
 
           if (response.ok) {
-            alert("Solicitação de coleta aberta com sucesso!");
+            if (sucessoProtocolo) {
+              sucessoProtocolo.textContent = result.data?.protocolo || "Sem Protocolo";
+            }
             if (dialogConfirmacaoEnvio) {
               dialogConfirmacaoEnvio.close();
+            }
+            if (dialogSucesso) {
+              dialogSucesso.showModal();
             }
             formulario.reset();
           } else {
@@ -255,36 +273,39 @@ document.addEventListener("DOMContentLoaded", () => {
       state.destinatarioCnpjVerificado = "";
       state.destinatarioEndereco = null;
 
-      // 8. Reseta os grupos de cubagem
-      const containerCubagem = document.getElementById("containerCubagem");
-      if (containerCubagem) {
-        const linhas = containerCubagem.querySelectorAll(".coluna-cubagem");
-        linhas.forEach((linha, index) => {
-          if (index === 0) {
-            const inputVol = linha.querySelector(".input-volumes");
-            if (inputVol) inputVol.value = "1";
-            const inputComp = linha.querySelector(".input-comprimento");
-            if (inputComp) inputComp.value = "";
-            const inputLarg = linha.querySelector(".input-largura");
-            if (inputLarg) inputLarg.value = "";
-            const inputAlt = linha.querySelector(".input-altura");
-            if (inputAlt) inputAlt.value = "";
-          } else {
-            linha.remove();
-          }
-        });
-      }
-      const erroSomaCubagem = document.getElementById("erroSomaCubagem");
-      if (erroSomaCubagem) {
-        erroSomaCubagem.textContent = "";
-        erroSomaCubagem.classList.add("oculto");
-        erroSomaCubagem.classList.remove("visivel");
-      }
+      // Usamos setTimeout para rodar após o browser limpar os valores dos inputs nativos
+      setTimeout(() => {
+        // 8. Reseta os grupos de cubagem
+        const containerCubagem = document.getElementById("containerCubagem");
+        if (containerCubagem) {
+          const linhas = containerCubagem.querySelectorAll(".coluna-cubagem");
+          linhas.forEach((linha, index) => {
+            if (index === 0) {
+              const inputVol = linha.querySelector(".input-volumes");
+              if (inputVol) inputVol.value = "1";
+              const inputComp = linha.querySelector(".input-comprimento");
+              if (inputComp) inputComp.value = "";
+              const inputLarg = linha.querySelector(".input-largura");
+              if (inputLarg) inputLarg.value = "";
+              const inputAlt = linha.querySelector(".input-altura");
+              if (inputAlt) inputAlt.value = "";
+            } else {
+              linha.remove();
+            }
+          });
+        }
+        const erroSomaCubagem = document.getElementById("erroSomaCubagem");
+        if (erroSomaCubagem) {
+          erroSomaCubagem.textContent = "";
+          erroSomaCubagem.classList.add("oculto");
+          erroSomaCubagem.classList.remove("visivel");
+        }
 
-      // Força a atualização reativa da UI de cubagem após o reset
-      if (typeof window.recalcularCubagemTotal === "function") {
-        window.recalcularCubagemTotal();
-      }
+        // Força a atualização reativa da UI de cubagem após o reset
+        if (typeof window.recalcularCubagemTotal === "function") {
+          window.recalcularCubagemTotal();
+        }
+      }, 0);
     });
   }
 });

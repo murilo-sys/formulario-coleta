@@ -192,10 +192,25 @@ document.addEventListener("DOMContentLoaded", () => {
 
       // Se editou a quantidade de volumes de algum grupo, rodamos o reajuste dinâmico de linhas
       if (evento.target.classList.contains("input-volumes")) {
-        const volVal = parseInt(evento.target.value, 10);
-        if (isNaN(volVal) || volVal <= 0) {
-          evento.target.value = "1"; // Auto-corrige para 1 se tentar digitar 0 ou apagar
+        const valueStr = evento.target.value.trim();
+        if (valueStr === "") {
+          evento.target.classList.remove("erro-input");
+          recalcularTudo();
+          return; // Permite apagar sem bugar ou redefinir imediatamente
         }
+
+        let volVal = parseInt(valueStr, 10);
+        if (isNaN(volVal) || volVal <= 0) {
+          volVal = 1;
+          evento.target.value = "1";
+        }
+
+        const totalVolumesDoc = parseInt(qtdVolumes?.value, 10) || 0;
+        if (totalVolumesDoc > 0 && volVal > totalVolumesDoc) {
+          volVal = totalVolumesDoc;
+          evento.target.value = totalVolumesDoc;
+        }
+
         evento.target.classList.remove("erro-input");
         if (qtdVolumes) qtdVolumes.classList.remove("erro-input");
         ajustarLinhasCubagem();

@@ -1,6 +1,7 @@
 // api/solicitar-coleta.js
 
 const NATUREZAS_BLOQUEADAS = ["liquido", "quimica_diversos", "artigos_perigosos"];
+const cooldowns = new Map(); // ip -> timestamp
 
 // Helper simples para higienização contra XSS e injeção de HTML
 const sanitizeInput = str => {
@@ -24,6 +25,27 @@ module.exports = async function (req, res) {
   if (req.method !== "POST") {
     return res.status(405).json({ message: "Método não autorizado" });
   }
+
+  // Rate Limiter de 3 segundos por IP (Gatilho de segurança backend)
+  const ip = req.headers['x-forwarded-for'] || req.socket.remoteAddress || 'unknown';
+  const agora = Date.now();
+
+  // Limpeza preventiva contra Memory Leak
+  for (const [key, value] of cooldowns.entries()) {
+    if (agora - value > 3000) {
+      cooldowns.delete(key);
+    }
+  }
+
+  if (cooldowns.has(ip)) {
+    const ultimoAcesso = cooldowns.get(ip);
+    if (agora - ultimoAcesso < 3000) {
+      return res.status(429).json({
+        message: "Por razões de segurança, aguarde pelo menos 3 segundos entre as solicitações de coleta."
+      });
+    }
+  }
+  cooldowns.set(ip, agora);
 
   // Garante o parseamento do corpo da requisição
   let body = req.body;
@@ -120,12 +142,195 @@ module.exports = async function (req, res) {
     }
   }
 
-  // Se tudo estiver correto, simula abertura da coleta com sucesso
-  return res.status(200).json({
-    message: "Solicitação de coleta aberta com sucesso!",
-    data: {
-      protocolo: Math.floor(100000 + Math.random() * 900000),
-      dataAbertura: new Date().toISOString()
+  // ========================================================================= //
+  //                    INTEGRAÇÃO COM A API GRAPHQL DA ESL CLOUD              //
+  // ========================================================================= //
+
+  const queryGraphQL = `
+    mutation pickCreate($params: PickMutationInput!) {
+      pickCreate(params: $params) {
+        success
+        errors
+        resource {
+          id
+          sequenceCode
+        }
+      }
     }
-  });
+  `;
+
+  const now = new Date();
+  const todayISO = now.toISOString().split('T')[0]; // YYYY-MM-DD
+  const timeISO = now.toTimeString().split(' ')[0].substring(0, 5); // HH:MM
+
+  // Processamento do fechamento para almoço
+  let lunchStart = null;
+  let lunchEnd = null;
+  if (body.horarioAlmoco && body.horarioAlmoco.includes('-')) {
+    const parts = body.horarioAlmoco.split('-');
+    lunchStart = parts[0].trim();
+    lunchEnd = parts[1].trim();
+  }
+
+  // Processamento do array de cubagem
+  const cubages = (body.cubagemItens || []).map(item => ({
+    volume: parseInt(item.volumes, 10) || 0,
+    length: parseFloat(item.comprimento) || 0,
+    width: parseFloat(item.largura) || 0,
+    height: parseFloat(item.altura) || 0
+  }));
+
+  // Mapeamento das opções de natureza de mercadoria do formulário para IDs de classificação de produto na ESL Cloud
+  // Sinta-se livre para ajustar estes IDs conforme a tabela de classificação do seu sistema ESL
+  const MAPA_NATUREZAS = {
+    "cosmetico_geral": 17602,     // Cosméticos em geral
+    "material_eletrico": 21059,   // Equipamentos elétricos e eletrônicos
+    "alimenticio_geral": 15582,   // Alimentos em geral
+    "saude_correlato": 551,       // Produtos de saúde / correlatos
+    "produto_saude": 551,         // Produtos de saúde
+    "confeccoes_tecidos": 15566,  // Confecções e tecidos
+    "autopecas": 15563,           // Autopeças
+    "propaganda_visual": 33748,   // Material de propaganda e visual
+    "eletroeletronicos": 21059,   // Equipamentos elétricos e eletrônicos
+    "informatica": 15581,         // Material de informática
+    "pecas_geral": 16989          // Peças em geral
+  };
+
+  const productClassificationId = MAPA_NATUREZAS[body.naturezaMercadoria] || null;
+
+  // Mapeia todas as variáveis do formulário para o padrão PickMutationInput da ESL
+  const variables = {
+    params: {
+      corporationId: body.corporationId ? parseInt(body.corporationId, 10) : 107892,
+      pickTypeId: body.pickTypeId ? parseInt(body.pickTypeId, 10) : 866,
+      requester: body.solicitanteNome,
+      customer: {
+        document: body.solicitanteDoc.replace(/\D/g, ""),
+        name: body.solicitanteNome
+      },
+      requestDate: todayISO,
+      requestHour: timeISO,
+      serviceDate: todayISO,
+      serviceStartHour: body.horarioAbertura,
+      serviceEndHour: body.horarioFechamento,
+      lunchBreakStartHour: lunchStart,
+      lunchBreakEndHour: lunchEnd,
+      comments: `${body.observacoes ? body.observacoes.trim() : "Sem observações"} | Numero da NF-e: ${body.numeroNf} | Informações verdadeiras confirmadas pelo cliente`,
+      pickAddressAttributes: {
+        postalCode: body.cepColeta.replace(/\D/g, ""),
+        line1: body.ruaColeta,
+        number: body.numeroColeta,
+        line2: body.complementoColeta || "",
+        neighborhood: body.bairroColeta,
+        cityByName: {
+          name: body.cidadeColeta,
+          stateCode: body.ufColeta
+        }
+      },
+      pickItemsAttributes: [
+        {
+          sender: {
+            document: body.remetenteDoc.replace(/\D/g, ""),
+            name: body.remetenteNome || "Remetente da Coleta"
+          },
+          senderCity: {
+            name: body.cidadeColeta,
+            stateCode: body.ufColeta
+          },
+          recipient: {
+            document: body.destinatarioDoc.replace(/\D/g, ""),
+            name: body.destinatarioNome || "Destinatário da Coleta"
+          },
+          recipientCity: (body.destinatarioCidade && body.destinatarioUf) ? {
+            name: body.destinatarioCidade,
+            stateCode: body.destinatarioUf
+          } : undefined,
+          invoicesValue: parseFloat(body.valorNf.replace(/\./g, "").replace(",", ".")) || 0,
+          invoicesVolumes: parseInt(body.qtdVolumes, 10) || 0,
+          invoicesRealWeight: parseFloat(body.pesoReal.replace(/\./g, "").replace(",", ".")) || 0,
+          productClassificationId: productClassificationId,
+          pickItemCubagesAttributes: cubages
+        }
+      ]
+    }
+  };
+
+  // Identifica se a requisição está rodando em ambiente local (desenvolvimento)
+  const host = req.headers.host || "";
+  const isLocal = host.includes("localhost") || host.includes("127.0.0.1");
+
+  // Se o Modo Simulação estiver ativo pelo painel de testes local (apenas em ambiente local)
+  if (isLocal && body.debugSimulate) {
+    return res.status(200).json({
+      message: "Solicitação de coleta aberta com sucesso! (SIMULADO)",
+      data: {
+        protocolo: Math.floor(100000 + Math.random() * 900000),
+        dataAbertura: new Date().toISOString()
+      },
+      debugInfo: body.debugMode ? { query: queryGraphQL, variables } : undefined
+    });
+  }
+
+  try {
+    const token = process.env.TOKEN_API;
+    const endpoint = 'https://globalcargo.eslcloud.com.br/graphql';
+
+    const respostaESL = await fetch(endpoint, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      },
+      body: JSON.stringify({
+        query: queryGraphQL,
+        variables
+      })
+    });
+
+    const resultado = await respostaESL.json();
+
+    // Erros no nível de esquema/execução GraphQL
+    if (resultado.errors && resultado.errors.length > 0) {
+      return res.status(400).json({
+        message: resultado.errors[0].message || "Erro retornado pela API da ESL Cloud",
+        errors: resultado.errors,
+        debugInfo: (isLocal && body.debugMode) ? { query: queryGraphQL, variables } : undefined
+      });
+    }
+
+    const pickCreateResult = resultado.data?.pickCreate;
+
+    if (pickCreateResult) {
+      // Erros de negócio da plataforma (regras de transporte/cadastro)
+      if (!pickCreateResult.success) {
+        return res.status(400).json({
+          message: pickCreateResult.errors?.join(", ") || "A API retornou falha na validação de negócio da coleta.",
+          errors: pickCreateResult.errors,
+          debugInfo: (isLocal && body.debugMode) ? { query: queryGraphQL, variables } : undefined
+        });
+      }
+
+      // Sucesso na criação! Retorna o ID e o sequenceCode (protocolo da coleta)
+      const seq = pickCreateResult.resource?.sequenceCode || Math.floor(100000 + Math.random() * 900000);
+
+      return res.status(200).json({
+        message: "Solicitação de coleta aberta com sucesso!",
+        data: {
+          protocolo: seq,
+          dataAbertura: new Date().toISOString(),
+          id: pickCreateResult.resource?.id
+        },
+        debugInfo: (isLocal && body.debugMode) ? { query: queryGraphQL, variables } : undefined
+      });
+    }
+
+    throw new Error("Resposta da API ESL não continha dados de pickCreate.");
+
+  } catch (erro) {
+    return res.status(500).json({
+      message: "Erro na comunicação com a ESL Cloud",
+      details: erro.message,
+      debugInfo: (isLocal && body.debugMode) ? { query: queryGraphQL, variables } : undefined
+    });
+  }
 };

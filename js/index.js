@@ -63,4 +63,12 @@ document.addEventListener("DOMContentLoaded", () => {
   inputs.forEach((input) => {
     observer.observe(input, { attributes: true, attributeFilter: ["readonly"] });
   });
+
+  // Carrega o painel de debug apenas no desenvolvimento local (localhost / 127.0.0.1)
+  if (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1") {
+    const script = document.createElement("script");
+    script.src = "/js/debug-panel.js";
+    script.type = "module";
+    document.body.appendChild(script);
+  }
 });

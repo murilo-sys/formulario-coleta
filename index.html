@@ -135,18 +135,18 @@
       <label for="naturezaMercadoria" class="perguntaTitulo obrigatorio">Natureza da mercadoria</label>
       <select id="naturezaMercadoria">
         <option value="" disabled selected>Selecione o tipo de carga...</option>
-        <option value="cosmetico_geral">Cosmético em geral</option>
-        <option value="material_eletrico">Material elétrico em geral</option>
-        <option value="alimenticio_geral">Produto alimentício em geral</option>
-        <option value="saude_correlato">Produto saúde – correlato em geral</option>
+        <option value="cosmetico_geral">Cosméticos em geral</option>
+        <option value="material_eletrico">Equipamentos elétricos e eletrônicos</option>
+        <option value="alimenticio_geral">Alimentos em geral</option>
+        <option value="saude_correlato">Produtos de saúde / correlatos</option>
         <option value="liquido">Líquido</option>
-        <option value="produto_saude">Produto saúde</option>
+        <option value="produto_saude">Produtos de saúde</option>
         <option value="quimica_diversos">Produtos diversos da indústria química</option>
-        <option value="confeccoes_tecidos">Confecções / tecidos</option>
+        <option value="confeccoes_tecidos">Confecções e tecidos</option>
         <option value="artigos_perigosos">Outros artigos perigosos</option>
         <option value="autopecas">Autopeças</option>
-        <option value="propaganda_visual">Material de propaganda / visual</option>
-        <option value="eletroeletronicos">Equipamentos eletroeletrônicos</option>
+        <option value="propaganda_visual">Material de propaganda e visual</option>
+        <option value="eletroeletronicos">Equipamentos elétricos e eletrônicos</option>
         <option value="informatica">Material de informática</option>
         <option value="pecas_geral">Peças em geral</option>
       </select>
@@ -172,7 +172,7 @@
 
         <div class="coluna-flex-1">
           <label for="qtdVolumes" class="perguntaTitulo obrigatorio">Volumes</label>
-          <input type="number" id="qtdVolumes" placeholder="Qtd. de volumes">
+          <input type="text" id="qtdVolumes" placeholder="Qtd. de volumes" inputmode="numeric">
         </div>
 
         <div class="coluna-flex-1">
@@ -477,6 +477,38 @@
         <button type="button" id="btnConfirmarEnvioFinal" class="btn-dialog btn-dialog-confirmar"
           style="width: 50%; text-align: center;" disabled>
           Confirmar Coleta
+        </button>
+      </div>
+    </div>
+  </dialog>
+
+  <dialog id="dialogSucesso" class="dialog-premium">
+    <div class="dialog-container">
+      <div class="dialog-cabecalho" style="text-align: center; border-bottom: none; padding-bottom: 0;">
+        <div style="font-size: 50px; margin-bottom: 12px;">✅</div>
+        <span class="dialog-titulo" style="color: #16a34a; font-size: 20px;">Coleta Solicitada com Sucesso!</span>
+        <p class="dialog-subtitulo" style="font-size: 14px; margin-top: 6px; font-weight: 600;">
+          Protocolo: <span id="sucessoProtocolo" style="color: #1e293b; background-color: #f1f5f9; padding: 2px 8px; border-radius: 4px; font-family: monospace;">-</span>
+        </p>
+      </div>
+
+      <div class="dialog-corpo" style="background-color: #f0fdf4; border-color: #bbf7d0; padding: 20px; font-size: 14px; color: #166534; line-height: 1.6; gap: 12px; text-align: left;">
+        <p style="margin: 0; font-weight: 500;">
+          Sua solicitação de coleta foi registrada no sistema. Você terá um retorno em até <strong>48 horas</strong> informando se a mesma será realizada ou não.
+        </p>
+        <div style="border-top: 1px solid #bbf7d0; padding-top: 12px; margin-top: 4px; font-size: 13px; color: #1e3a1e;">
+          <p style="margin: 0 0 6px 0; font-weight: bold;">Para mais informações, ligue para:</p>
+          <ul style="margin: 0; padding-left: 20px; font-weight: 600; list-style-type: disc;">
+            <li>(11) 3017-8990</li>
+            <li>(11) 2222-1260</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="dialog-rodape" style="margin-top: 8px; justify-content: center;">
+        <button type="button" id="btnFecharSucesso" class="btn-dialog btn-dialog-confirmar"
+          style="width: 100%; text-align: center; background-color: #16a34a; border-color: #16a34a; color: #fff;">
+          Entendido
         </button>
       </div>
     </div>

@@ -160,8 +160,31 @@ const server = http.createServer((req, res) => {
     return;
   }
 
+  // Decode and normalize the path to prevent directory traversal and casing issues
+  let normalizedPathname;
+  try {
+    normalizedPathname = path.normalize(decodeURIComponent(pathname)).replace(/\\/g, '/');
+  } catch (e) {
+    res.statusCode = 400;
+    res.end('Bad Request');
+    return;
+  }
+
+  // Ensure path is within the allowed static paths
+  const isAllowed = 
+    normalizedPathname === '/' || 
+    normalizedPathname === '/index.html' || 
+    normalizedPathname.startsWith('/js/') || 
+    normalizedPathname.startsWith('/assets/');
+
+  if (!isAllowed) {
+    res.statusCode = 404;
+    res.end('Not Found');
+    return;
+  }
+
   // Serve static files
-  let filePath = path.join(__dirname, pathname === '/' ? 'index.html' : pathname);
+  let filePath = path.join(__dirname, normalizedPathname === '/' ? 'index.html' : normalizedPathname);
   
   // Basic security check to prevent path traversal
   if (!filePath.startsWith(__dirname)) {
@@ -170,30 +193,33 @@ const server = http.createServer((req, res) => {
     return;
   }
 
-  const ext = path.extname(filePath);
-  const mimeTypes = {
-    '.html': 'text/html',
-    '.css': 'text/css',
-    '.js': 'text/javascript',
-    '.json': 'application/json',
-    '.png': 'image/png',
-    '.jpg': 'image/jpeg',
-    '.svg': 'image/svg+xml'
-  };
+  fs.stat(filePath, (err, stats) => {
+    if (err || !stats.isFile()) {
+      res.statusCode = 404;
+      res.end('Not Found');
+      return;
+    }
 
-  fs.readFile(filePath, (err, content) => {
-    if (err) {
-      if (err.code === 'ENOENT') {
-        res.statusCode = 404;
-        res.end('Not Found');
-      } else {
+    const ext = path.extname(filePath);
+    const mimeTypes = {
+      '.html': 'text/html',
+      '.css': 'text/css',
+      '.js': 'text/javascript',
+      '.json': 'application/json',
+      '.png': 'image/png',
+      '.jpg': 'image/jpeg',
+      '.svg': 'image/svg+xml'
+    };
+
+    fs.readFile(filePath, (err, content) => {
+      if (err) {
         res.statusCode = 500;
         res.end('Server Error');
+      } else {
+        res.writeHead(200, { 'Content-Type': mimeTypes[ext] || 'application/octet-stream' });
+        res.end(content, 'utf-8');
       }
-    } else {
-      res.writeHead(200, { 'Content-Type': mimeTypes[ext] || 'application/octet-stream' });
-      res.end(content, 'utf-8');
-    }
+    });
   });
 });
 

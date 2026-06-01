@@ -105,26 +105,20 @@ export function blindarInputCubagem(inputElement) {
   if (!inputElement) return;
 
   inputElement.addEventListener("keydown", (evento) => {
-    if (
-      evento.key === "e" ||
-      evento.key === "E" ||
-      evento.key === "-" ||
-      evento.key === "." ||
-      evento.key === "," ||
-      evento.key === "+"
-    ) {
+    const teclasPermitidas = [
+      "Backspace", "Delete", "ArrowLeft", "ArrowRight", "Tab", 
+      "Enter", "Escape", "Home", "End"
+    ];
+    if (teclasPermitidas.includes(evento.key) || evento.ctrlKey || evento.metaKey) {
+      return;
+    }
+    if (!/^[0-9]$/.test(evento.key)) {
       evento.preventDefault();
     }
   });
 
-  IMask(inputElement, {
-    mask: Number,
-    scale: 0,
-    signed: false,
-    prepare: function (str) {
-      if (str === "-") return "";
-      return str;
-    }
+  inputElement.addEventListener("input", () => {
+    inputElement.value = inputElement.value.replace(/\D/g, "");
   });
 }
 
