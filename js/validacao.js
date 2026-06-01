@@ -16,6 +16,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const dialogSucesso = document.getElementById("dialogSucesso");
   const btnFecharSucesso = document.getElementById("btnFecharSucesso");
   const sucessoOrdemColeta = document.getElementById("sucessoOrdemColeta");
+  const sucessoTelefoneContato = document.getElementById("sucessoTelefoneContato");
 
   // ========================================================================= //
   //                           VALIDAÇÃO E ENVIO DO FORMULÁRIO                 //
@@ -223,6 +224,10 @@ document.addEventListener("DOMContentLoaded", () => {
           if (response.ok) {
             if (sucessoOrdemColeta) {
               sucessoOrdemColeta.textContent = result.data?.protocolo || "Sem Ordem de Coleta";
+            }
+            if (sucessoTelefoneContato) {
+              const tel = state.solicitanteEndereco?.phoneNumber || state.solicitanteEndereco?.mobileNumber;
+              sucessoTelefoneContato.textContent = tel ? tel.trim() : "Não localizado (fale com o suporte)";
             }
             if (dialogConfirmacaoEnvio) {
               dialogConfirmacaoEnvio.close();

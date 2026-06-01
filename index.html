@@ -279,17 +279,21 @@
       <input type="text" id="observacoes" placeholder="Ex: Entrar pelos fundos do galpão B...">
     </div>
 
-    <div class="grupo-recaptcha" style="display: flex; justify-content: center; margin-bottom: 20px;">
-      <div class="g-recaptcha" data-sitekey="6LcGpgctAAAAAB07T4-pR2bqlYQCmoxcuV6EWFoR"></div>
-    </div>
-
     <!-- Banner de Atenção/Regras de Negócio -->
     <div class="alerta-importante-card">
       <div class="alerta-importante-icone">⚠️</div>
       <div class="alerta-importante-conteudo">
-        <strong>Atenção:</strong> A abertura desta solicitação <strong>não garante</strong> a realização da coleta de imediato. O pedido passará por uma análise operacional e fiscal. A confirmação definitiva será dada em até 48 horas.
+        <strong>Atenção:</strong> A abertura desta solicitação <strong>não garante</strong> a realização da coleta de
+        imediato. O pedido passará por uma análise operacional e fiscal. A confirmação definitiva será dada em até 48
+        horas.
       </div>
     </div>
+
+    <div class="grupo-recaptcha" style="display: flex; justify-content: center; margin-bottom: 20px;">
+      <div class="g-recaptcha" data-sitekey="6LcGpgctAAAAAB07T4-pR2bqlYQCmoxcuV6EWFoR"></div>
+    </div>
+
+
 
     <div class="coluna-botao-agendar">
       <button id="buttonLimparForm" type="reset">Limpar Formulário</button>
@@ -368,7 +372,8 @@
 
       <div class="dialog-alerta">
         <span>⚠️</span>
-        <p>Atenção: Ao confirmar, este endereço será utilizado para a coleta física. Caso haja divergências, recuse a confirmação e fale com o suporte.</p>
+        <p>Atenção: Ao confirmar, este endereço será utilizado para a coleta física. Caso haja divergências, recuse a
+          confirmação e fale com o suporte.</p>
       </div>
 
       <div class="dialog-rodape">
@@ -469,11 +474,14 @@
         </p>
       </div>
 
-      <div class="dialog-corpo" style="background-color: #f8fafc; border-color: #e2e8f0; padding: 20px; gap: 12px; display: flex; flex-direction: column;">
-        <div style="background-color: #fffbeb; border: 1px solid #fde68a; border-radius: 6px; padding: 10px; font-size: 13px; color: #78350f; display: flex; gap: 8px; align-items: flex-start; line-height: 1.4; text-align: left;">
+      <div class="dialog-corpo"
+        style="background-color: #f8fafc; border-color: #e2e8f0; padding: 20px; gap: 12px; display: flex; flex-direction: column;">
+        <div
+          style="background-color: #fffbeb; border: 1px solid #fde68a; border-radius: 6px; padding: 10px; font-size: 13px; color: #78350f; display: flex; gap: 8px; align-items: flex-start; line-height: 1.4; text-align: left;">
           <span>⚠️</span>
           <span>
-            <strong>Aviso:</strong> O envio deste formulário registra a solicitação, mas **não garante** a execução da coleta. Ela passará por análise operacional/fiscal e retornaremos em até 48h.
+            <strong>Aviso:</strong> O envio deste formulário registra a solicitação, mas **não garante** a execução da
+            coleta. Ela passará por análise operacional/fiscal e retornaremos em até 48h.
           </span>
         </div>
         <div style="display: flex; align-items: flex-start; gap: 10px; margin-top: 5px;">
@@ -512,13 +520,29 @@
       </div>
 
       <div class="dialog-corpo"
-        style="background-color: #f0fdf4; border-color: #bbf7d0; padding: 20px; font-size: 14px; color: #166534; line-height: 1.6; gap: 12px; text-align: left;">
+        style="background-color: #f0fdf4; border-color: #bbf7d0; padding: 20px; font-size: 14px; color: #166534; line-height: 1.6; gap: 12px; text-align: left; display: flex; flex-direction: column;">
         <p style="margin: 0; font-weight: 500;">
-          A sua ordem de coleta foi gerada e registrada no sistema. O pedido passará por <strong>análise fiscal e operacional</strong>. Você receberá uma confirmação definitiva em até <strong>48 horas</strong> informando se a coleta foi aprovada para realização.
+          A sua ordem de coleta foi gerada e registrada no sistema. O pedido passará por <strong>análise fiscal e
+            operacional</strong>. Você receberá uma confirmação definitiva em até <strong>48 horas</strong> informando
+          se a coleta foi aprovada para realização.
         </p>
+
+        <div style="border-top: 1px solid #bbf7d0; padding-top: 12px; margin-top: 4px;">
+          <p style="margin: 0 0 4px 0; font-weight: bold; color: #14532d;">O retorno operacional será dado no telefone
+            de contato cadastrado:</p>
+          <div id="sucessoTelefoneContato"
+            style="font-weight: bold; font-size: 16px; color: #14532d; background-color: #dcfce7; padding: 8px 12px; border-radius: 6px; border: 1px solid #bbf7d0; text-align: center; margin: 6px 0; font-family: monospace;">
+            -</div>
+          <p style="margin: 4px 0 0 0; font-size: 12px; color: #15803d; font-style: italic; line-height: 1.4;">
+            <strong>Aviso:</strong> Se este telefone estiver desatualizado ou incorreto, você deve ligar imediatamente
+            para o nosso suporte nos números abaixo para ajustar o cadastro e podermos prosseguir com o agendamento da
+            coleta.
+          </p>
+        </div>
+
         <div
           style="border-top: 1px solid #bbf7d0; padding-top: 12px; margin-top: 4px; font-size: 13px; color: #1e3a1e;">
-          <p style="margin: 0 0 6px 0; font-weight: bold;">Para mais informações, ligue para:</p>
+          <p style="margin: 0 0 6px 0; font-weight: bold;">Canais de suporte e ajuste cadastral:</p>
           <ul style="margin: 0; padding-left: 20px; font-weight: 600; list-style-type: disc;">
             <li>(11) 3017-8990</li>
             <li>(11) 2222-1260</li>
@@ -541,11 +565,14 @@
       <div class="dialog-cabecalho" style="text-align: center; border-bottom: none; padding-bottom: 0;">
         <div id="dialogAlertaIcone" style="font-size: 40px; margin-bottom: 12px;">⚠️</div>
         <span id="dialogAlertaTitulo" class="dialog-titulo" style="color: #9a3412; font-size: 20px;">Atenção</span>
-        <p id="dialogAlertaSubtitulo" class="dialog-subtitulo" style="font-size: 14px; margin-top: 6px; line-height: 1.4; color: #334155; text-align: center; font-weight: 500;"></p>
+        <p id="dialogAlertaSubtitulo" class="dialog-subtitulo"
+          style="font-size: 14px; margin-top: 6px; line-height: 1.4; color: #334155; text-align: center; font-weight: 500;">
+        </p>
       </div>
 
       <div class="dialog-rodape" style="margin-top: 15px; justify-content: center;">
-        <button type="button" id="btnFecharAlertaMensagem" onclick="this.closest('dialog').close()" class="btn-dialog btn-dialog-confirmar"
+        <button type="button" id="btnFecharAlertaMensagem" onclick="this.closest('dialog').close()"
+          class="btn-dialog btn-dialog-confirmar"
           style="width: 100%; text-align: center; background-color: #475569; border-color: #475569; color: #fff;">
           Entendido
         </button>
