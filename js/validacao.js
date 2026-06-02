@@ -123,12 +123,21 @@ document.addEventListener("DOMContentLoaded", () => {
           }
         }
 
+        const emailCadastro = state.solicitanteEndereco?.email || "Não cadastrado";
+        const emailAdicional = document.getElementById("solicitanteEmailAdicional")?.value.trim() || "";
         if (confirmacaoEmailContato) {
-          confirmacaoEmailContato.textContent = state.solicitanteEndereco?.email || "Não cadastrado";
+          confirmacaoEmailContato.textContent = emailAdicional 
+            ? `${emailCadastro} / ${emailAdicional}`
+            : emailCadastro;
         }
+
+        const telCadastro = (state.solicitanteEndereco?.phoneNumber || state.solicitanteEndereco?.mobileNumber || "").trim();
+        const telAdicional = document.getElementById("solicitanteTelefoneAdicional")?.value.trim() || "";
         if (confirmacaoTelefoneContato) {
-          const tel = state.solicitanteEndereco?.phoneNumber || state.solicitanteEndereco?.mobileNumber;
-          confirmacaoTelefoneContato.textContent = tel ? tel.trim() : "Não cadastrado";
+          const telCadastroTexto = telCadastro || "Não cadastrado";
+          confirmacaoTelefoneContato.textContent = telAdicional 
+            ? `${telCadastroTexto} / ${telAdicional}`
+            : telCadastroTexto;
         }
         if (chkConfirmacaoFinal) chkConfirmacaoFinal.checked = false;
         if (btnConfirmarEnvioFinal) {
@@ -196,11 +205,19 @@ document.addEventListener("DOMContentLoaded", () => {
           recaptchaToken = grecaptcha.getResponse();
         }
 
+        const emailCadastro = state.solicitanteEndereco?.email || "";
+        const emailAdicional = document.getElementById("solicitanteEmailAdicional")?.value.trim() || "";
+        const finalEmail = emailAdicional ? `${emailCadastro} / ${emailAdicional}` : emailCadastro;
+
+        const telCadastro = (state.solicitanteEndereco?.phoneNumber || state.solicitanteEndereco?.mobileNumber || "").trim();
+        const telAdicional = document.getElementById("solicitanteTelefoneAdicional")?.value.trim() || "";
+        const finalTel = telAdicional ? `${telCadastro} / ${telAdicional}` : telCadastro;
+
         const payload = {
           solicitanteDoc: document.getElementById("solicitanteDoc")?.value || "",
           solicitanteNome: document.getElementById("solicitanteNome")?.value || "",
-          solicitanteEmail: state.solicitanteEndereco?.email || "",
-          solicitanteTelefone: state.solicitanteEndereco?.phoneNumber || state.solicitanteEndereco?.mobileNumber || "",
+          solicitanteEmail: finalEmail,
+          solicitanteTelefone: finalTel,
           tipoSolicitante: document.querySelector('input[name="tipoSolicitante"]:checked')?.value || "",
           remetenteDoc: document.getElementById("remetenteDoc")?.value || "",
           remetenteNome: state.remetenteEndereco?.razaoSocial || "",
@@ -243,12 +260,21 @@ document.addEventListener("DOMContentLoaded", () => {
             if (sucessoOrdemColeta) {
               sucessoOrdemColeta.textContent = result.data?.protocolo || "Sem Ordem de Coleta";
             }
+            const emailCadastro = state.solicitanteEndereco?.email || "Não localizado";
+            const emailAdicional = document.getElementById("solicitanteEmailAdicional")?.value.trim() || "";
             if (sucessoEmailContato) {
-              sucessoEmailContato.textContent = state.solicitanteEndereco?.email || "Não localizado (fale com o suporte)";
+              sucessoEmailContato.textContent = emailAdicional 
+                ? `${emailCadastro} / ${emailAdicional}`
+                : emailCadastro;
             }
+
+            const telCadastro = (state.solicitanteEndereco?.phoneNumber || state.solicitanteEndereco?.mobileNumber || "").trim();
+            const telAdicional = document.getElementById("solicitanteTelefoneAdicional")?.value.trim() || "";
             if (sucessoTelefoneContato) {
-              const tel = state.solicitanteEndereco?.phoneNumber || state.solicitanteEndereco?.mobileNumber;
-              sucessoTelefoneContato.textContent = tel ? tel.trim() : "Não localizado (fale com o suporte)";
+              const telCadastroTexto = telCadastro || "Não localizado";
+              sucessoTelefoneContato.textContent = telAdicional 
+                ? `${telCadastroTexto} / ${telAdicional}`
+                : telCadastroTexto;
             }
             if (dialogConfirmacaoEnvio) {
               dialogConfirmacaoEnvio.close();
@@ -304,6 +330,7 @@ document.addEventListener("DOMContentLoaded", () => {
       if (state.maskCep) state.maskCep.value = "";
       if (state.maskPeso) state.maskPeso.value = "";
       if (state.maskValor) state.maskValor.value = "";
+      if (state.maskTelefoneAdicional) state.maskTelefoneAdicional.value = "";
 
       // 5. Oculta o grupo de solicitante e as seções adicionais
       const grupoEscondidoSolicitante = document.getElementById("grupoEscondidoSolicitante");

@@ -19,6 +19,7 @@ export const state = {
   maskPeso: null,
   maskValor: null,
   maskVolumes: null,
+  maskTelefoneAdicional: null,
 
   // Campos de controle de dados
 

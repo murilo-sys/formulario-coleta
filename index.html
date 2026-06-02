@@ -35,6 +35,18 @@
         </div>
       </div>
 
+      <div class="linhaDupla">
+        <div class="coluna-flex-1">
+          <label for="solicitanteEmailAdicional" class="perguntaTitulo">E-mail de contato adicional (opcional)</label>
+          <input type="email" id="solicitanteEmailAdicional" placeholder="outro.email@exemplo.com">
+        </div>
+
+        <div class="coluna-flex-1">
+          <label for="solicitanteTelefoneAdicional" class="perguntaTitulo">Telefone de contato adicional (opcional)</label>
+          <input type="text" id="solicitanteTelefoneAdicional" placeholder="(00) 00000-0000">
+        </div>
+      </div>
+
       <div id="grupoEscondidoSolicitante" class="oculto">
         <p class="perguntaTitulo obrigatorio">O Solicitante é o...</p>
 
@@ -58,250 +70,250 @@
         <div class="cartaoPerguntas">
           <h3>Remetente e Destinatário</h3>
 
-      <div class="linhaDupla">
+          <div class="linhaDupla">
 
-        <div class="coluna-flex-2">
-          <label for="remetenteDoc" class="perguntaTitulo obrigatorio">Documento do Remetente</label>
-          <input type="text" id="remetenteDoc" placeholder="CPF ou CNPJ" readonly>
-          <div class="grupo-cidade-estado">
-            <span class="cidade-estado oculto" id="razaoSolicitanteRemetente"></span>
-            <span class="cidade-estado oculto" id="cidadeEstadoRemetente"></span>
+            <div class="coluna-flex-2">
+              <label for="remetenteDoc" class="perguntaTitulo obrigatorio">Documento do Remetente</label>
+              <input type="text" id="remetenteDoc" placeholder="CPF ou CNPJ" readonly>
+              <div class="grupo-cidade-estado">
+                <span class="cidade-estado oculto" id="razaoSolicitanteRemetente"></span>
+                <span class="cidade-estado oculto" id="cidadeEstadoRemetente"></span>
+              </div>
+            </div>
+
+            <div class="coluna-flex-2">
+              <label for="destinatarioDoc" class="perguntaTitulo obrigatorio">Documento do Destinatário</label>
+              <input type="text" id="destinatarioDoc" placeholder="CPF ou CNPJ" readonly>
+              <div class="grupo-cidade-estado">
+                <span class="cidade-estado oculto" id="razaoSolicitanteDestinatario"></span>
+                <span class="cidade-estado oculto" id="cidadeEstadoDestinatario"></span>
+              </div>
+            </div>
+
+          </div>
+
+        </div>
+
+        <div class="cartaoPerguntas">
+
+          <h3>Endereço da coleta</h3>
+          <p class="resumoCampo">Local onde a mercadoria será retirada</p>
+
+          <div class="linhaDupla">
+
+            <div class="coluna-flex-1">
+              <label for="cepInput" class="perguntaTitulo obrigatorio">CEP</label>
+              <input type="text" id="cepInput" placeholder="00000-000" readonly tabindex="-1">
+            </div>
+
+            <div class="coluna-flex-3">
+              <label for="logradouroInput" class="perguntaTitulo obrigatorio">Logradouro</label>
+              <input type="text" id="logradouroInput" placeholder="Rua, Avenida, Travessa..." readonly tabindex="-1">
+            </div>
+
+          </div>
+
+          <div class="linhaDupla">
+
+            <div class="coluna-flex-1">
+              <label for="numeroInput" class="perguntaTitulo obrigatorio">Número</label>
+              <input type="text" id="numeroInput" placeholder="Ex: 01" readonly tabindex="-1">
+            </div>
+
+            <div class="coluna-flex-3">
+              <label for="complementoInput" class="perguntaTitulo">Complemento</label>
+              <input type="text" id="complementoInput" placeholder="Apartamento, sala, bloco..." readonly tabindex="-1">
+            </div>
+
+          </div>
+
+          <div class="linhaDupla">
+
+            <div class="coluna-flex-2">
+              <label for="bairroInput" class="perguntaTitulo obrigatorio">Bairro</label>
+              <input type="text" id="bairroInput" placeholder="Centro, Vila Mariana..." readonly tabindex="-1">
+            </div>
+
+            <div class="coluna-flex-1">
+              <label for="cidadeInput" class="perguntaTitulo obrigatorio">Cidade</label>
+              <input type="text" id="cidadeInput" placeholder="São Paulo..." readonly tabindex="-1">
+            </div>
+
+            <div class="coluna-flex-1">
+              <label for="estadoInput" class="perguntaTitulo obrigatorio">Estado</label>
+              <input type="text" id="estadoInput" placeholder="SP, RJ..." readonly tabindex="-1">
+            </div>
+
           </div>
         </div>
 
-        <div class="coluna-flex-2">
-          <label for="destinatarioDoc" class="perguntaTitulo obrigatorio">Documento do Destinatário</label>
-          <input type="text" id="destinatarioDoc" placeholder="CPF ou CNPJ" readonly>
-          <div class="grupo-cidade-estado">
-            <span class="cidade-estado oculto" id="razaoSolicitanteDestinatario"></span>
-            <span class="cidade-estado oculto" id="cidadeEstadoDestinatario"></span>
+        <div class="cartaoPerguntas">
+          <h3>Dados da mercadoria</h3>
+          <label for="naturezaMercadoria" class="perguntaTitulo obrigatorio">Natureza da mercadoria</label>
+          <select id="naturezaMercadoria">
+            <option value="" disabled selected>Selecione o tipo de carga...</option>
+            <option value="cosmetico_geral">Cosméticos em geral</option>
+            <option value="material_eletrico">Equipamentos elétricos e eletrônicos</option>
+            <option value="alimenticio_geral">Alimentos em geral</option>
+            <option value="saude_correlato">Produtos de saúde / correlatos</option>
+            <option value="liquido">Líquido</option>
+            <option value="produto_saude">Produtos de saúde</option>
+            <option value="quimica_diversos">Produtos diversos da indústria química</option>
+            <option value="confeccoes_tecidos">Confecções e tecidos</option>
+            <option value="artigos_perigosos">Outros artigos perigosos</option>
+            <option value="autopecas">Autopeças</option>
+            <option value="propaganda_visual">Material de propaganda e visual</option>
+            <option value="eletroeletronicos">Equipamentos elétricos e eletrônicos</option>
+            <option value="informatica">Material de informática</option>
+            <option value="pecas_geral">Peças em geral</option>
+          </select>
+
+          <div class="linhaDupla">
+
+            <div class="coluna-flex-1">
+              <label for="numeroNf" class="perguntaTitulo">Número da NF</label>
+              <input type="text" id="numeroNf" placeholder="000.000.000">
+            </div>
+
+            <div class="coluna-flex-1">
+              <label for="valorNf" class="perguntaTitulo obrigatorio">Valor da NF (R$)</label>
+              <div class="input-grupo-sufixo">
+                <span class="sufixo"> R$ |</span>
+                <input type="text" id="valorNf" placeholder="0,00">
+              </div>
+            </div>
+
           </div>
-        </div>
 
-      </div>
+          <div class="linhaDupla">
 
-    </div>
+            <div class="coluna-flex-1">
+              <label for="qtdVolumes" class="perguntaTitulo obrigatorio">Volumes</label>
+              <input type="text" id="qtdVolumes" placeholder="Qtd. de volumes" inputmode="numeric">
+            </div>
 
-    <div class="cartaoPerguntas">
+            <div class="coluna-flex-1">
+              <label for="pesoReal" class="perguntaTitulo obrigatorio">Peso Real Total</label>
+              <div class="input-grupo-sufixo">
+                <input type="text" id="pesoReal" placeholder="0,00">
+                <span class="sufixo">| KG</span>
+              </div>
+            </div>
 
-      <h3>Endereço da coleta</h3>
-      <p class="resumoCampo">Local onde a mercadoria será retirada</p>
-
-      <div class="linhaDupla">
-
-        <div class="coluna-flex-1">
-          <label for="cepInput" class="perguntaTitulo obrigatorio">CEP</label>
-          <input type="text" id="cepInput" placeholder="00000-000" readonly tabindex="-1">
-        </div>
-
-        <div class="coluna-flex-3">
-          <label for="logradouroInput" class="perguntaTitulo obrigatorio">Logradouro</label>
-          <input type="text" id="logradouroInput" placeholder="Rua, Avenida, Travessa..." readonly tabindex="-1">
-        </div>
-
-      </div>
-
-      <div class="linhaDupla">
-
-        <div class="coluna-flex-1">
-          <label for="numeroInput" class="perguntaTitulo obrigatorio">Número</label>
-          <input type="text" id="numeroInput" placeholder="Ex: 01" readonly tabindex="-1">
-        </div>
-
-        <div class="coluna-flex-3">
-          <label for="complementoInput" class="perguntaTitulo">Complemento</label>
-          <input type="text" id="complementoInput" placeholder="Apartamento, sala, bloco..." readonly tabindex="-1">
-        </div>
-
-      </div>
-
-      <div class="linhaDupla">
-
-        <div class="coluna-flex-2">
-          <label for="bairroInput" class="perguntaTitulo obrigatorio">Bairro</label>
-          <input type="text" id="bairroInput" placeholder="Centro, Vila Mariana..." readonly tabindex="-1">
-        </div>
-
-        <div class="coluna-flex-1">
-          <label for="cidadeInput" class="perguntaTitulo obrigatorio">Cidade</label>
-          <input type="text" id="cidadeInput" placeholder="São Paulo..." readonly tabindex="-1">
-        </div>
-
-        <div class="coluna-flex-1">
-          <label for="estadoInput" class="perguntaTitulo obrigatorio">Estado</label>
-          <input type="text" id="estadoInput" placeholder="SP, RJ..." readonly tabindex="-1">
-        </div>
-
-      </div>
-    </div>
-
-    <div class="cartaoPerguntas">
-      <h3>Dados da mercadoria</h3>
-      <label for="naturezaMercadoria" class="perguntaTitulo obrigatorio">Natureza da mercadoria</label>
-      <select id="naturezaMercadoria">
-        <option value="" disabled selected>Selecione o tipo de carga...</option>
-        <option value="cosmetico_geral">Cosméticos em geral</option>
-        <option value="material_eletrico">Equipamentos elétricos e eletrônicos</option>
-        <option value="alimenticio_geral">Alimentos em geral</option>
-        <option value="saude_correlato">Produtos de saúde / correlatos</option>
-        <option value="liquido">Líquido</option>
-        <option value="produto_saude">Produtos de saúde</option>
-        <option value="quimica_diversos">Produtos diversos da indústria química</option>
-        <option value="confeccoes_tecidos">Confecções e tecidos</option>
-        <option value="artigos_perigosos">Outros artigos perigosos</option>
-        <option value="autopecas">Autopeças</option>
-        <option value="propaganda_visual">Material de propaganda e visual</option>
-        <option value="eletroeletronicos">Equipamentos elétricos e eletrônicos</option>
-        <option value="informatica">Material de informática</option>
-        <option value="pecas_geral">Peças em geral</option>
-      </select>
-
-      <div class="linhaDupla">
-
-        <div class="coluna-flex-1">
-          <label for="numeroNf" class="perguntaTitulo">Número da NF</label>
-          <input type="text" id="numeroNf" placeholder="000.000.000">
-        </div>
-
-        <div class="coluna-flex-1">
-          <label for="valorNf" class="perguntaTitulo obrigatorio">Valor da NF (R$)</label>
-          <div class="input-grupo-sufixo">
-            <span class="sufixo"> R$ |</span>
-            <input type="text" id="valorNf" placeholder="0,00">
           </div>
-        </div>
 
-      </div>
-
-      <div class="linhaDupla">
-
-        <div class="coluna-flex-1">
-          <label for="qtdVolumes" class="perguntaTitulo obrigatorio">Volumes</label>
-          <input type="text" id="qtdVolumes" placeholder="Qtd. de volumes" inputmode="numeric">
-        </div>
-
-        <div class="coluna-flex-1">
-          <label for="pesoReal" class="perguntaTitulo obrigatorio">Peso Real Total</label>
-          <div class="input-grupo-sufixo">
-            <input type="text" id="pesoReal" placeholder="0,00">
-            <span class="sufixo">| KG</span>
+          <div class="linhaDuplaCubagem"
+            style="align-items: center; justify-content: space-between; flex-wrap: wrap; width: 100%;">
+            <div>
+              <p class="pergunta-cubagem-titulo">Dimensões da embalagem</p>
+              <p class="subTitulo">Medidas em metros (m)</p>
+            </div>
+            <div id="statusAlocacaoVolumes" class="status-alocacao"></div>
           </div>
-        </div>
 
-      </div>
+          <div id="containerCubagem">
+            <div class="coluna-cubagem">
+              <div class="coluna-flex-1">
+                <p class="pergunta-cubagem">VOLUMES</p>
+                <div class="input-grupo-sufixo">
+                  <input class="input-volumes" type="text" placeholder="0" value="1">
+                  <span class="sufixo">| un</span>
+                </div>
+              </div>
 
-      <div class="linhaDuplaCubagem"
-        style="align-items: center; justify-content: space-between; flex-wrap: wrap; width: 100%;">
-        <div>
-          <p class="pergunta-cubagem-titulo">Dimensões da embalagem</p>
-          <p class="subTitulo">Medidas em metros (m)</p>
-        </div>
-        <div id="statusAlocacaoVolumes" class="status-alocacao"></div>
-      </div>
+              <div class="coluna-flex-1">
+                <p class="pergunta-cubagem">COMPRIMENTO</p>
+                <div class="input-grupo-sufixo">
+                  <input class="input-comprimento" type="text" placeholder="0">
+                  <span class="sufixo">| m</span>
+                </div>
+              </div>
 
-      <div id="containerCubagem">
-        <div class="coluna-cubagem">
-          <div class="coluna-flex-1">
-            <p class="pergunta-cubagem">VOLUMES</p>
-            <div class="input-grupo-sufixo">
-              <input class="input-volumes" type="text" placeholder="0" value="1">
-              <span class="sufixo">| un</span>
+              <div class="coluna-flex-1">
+                <p class="pergunta-cubagem">LARGURA</p>
+                <div class="input-grupo-sufixo">
+                  <input class="input-largura" type="text" placeholder="0">
+                  <span class="sufixo">| m</span>
+                </div>
+              </div>
+
+              <div class="coluna-flex-1">
+                <p class="pergunta-cubagem">ALTURA</p>
+                <div class="input-grupo-sufixo">
+                  <input class="input-altura" type="text" placeholder="0">
+                  <span class="sufixo">| m</span>
+                </div>
+              </div>
+
+
             </div>
           </div>
 
-          <div class="coluna-flex-1">
-            <p class="pergunta-cubagem">COMPRIMENTO</p>
-            <div class="input-grupo-sufixo">
-              <input class="input-comprimento" type="text" placeholder="0">
-              <span class="sufixo">| m</span>
-            </div>
-          </div>
 
-          <div class="coluna-flex-1">
-            <p class="pergunta-cubagem">LARGURA</p>
-            <div class="input-grupo-sufixo">
-              <input class="input-largura" type="text" placeholder="0">
-              <span class="sufixo">| m</span>
-            </div>
-          </div>
 
-          <div class="coluna-flex-1">
-            <p class="pergunta-cubagem">ALTURA</p>
-            <div class="input-grupo-sufixo">
-              <input class="input-altura" type="text" placeholder="0">
-              <span class="sufixo">| m</span>
-            </div>
-          </div>
+          <p id="erroSomaCubagem" class="oculto"
+            style="color: rgb(240, 113, 113); font-size: 13px; font-weight: bold; margin-top: 10px;"></p>
 
 
         </div>
-      </div>
 
+        <div class="cartaoPerguntas">
+          <h3>Horário de funcionamento</h3>
+          <p class="resumoCampo">Defina o intervalo e horários em que a transportadora pode realizar a retirada</p>
 
+          <div class="linhaDupla">
+            <div class="coluna-flex-1">
+              <label for="horarioAbertura" class="perguntaTitulo obrigatorio">Horário de abertura</label>
+              <input type="text" id="horarioAbertura" placeholder="00:00" maxlength="5">
+            </div>
 
-      <p id="erroSomaCubagem" class="oculto"
-        style="color: rgb(240, 113, 113); font-size: 13px; font-weight: bold; margin-top: 10px;"></p>
+            <div class="coluna-flex-1">
+              <label for="horarioFechamento" class="perguntaTitulo obrigatorio">Horário de fechamento</label>
+              <input type="text" id="horarioFechamento" placeholder="00:00" maxlength="5">
+            </div>
+          </div>
 
+          <p class="perguntaTitulo" style="margin-top: 15px;">Fechado para almoço?</p>
+          <div class="grupo-radio-almoco">
+            <input type="radio" name="horarioAlmoco" id="almoco12-13" value="12:00-13:00">
+            <label for="almoco12-13">12h às 13h</label>
 
-    </div>
+            <input type="radio" name="horarioAlmoco" id="almoco13-14" value="13:00-14:00">
+            <label for="almoco13-14">13h às 14h</label>
 
-    <div class="cartaoPerguntas">
-      <h3>Horário de funcionamento</h3>
-      <p class="resumoCampo">Defina o intervalo e horários em que a transportadora pode realizar a retirada</p>
-
-      <div class="linhaDupla">
-        <div class="coluna-flex-1">
-          <label for="horarioAbertura" class="perguntaTitulo obrigatorio">Horário de abertura</label>
-          <input type="text" id="horarioAbertura" placeholder="00:00" maxlength="5">
+            <input type="radio" name="horarioAlmoco" id="almoco14-15" value="14:00-15:00">
+            <label for="almoco14-15">14h às 15h</label>
+          </div>
         </div>
 
-        <div class="coluna-flex-1">
-          <label for="horarioFechamento" class="perguntaTitulo obrigatorio">Horário de fechamento</label>
-          <input type="text" id="horarioFechamento" placeholder="00:00" maxlength="5">
+        <div class="cartaoPerguntas">
+          <h3>Instruções adicionais</h3>
+          <p class="resumoCampo">Pontos de referência, observações sobre a mercadoria, etc...</p>
+
+          <label for="observacoes" class="perguntaTitulo obrigatorio">Observações da coleta</label>
+          <input type="text" id="observacoes" placeholder="Ex: Entrar pelos fundos do galpão B...">
         </div>
-      </div>
 
-      <p class="perguntaTitulo" style="margin-top: 15px;">Fechado para almoço?</p>
-      <div class="grupo-radio-almoco">
-        <input type="radio" name="horarioAlmoco" id="almoco12-13" value="12:00-13:00">
-        <label for="almoco12-13">12h às 13h</label>
+        <!-- Banner de Atenção/Regras de Negócio -->
+        <div class="alerta-importante-card">
+          <div class="alerta-importante-icone">⚠️</div>
+          <div class="alerta-importante-conteudo">
+            <strong>Atenção:</strong> A abertura desta solicitação <strong>não garante</strong> a realização imediata da
+            coleta. O pedido será submetido à análise operacional. A confirmação da coleta, ou eventual
+            impossibilidade de atendimento, será comunicada em até 2 horas.
+          </div>
+        </div>
 
-        <input type="radio" name="horarioAlmoco" id="almoco13-14" value="13:00-14:00">
-        <label for="almoco13-14">13h às 14h</label>
-
-        <input type="radio" name="horarioAlmoco" id="almoco14-15" value="14:00-15:00">
-        <label for="almoco14-15">14h às 15h</label>
-      </div>
-    </div>
-
-    <div class="cartaoPerguntas">
-      <h3>Instruções adicionais</h3>
-      <p class="resumoCampo">Pontos de referência, observações sobre a mercadoria, etc...</p>
-
-      <label for="observacoes" class="perguntaTitulo obrigatorio">Observações da coleta</label>
-      <input type="text" id="observacoes" placeholder="Ex: Entrar pelos fundos do galpão B...">
-    </div>
-
-    <!-- Banner de Atenção/Regras de Negócio -->
-    <div class="alerta-importante-card">
-      <div class="alerta-importante-icone">⚠️</div>
-      <div class="alerta-importante-conteudo">
-        <strong>Atenção:</strong> A abertura desta solicitação <strong>não garante</strong> a realização da coleta de
-        imediato. O pedido passará por uma análise operacional e fiscal. A confirmação definitiva será dada em até 48
-        horas.
-      </div>
-    </div>
-
-    <div class="grupo-recaptcha" style="display: flex; justify-content: center; margin-bottom: 20px;">
-      <div class="g-recaptcha" data-sitekey="6LcGpgctAAAAAB07T4-pR2bqlYQCmoxcuV6EWFoR"></div>
-    </div>
+        <div class="grupo-recaptcha" style="display: flex; justify-content: center; margin-bottom: 20px;">
+          <div class="g-recaptcha" data-sitekey="6LcGpgctAAAAAB07T4-pR2bqlYQCmoxcuV6EWFoR"></div>
+        </div>
 
 
 
-    <div class="coluna-botao-agendar">
-      <button id="buttonLimparForm" type="reset">Limpar Formulário</button>
-      <button id="buttonSolicitarColeta" type="submit">Solicitar Coleta</button>
-    </div>
+        <div class="coluna-botao-agendar">
+          <button id="buttonLimparForm" type="reset">Limpar Formulário</button>
+          <button id="buttonSolicitarColeta" type="submit">Solicitar Coleta</button>
+        </div>
 
       </div>
     </div>
@@ -346,7 +358,7 @@
     <div class="dialog-container">
       <div class="dialog-cabecalho">
         <span class="dialog-titulo">Confirmar Endereço de Coleta</span>
-        <p class="dialog-subtitulo">Verifique se o endereço retornado do nosso sistema está correto.</p>
+        <p class="dialog-subtitulo">Verifique se o endereço indicado para a coleta está correto.</p>
       </div>
 
       <div class="dialog-corpo">
@@ -378,12 +390,12 @@
 
       <div class="dialog-alerta">
         <span>⚠️</span>
-        <p>Atenção: Ao confirmar, este endereço será utilizado para a coleta física. Caso haja divergências, recuse a
-          confirmação e fale com o suporte.</p>
+        <p>Atenção: O endereço exibido será utilizado para a coleta do material. Se houver qualquer divergência nas
+          informações, não confirme a solicitação e contate o Atendimento da Global Cargo.</p>
       </div>
 
       <div class="dialog-rodape">
-        <button type="button" id="btnDialogRecusar" class="btn-dialog btn-dialog-recusar">Dados Incorretos</button>
+        <button type="button" id="btnDialogRecusar" class="btn-dialog btn-dialog-recusar">Alterar endereço</button>
         <button type="button" id="btnDialogConfirmar" class="btn-dialog btn-dialog-confirmar">Confirmar
           Endereço</button>
       </div>
@@ -402,8 +414,7 @@
 
       <div class="dialog-corpo" style="background-color: #fff9f5; border-color: #ffedd5; padding: 20px;">
         <p style="margin: 0 0 12px 0; font-size: 13px; color: #7c2d12; line-height: 1.5; text-align: center;">
-          Para liberar a sua solicitação de coleta ou obter credenciais de acesso, entre em contato com a nossa equipe
-          de cadastro:
+          Ligue agora e continue a solicitação de sua coleta
         </p>
         <div class="dialog-item" style="border-bottom: 1px dashed #fed7aa; padding-bottom: 8px; margin-bottom: 8px;">
           <span class="dialog-label" style="color: #9a3412;">Telefone Principal</span>
@@ -442,8 +453,7 @@
 
       <div class="dialog-corpo" style="background-color: #fff9f5; border-color: #ffedd5; padding: 20px;">
         <p style="margin: 0 0 12px 0; font-size: 13px; color: #7c2d12; line-height: 1.5; text-align: center;">
-          Cargas perigosas, químicas ou líquidas necessitam de aprovação especial e documentação específica. Por favor,
-          solicite a sua cotação diretamente com a nossa mesa de operações:
+          Por favor, solicite sua coleta através dos canais de atendimento da Global.
         </p>
         <div class="dialog-item" style="border-bottom: 1px dashed #fed7aa; padding-bottom: 8px; margin-bottom: 8px;">
           <span class="dialog-label" style="color: #9a3412;">Telefone Principal</span>
@@ -486,15 +496,17 @@
           style="background-color: #fffbeb; border: 1px solid #fde68a; border-radius: 6px; padding: 10px; font-size: 13px; color: #78350f; display: flex; gap: 8px; align-items: flex-start; line-height: 1.4; text-align: left;">
           <span>⚠️</span>
           <span>
-            <strong>Aviso:</strong> O envio deste formulário registra a solicitação, mas **não garante** a execução da
-            coleta. Ela passará por análise operacional/fiscal e retornaremos em até 48h.
+            <strong>Aviso:</strong> O preenchimento e envio deste formulário registram apenas a sua solicitação de
+            coleta. A execução do serviço está sujeita à análise operacional, bem como à disponibilidade de atendimento
+            na região. Após a validação das informações, retornaremos com o posicionamento da solicitação em até 2h.
+            Aguarde o contato da Global;
           </span>
         </div>
 
         <!-- Contatos de Retorno Operacional -->
         <div
           style="border: 1px solid #cbd5e1; border-radius: 6px; background-color: #ffffff; padding: 10px; font-size: 13px; text-align: left; display: flex; flex-direction: column; gap: 6px; box-shadow: 0 1px 2px rgba(0,0,0,0.02);">
-          <p style="margin: 0 0 4px 0; font-weight: bold; color: #1e3a8a;">Canais para retorno operacional:</p>
+          <p style="margin: 0 0 4px 0; font-weight: bold; color: #1e3a8a;">Contatos Solicitante:</p>
           <div
             style="display: flex; justify-content: space-between; border-bottom: 1px dashed #e2e8f0; padding-bottom: 4px;">
             <span style="color: #64748b; font-weight: 500;">E-mail:</span>

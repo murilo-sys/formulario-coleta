@@ -37,6 +37,16 @@ document.addEventListener("DOMContentLoaded", () => {
     state.maskCep = IMask(cepEl, { mask: "00000-000" });
   }
 
+  const telAdicional = document.getElementById("solicitanteTelefoneAdicional");
+  if (telAdicional) {
+    state.maskTelefoneAdicional = IMask(telAdicional, {
+      mask: [
+        { mask: "(00) 0000-0000" },
+        { mask: "(00) 00000-0000" }
+      ]
+    });
+  }
+
   const pesoReal = document.getElementById("pesoReal");
   const valorNf = document.getElementById("valorNf");
   const volumes = document.getElementById('qtdVolumes');

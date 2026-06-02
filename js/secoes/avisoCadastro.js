@@ -8,7 +8,7 @@ export function avisoCadastro(participante, tipoErro = "nao_encontrado") {
   if (tipoErro === "editar") {
     if (titulo) titulo.textContent = "Editar Cadastro";
     if (subtitulo) {
-      subtitulo.textContent = "Para alterar ou editar seus dados cadastrais, entre em contato conosco.";
+      subtitulo.textContent = "Para alterar ou editar o endereço de coleta, será necessário entrar em contato conosco para atualizar os dados cadastrais.";
     }
   } else if (participante === "Pessoa Física") {
     if (titulo) titulo.textContent = "Pessoa Física";
