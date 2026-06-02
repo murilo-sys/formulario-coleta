@@ -227,6 +227,11 @@ module.exports = async function (req, res) {
     "produto_saude": 551,         // Produtos de saúde
     "confeccoes_tecidos": 15566,  // Confecções e tecidos
     "autopecas": 15563,           // Autopeças
+    "pecas_automotivas": 19423,   // Peças automotivas
+    "brindes": 33531,             // Brindes
+    "bijuterias": 19424,          // Bijuterias
+    "livros": 15594,              // Livros
+    "equip_protecao_epi": 33528,  // Equip. de Proteção EPI
     "propaganda_visual": 33748,   // Material de propaganda e visual
     "eletroeletronicos": 21059,   // Equipamentos elétricos e eletrônicos
     "informatica": 15581,         // Material de informática

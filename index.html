@@ -150,6 +150,11 @@
             <option value="confeccoes_tecidos">Confecções e tecidos</option>
             <option value="artigos_perigosos">Outros artigos perigosos</option>
             <option value="autopecas">Autopeças</option>
+            <option value="pecas_automotivas">Peças automotivas</option>
+            <option value="brindes">Brindes</option>
+            <option value="bijuterias">Bijuterias</option>
+            <option value="livros">Livros</option>
+            <option value="equip_protecao_epi">Equip. de Proteção EPI</option>
             <option value="propaganda_visual">Material de propaganda e visual</option>
             <option value="eletroeletronicos">Equipamentos elétricos e eletrônicos</option>
             <option value="informatica">Material de informática</option>
@@ -495,31 +500,37 @@
         <div
           style="border: 1px solid #cbd5e1; border-radius: 6px; background-color: #ffffff; padding: 10px; font-size: 13px; text-align: left; display: flex; flex-direction: column; gap: 6px; box-shadow: 0 1px 2px rgba(0,0,0,0.02);">
           <p style="margin: 0 0 4px 0; font-weight: bold; color: #1e3a8a;">Contatos Solicitante:</p>
-          
+
           <div
             style="display: flex; justify-content: space-between; border-bottom: 1px dashed #e2e8f0; padding-bottom: 4px; align-items: center; gap: 12px;">
             <span style="color: #64748b; font-weight: 500; white-space: nowrap;">E-mail:</span>
-            <span id="confirmacaoEmailContato" style="color: #0f172a; font-weight: 600; text-align: right; word-break: break-all;">-</span>
+            <span id="confirmacaoEmailContato"
+              style="color: #0f172a; font-weight: 600; text-align: right; word-break: break-all;">-</span>
           </div>
-          <div style="display: flex; justify-content: space-between; border-bottom: 1px dashed #e2e8f0; padding-bottom: 4px; padding-top: 2px; align-items: center; gap: 12px;">
+          <div
+            style="display: flex; justify-content: space-between; border-bottom: 1px dashed #e2e8f0; padding-bottom: 4px; padding-top: 2px; align-items: center; gap: 12px;">
             <span style="color: #64748b; font-weight: 500; white-space: nowrap;">Telefone:</span>
-            <span id="confirmacaoTelefoneContato" style="color: #0f172a; font-weight: 600; text-align: right; white-space: nowrap;">-</span>
+            <span id="confirmacaoTelefoneContato"
+              style="color: #0f172a; font-weight: 600; text-align: right; white-space: nowrap;">-</span>
           </div>
 
           <!-- Campos de contato adicional opcionais -->
           <div style="margin-top: 8px; display: flex; flex-direction: column; gap: 6px;">
-            <p style="margin: 0 0 4px 0; font-weight: bold; color: #475569; font-size: 12px;">Inserir outro contato operacional (Opcional):</p>
-            
-            <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px dashed #e2e8f0; padding-bottom: 4px; gap: 12px;">
+            <p style="margin: 0 0 4px 0; font-weight: bold; color: #475569; font-size: 12px;">Inserir outro contato
+              operacional (Opcional):</p>
+
+            <div
+              style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px dashed #e2e8f0; padding-bottom: 4px; gap: 12px;">
               <span style="color: #64748b; font-weight: 500; font-size: 13px; white-space: nowrap;">E-mail:</span>
-              <input type="email" id="solicitanteEmailAdicional" placeholder="outro@email.com" 
+              <input type="email" id="solicitanteEmailAdicional" placeholder="outro@email.com"
                 style="padding: 4px 8px; font-size: 12px; height: 28px; border: 1px solid #cbd5e1; border-radius: 4px; background-color: #ffffff; width: 60%; text-align: right; box-sizing: border-box; outline: none; transition: border-color 0.2s;"
                 onfocus="this.style.borderColor='#1e3a8a'" onblur="this.style.borderColor='#cbd5e1'">
             </div>
-            
-            <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px dashed #e2e8f0; padding-bottom: 4px; padding-top: 2px; gap: 12px;">
+
+            <div
+              style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px dashed #e2e8f0; padding-bottom: 4px; padding-top: 2px; gap: 12px;">
               <span style="color: #64748b; font-weight: 500; font-size: 13px; white-space: nowrap;">Telefone:</span>
-              <input type="text" id="solicitanteTelefoneAdicional" placeholder="(00) 00000-0000" 
+              <input type="text" id="solicitanteTelefoneAdicional" placeholder="(00) 00000-0000"
                 style="padding: 4px 8px; font-size: 12px; height: 28px; border: 1px solid #cbd5e1; border-radius: 4px; background-color: #ffffff; width: 60%; text-align: right; box-sizing: border-box; outline: none; transition: border-color 0.2s;"
                 onfocus="this.style.borderColor='#1e3a8a'" onblur="this.style.borderColor='#cbd5e1'">
             </div>
