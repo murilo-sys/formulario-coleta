@@ -235,6 +235,28 @@ module.exports = async function (req, res) {
 
   const productClassificationId = MAPA_NATUREZAS[body.naturezaMercadoria] || null;
 
+  // Constrói observações dinamicamente com base nos contatos adicionais
+  const partesComments = [];
+  if (body.observacoes && body.observacoes.trim() !== "") {
+    partesComments.push(body.observacoes.trim());
+  } else {
+    partesComments.push("Sem observações");
+  }
+
+  if (body.solicitanteEmailAdicional && body.solicitanteEmailAdicional.trim() !== "") {
+    partesComments.push(`E-mail Adicional: ${body.solicitanteEmailAdicional.trim()}`);
+  }
+
+  if (body.solicitanteTelefoneAdicional && body.solicitanteTelefoneAdicional.trim() !== "") {
+    partesComments.push(`Telefone Adicional: ${body.solicitanteTelefoneAdicional.trim()}`);
+  }
+
+  const numeroNfLimpo = body.numeroNf ? body.numeroNf.trim() : "";
+  partesComments.push(`Numero da NF-e: ${numeroNfLimpo || "Não informada"}`);
+  partesComments.push("Informações verdadeiras confirmadas pelo cliente");
+
+  const commentsString = partesComments.join(" | ");
+
   // Mapeia todas as variáveis do formulário para o padrão PickMutationInput da ESL
   const variables = {
     params: {
@@ -258,7 +280,7 @@ module.exports = async function (req, res) {
       serviceEndHour: body.horarioFechamento,
       lunchBreakStartHour: lunchStart,
       lunchBreakEndHour: lunchEnd,
-      comments: `${body.observacoes ? body.observacoes.trim() : "Sem observações"} | Contatos: [Cadastro: ${body.solicitanteEmail || "N/A"} / ${body.solicitanteTelefone || "N/A"}] [Adicional: ${body.solicitanteEmailAdicional || "N/A"} / ${body.solicitanteTelefoneAdicional || "N/A"}] | Numero da NF-e: ${body.numeroNf ? body.numeroNf.trim() : "Não informada"} | Informações verdadeiras confirmadas pelo cliente`,
+      comments: commentsString,
       pickAddressAttributes: {
         postalCode: String(body.cepColeta || "").replace(/\D/g, ""),
         line1: body.ruaColeta,
