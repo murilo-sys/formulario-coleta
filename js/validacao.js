@@ -92,12 +92,6 @@ document.addEventListener("DOMContentLoaded", () => {
         formValido = false;
       }
 
-      // 6. Verifica as observações (Geral)
-      const observacoes = document.getElementById("observacoes");
-      if (observacoes && observacoes.value.trim() === "") {
-        marcarErro(observacoes);
-        formValido = false;
-      }
 
       // --- Tratamento de Erros e Submit Final ---
 
@@ -240,17 +234,17 @@ document.addEventListener("DOMContentLoaded", () => {
 
         const emailCadastro = state.solicitanteEndereco?.email || "";
         const emailAdicional = document.getElementById("solicitanteEmailAdicional")?.value.trim() || "";
-        const finalEmail = emailAdicional ? `${emailCadastro} / ${emailAdicional}` : emailCadastro;
 
         const telCadastro = (state.solicitanteEndereco?.phoneNumber || state.solicitanteEndereco?.mobileNumber || "").trim();
         const telAdicional = document.getElementById("solicitanteTelefoneAdicional")?.value.trim() || "";
-        const finalTel = telAdicional ? `${telCadastro} / ${telAdicional}` : telCadastro;
 
         const payload = {
           solicitanteDoc: document.getElementById("solicitanteDoc")?.value || "",
           solicitanteNome: document.getElementById("solicitanteNome")?.value || "",
-          solicitanteEmail: finalEmail,
-          solicitanteTelefone: finalTel,
+          solicitanteEmail: emailCadastro,
+          solicitanteTelefone: telCadastro,
+          solicitanteEmailAdicional: emailAdicional,
+          solicitanteTelefoneAdicional: telAdicional,
           tipoSolicitante: document.querySelector('input[name="tipoSolicitante"]:checked')?.value || "",
           remetenteDoc: document.getElementById("remetenteDoc")?.value || "",
           remetenteNome: state.remetenteEndereco?.razaoSocial || "",

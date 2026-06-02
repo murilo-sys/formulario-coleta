@@ -278,7 +278,7 @@
           <h3>Instruções adicionais</h3>
           <p class="resumoCampo">Pontos de referência, observações sobre a mercadoria, etc...</p>
 
-          <label for="observacoes" class="perguntaTitulo obrigatorio">Observações da coleta</label>
+          <label for="observacoes" class="perguntaTitulo">Observações da coleta</label>
           <input type="text" id="observacoes" placeholder="Ex: Entrar pelos fundos do galpão B...">
         </div>
 
@@ -507,17 +507,21 @@
           </div>
 
           <!-- Campos de contato adicional opcionais -->
-          <div style="margin-top: 5px; display: flex; flex-direction: column; gap: 8px;">
-            <p style="margin: 0; font-weight: bold; color: #475569; font-size: 12px;">Inserir outro contato operacional (Opcional):</p>
-            <div style="display: flex; gap: 8px;">
-              <div style="flex: 1;">
-                <input type="email" id="solicitanteEmailAdicional" placeholder="Outro e-mail" 
-                  style="padding: 6px 8px; font-size: 12px; height: 32px; border: 1px solid #cbd5e1; border-radius: 4px; background-color: #f8fafc; width: 100%;">
-              </div>
-              <div style="flex: 1;">
-                <input type="text" id="solicitanteTelefoneAdicional" placeholder="Outro telefone" 
-                  style="padding: 6px 8px; font-size: 12px; height: 32px; border: 1px solid #cbd5e1; border-radius: 4px; background-color: #f8fafc; width: 100%;">
-              </div>
+          <div style="margin-top: 8px; display: flex; flex-direction: column; gap: 6px;">
+            <p style="margin: 0 0 4px 0; font-weight: bold; color: #475569; font-size: 12px;">Inserir outro contato operacional (Opcional):</p>
+            
+            <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px dashed #e2e8f0; padding-bottom: 4px;">
+              <span style="color: #64748b; font-weight: 500; font-size: 13px;">E-mail:</span>
+              <input type="email" id="solicitanteEmailAdicional" placeholder="outro@email.com" 
+                style="padding: 4px 8px; font-size: 12px; height: 28px; border: 1px solid #cbd5e1; border-radius: 4px; background-color: #ffffff; width: 60%; text-align: right; box-sizing: border-box; outline: none; transition: border-color 0.2s;"
+                onfocus="this.style.borderColor='#1e3a8a'" onblur="this.style.borderColor='#cbd5e1'">
+            </div>
+            
+            <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px dashed #e2e8f0; padding-bottom: 4px; padding-top: 2px;">
+              <span style="color: #64748b; font-weight: 500; font-size: 13px;">Telefone:</span>
+              <input type="text" id="solicitanteTelefoneAdicional" placeholder="(00) 00000-0000" 
+                style="padding: 4px 8px; font-size: 12px; height: 28px; border: 1px solid #cbd5e1; border-radius: 4px; background-color: #ffffff; width: 60%; text-align: right; box-sizing: border-box; outline: none; transition: border-color 0.2s;"
+                onfocus="this.style.borderColor='#1e3a8a'" onblur="this.style.borderColor='#cbd5e1'">
             </div>
           </div>
         </div>

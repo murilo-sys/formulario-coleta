@@ -78,6 +78,8 @@ module.exports = async function (req, res) {
   body.solicitanteNome = sanitizeInput(body.solicitanteNome !== undefined && body.solicitanteNome !== null ? String(body.solicitanteNome) : "");
   body.solicitanteEmail = sanitizeInput(body.solicitanteEmail !== undefined && body.solicitanteEmail !== null ? String(body.solicitanteEmail) : "");
   body.solicitanteTelefone = sanitizeInput(body.solicitanteTelefone !== undefined && body.solicitanteTelefone !== null ? String(body.solicitanteTelefone) : "");
+  body.solicitanteEmailAdicional = sanitizeInput(body.solicitanteEmailAdicional !== undefined && body.solicitanteEmailAdicional !== null ? String(body.solicitanteEmailAdicional) : "");
+  body.solicitanteTelefoneAdicional = sanitizeInput(body.solicitanteTelefoneAdicional !== undefined && body.solicitanteTelefoneAdicional !== null ? String(body.solicitanteTelefoneAdicional) : "");
   body.observacoes = sanitizeInput(body.observacoes !== undefined && body.observacoes !== null ? String(body.observacoes) : "");
 
   // Validação opcional de Google reCAPTCHA v3 (Ativa apenas se a chave estiver configurada no .env)
@@ -136,8 +138,7 @@ module.exports = async function (req, res) {
     { campo: "qtdVolumes", nome: "Quantidade de volumes" },
     { campo: "pesoReal", nome: "Peso real" },
     { campo: "horarioAbertura", nome: "Horário de abertura" },
-    { campo: "horarioFechamento", nome: "Horário de fechamento" },
-    { campo: "observacoes", nome: "Observações da coleta" }
+    { campo: "horarioFechamento", nome: "Horário de fechamento" }
   ];
 
   for (const item of camposObrigatorios) {
@@ -240,8 +241,8 @@ module.exports = async function (req, res) {
       corporationId: body.corporationId ? parseInt(body.corporationId, 10) : 107892,
       pickTypeId: body.pickTypeId ? parseInt(body.pickTypeId, 10) : 866,
       requester: body.solicitanteNome,
-      notificationPhone: body.solicitanteTelefone || null,
-      notificationEmail: body.solicitanteEmail || null,
+      notificationPhone: body.solicitanteTelefone || body.solicitanteTelefoneAdicional || null,
+      notificationEmail: body.solicitanteEmail || body.solicitanteEmailAdicional || null,
       customer: {
         document: String(body.solicitanteDoc || "").replace(/\D/g, ""),
         name: body.solicitanteNome
@@ -257,7 +258,7 @@ module.exports = async function (req, res) {
       serviceEndHour: body.horarioFechamento,
       lunchBreakStartHour: lunchStart,
       lunchBreakEndHour: lunchEnd,
-      comments: `${body.observacoes ? body.observacoes.trim() : "Sem observações"} | Numero da NF-e: ${body.numeroNf ? body.numeroNf.trim() : "Não informada"} | Informações verdadeiras confirmadas pelo cliente`,
+      comments: `${body.observacoes ? body.observacoes.trim() : "Sem observações"} | Contatos: [Cadastro: ${body.solicitanteEmail || "N/A"} / ${body.solicitanteTelefone || "N/A"}] [Adicional: ${body.solicitanteEmailAdicional || "N/A"} / ${body.solicitanteTelefoneAdicional || "N/A"}] | Numero da NF-e: ${body.numeroNf ? body.numeroNf.trim() : "Não informada"} | Informações verdadeiras confirmadas pelo cliente`,
       pickAddressAttributes: {
         postalCode: String(body.cepColeta || "").replace(/\D/g, ""),
         line1: body.ruaColeta,
