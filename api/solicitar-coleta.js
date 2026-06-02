@@ -132,7 +132,6 @@ module.exports = async function (req, res) {
     { campo: "cidadeColeta", nome: "Cidade de coleta" },
     { campo: "ufColeta", nome: "Estado (UF) de coleta" },
     { campo: "naturezaMercadoria", nome: "Natureza da mercadoria" },
-    { campo: "numeroNf", nome: "Número da Nota Fiscal" },
     { campo: "valorNf", nome: "Valor da NF" },
     { campo: "qtdVolumes", nome: "Quantidade de volumes" },
     { campo: "pesoReal", nome: "Peso real" },
@@ -258,7 +257,7 @@ module.exports = async function (req, res) {
       serviceEndHour: body.horarioFechamento,
       lunchBreakStartHour: lunchStart,
       lunchBreakEndHour: lunchEnd,
-      comments: `${body.observacoes ? body.observacoes.trim() : "Sem observações"} | Numero da NF-e: ${body.numeroNf} | Informações verdadeiras confirmadas pelo cliente`,
+      comments: `${body.observacoes ? body.observacoes.trim() : "Sem observações"} | Numero da NF-e: ${body.numeroNf ? body.numeroNf.trim() : "Não informada"} | Informações verdadeiras confirmadas pelo cliente`,
       pickAddressAttributes: {
         postalCode: String(body.cepColeta || "").replace(/\D/g, ""),
         line1: body.ruaColeta,

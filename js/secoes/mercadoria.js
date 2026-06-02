@@ -60,12 +60,6 @@ export function validarMercadoria(marcarErro) {
     valido = false;
   }
 
-  // Verifica se o número da NF está preenchido
-  if (!numeroNf || numeroNfValor === "") {
-    if (numeroNf) marcarErro(numeroNf);
-    valido = false;
-  }
-
   // Verifica se o valor da NF é maior que zero
   if (valorNfLimpo <= 0 || isNaN(valorNfLimpo) || valorNfLimpo === "") {
     marcarErro(valorNf);

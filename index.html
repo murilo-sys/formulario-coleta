@@ -36,7 +36,7 @@
       </div>
 
       <div id="grupoEscondidoSolicitante" class="oculto">
-        <p class="perguntaTitulo">O Solicitante é o...</p>
+        <p class="perguntaTitulo obrigatorio">O Solicitante é o...</p>
 
         <div class="grupo-opcoes-solicitante">
           <input type="radio" name="tipoSolicitante" id="solicitanteRemetente" value="remetente">
@@ -52,8 +52,11 @@
 
     </div>
 
-    <div class="cartaoPerguntas">
-      <h3>Remetente e Destinatário</h3>
+    <div id="secoesFormularioAdicionais" class="secoes-adicionais-container">
+      <div class="secoes-adicionais-wrapper">
+
+        <div class="cartaoPerguntas">
+          <h3>Remetente e Destinatário</h3>
 
       <div class="linhaDupla">
 
@@ -156,7 +159,7 @@
       <div class="linhaDupla">
 
         <div class="coluna-flex-1">
-          <label for="numeroNf" class="perguntaTitulo obrigatorio">Número da NF</label>
+          <label for="numeroNf" class="perguntaTitulo">Número da NF</label>
           <input type="text" id="numeroNf" placeholder="000.000.000">
         </div>
 
@@ -298,6 +301,9 @@
     <div class="coluna-botao-agendar">
       <button id="buttonLimparForm" type="reset">Limpar Formulário</button>
       <button id="buttonSolicitarColeta" type="submit">Solicitar Coleta</button>
+    </div>
+
+      </div>
     </div>
   </form>
 

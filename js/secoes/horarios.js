@@ -23,12 +23,11 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 
-  // Configuração de formatação automática de hora e foco consecutivo
+  // Configuração de formatação automática de hora
   const horarioAbertura = document.getElementById("horarioAbertura");
   const horarioFechamento = document.getElementById("horarioFechamento");
-  const observacoes = document.getElementById("observacoes");
 
-  function blindarInputHora(input, nextInput) {
+  function blindarInputHora(input) {
     if (!input) return;
 
     input.addEventListener('input', () => {
@@ -51,14 +50,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const hh = parseInt(val.substring(0, 2), 10);
         const mm = parseInt(val.substring(2), 10);
         
-        if (hh >= 0 && hh <= 23 && mm >= 0 && mm <= 59) {
-          if (nextInput) {
-            nextInput.focus();
-            if (nextInput.select && typeof nextInput.select === 'function') {
-              nextInput.select();
-            }
-          }
-        } else {
+        if (!(hh >= 0 && hh <= 23 && mm >= 0 && mm <= 59)) {
           // Limpa se a hora for inválida (ex: 25:00 ou 12:60)
           input.value = "";
         }
@@ -100,8 +92,8 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  blindarInputHora(horarioAbertura, horarioFechamento);
-  blindarInputHora(horarioFechamento, observacoes);
+  blindarInputHora(horarioAbertura);
+  blindarInputHora(horarioFechamento);
 
   // Garante o reset do estado das flags no reset do formulário
   const formulario = document.querySelector(".formularioColeta");

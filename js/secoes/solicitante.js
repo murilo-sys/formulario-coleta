@@ -14,6 +14,11 @@ document.addEventListener("DOMContentLoaded", () => {
     const radios = document.querySelectorAll('input[name="tipoSolicitante"]');
     radios.forEach(r => r.checked = false);
 
+    const secoesFormularioAdicionais = document.getElementById("secoesFormularioAdicionais");
+    if (secoesFormularioAdicionais) {
+      secoesFormularioAdicionais.classList.remove("visivel");
+    }
+
     // Reseta flags de verificação relacionadas ao solicitante
     state.cnpjRemetenteConfirmado = "";
     state.cnpjRemetenteConsultado = "";
@@ -109,6 +114,10 @@ document.addEventListener("DOMContentLoaded", () => {
       const radioAtivo = document.querySelector('input[name="tipoSolicitante"]:checked');
       if (radioAtivo) {
         aplicarPapelSolicitante(radioAtivo.value);
+        const secoesFormularioAdicionais = document.getElementById("secoesFormularioAdicionais");
+        if (secoesFormularioAdicionais) {
+          secoesFormularioAdicionais.classList.add("visivel");
+        }
       }
 
     } catch (error) {
@@ -127,10 +136,14 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   // Lógica de alternância do papel do solicitante utilizando o evento 'change' nos rádios
+  const secoesFormularioAdicionais = document.getElementById("secoesFormularioAdicionais");
   const radiosSolicitante = document.querySelectorAll('input[name="tipoSolicitante"]');
   radiosSolicitante.forEach(radio => {
     radio.addEventListener('change', (evento) => {
       aplicarPapelSolicitante(evento.target.value);
+      if (secoesFormularioAdicionais) {
+        secoesFormularioAdicionais.classList.add("visivel");
+      }
     });
   });
 });
@@ -157,6 +170,16 @@ export function validarSolicitante(marcarErro) {
 
   if (!DocValido(cnpjSolicitante) || state.solicitanteVerificado !== true) {
     marcarErro(solicitanteDoc);
+    valido = false;
+  }
+
+  // Verifica se o papel do solicitante foi selecionado
+  const radioTipoSolicitante = document.querySelector('input[name="tipoSolicitante"]:checked');
+  if (state.solicitanteVerificado && !radioTipoSolicitante) {
+    const grupoOpcoesSolicitante = document.querySelector(".grupo-opcoes-solicitante");
+    if (grupoOpcoesSolicitante) {
+      marcarErro(grupoOpcoesSolicitante);
+    }
     valido = false;
   }
 

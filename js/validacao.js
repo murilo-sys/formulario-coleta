@@ -42,6 +42,14 @@ document.addEventListener("DOMContentLoaded", () => {
           grupoRadioAlmoco.classList.remove("erro-input");
         }
       }
+
+      // Limpa o erro do container do tipo de solicitante ao selecionar uma das opções
+      if (evento.target.name === "tipoSolicitante") {
+        const grupoOpcoesSolicitante = document.querySelector(".grupo-opcoes-solicitante");
+        if (grupoOpcoesSolicitante) {
+          grupoOpcoesSolicitante.classList.remove("erro-input");
+        }
+      }
     });
 
     // Evento disparado ao tentar enviar o formulário
@@ -297,10 +305,14 @@ document.addEventListener("DOMContentLoaded", () => {
       if (state.maskPeso) state.maskPeso.value = "";
       if (state.maskValor) state.maskValor.value = "";
 
-      // 5. Oculta o grupo de solicitante
+      // 5. Oculta o grupo de solicitante e as seções adicionais
       const grupoEscondidoSolicitante = document.getElementById("grupoEscondidoSolicitante");
       if (grupoEscondidoSolicitante) {
         grupoEscondidoSolicitante.classList.add("oculto");
+      }
+      const secoesFormularioAdicionais = document.getElementById("secoesFormularioAdicionais");
+      if (secoesFormularioAdicionais) {
+        secoesFormularioAdicionais.classList.remove("visivel");
       }
 
       // 6. Garante que o botão Solicitar Coleta não permaneça desabilitado

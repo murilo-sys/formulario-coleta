@@ -15,7 +15,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const linhas = containerCubagem.querySelectorAll(".coluna-cubagem:not(.animacao-saida)");
     const totalVolumesDoc = parseInt(qtdVolumes?.value, 10) || 0;
-    
+
     let somaVolumesGrupos = 0;
 
     linhas.forEach(linha => {
@@ -139,7 +139,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const clone = template.content.cloneNode(true);
     const novaLinha = clone.querySelector(".coluna-cubagem");
-    
+
     // Inicia com animação suave de entrada
     novaLinha.classList.add("animacao-entrada");
 
@@ -170,6 +170,9 @@ document.addEventListener("DOMContentLoaded", () => {
       const v = parseInt(qtdVolumes.value, 10);
       if (v <= 0) {
         qtdVolumes.value = ""; // Limpa se for zero ou negativo
+      }
+      if (v > 200) {
+        qtdVolumes.value = 200;
       }
       qtdVolumes.classList.remove("erro-input");
       ajustarLinhasCubagem();
