@@ -123,21 +123,12 @@ document.addEventListener("DOMContentLoaded", () => {
           }
         }
 
-        const emailCadastro = state.solicitanteEndereco?.email || "Não cadastrado";
-        const emailAdicional = document.getElementById("solicitanteEmailAdicional")?.value.trim() || "";
         if (confirmacaoEmailContato) {
-          confirmacaoEmailContato.textContent = emailAdicional 
-            ? `${emailCadastro} / ${emailAdicional}`
-            : emailCadastro;
+          confirmacaoEmailContato.textContent = state.solicitanteEndereco?.email || "Não cadastrado";
         }
-
-        const telCadastro = (state.solicitanteEndereco?.phoneNumber || state.solicitanteEndereco?.mobileNumber || "").trim();
-        const telAdicional = document.getElementById("solicitanteTelefoneAdicional")?.value.trim() || "";
         if (confirmacaoTelefoneContato) {
-          const telCadastroTexto = telCadastro || "Não cadastrado";
-          confirmacaoTelefoneContato.textContent = telAdicional 
-            ? `${telCadastroTexto} / ${telAdicional}`
-            : telCadastroTexto;
+          const tel = state.solicitanteEndereco?.phoneNumber || state.solicitanteEndereco?.mobileNumber;
+          confirmacaoTelefoneContato.textContent = tel ? tel.trim() : "Não cadastrado";
         }
         if (chkConfirmacaoFinal) chkConfirmacaoFinal.checked = false;
         if (btnConfirmarEnvioFinal) {
@@ -161,6 +152,14 @@ document.addEventListener("DOMContentLoaded", () => {
       });
     }
 
+    if (dialogConfirmacaoEnvio) {
+      dialogConfirmacaoEnvio.addEventListener("input", (evento) => {
+        if (evento.target.tagName === "INPUT") {
+          evento.target.classList.remove("erro-input");
+        }
+      });
+    }
+
     if (btnFecharSucesso && dialogSucesso) {
       btnFecharSucesso.addEventListener("click", () => {
         dialogSucesso.close();
@@ -171,6 +170,40 @@ document.addEventListener("DOMContentLoaded", () => {
       btnConfirmarEnvioFinal.addEventListener("click", async () => {
         btnConfirmarEnvioFinal.disabled = true;
         btnConfirmarEnvioFinal.textContent = "Enviando...";
+
+        // Validação dos contatos adicionais dentro do dialog
+        const solicitanteEmailAdicional = document.getElementById("solicitanteEmailAdicional");
+        const solicitanteTelefoneAdicional = document.getElementById("solicitanteTelefoneAdicional");
+        let adicionaisValidos = true;
+
+        function marcarErroLocal(elemento) {
+          if (!elemento) return;
+          elemento.classList.remove("erro-input");
+          void elemento.offsetWidth; // Força reflow para reiniciar animação
+          elemento.classList.add("erro-input");
+        }
+
+        if (solicitanteEmailAdicional && solicitanteEmailAdicional.value.trim() !== "") {
+          const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+          if (!emailRegex.test(solicitanteEmailAdicional.value.trim())) {
+            marcarErroLocal(solicitanteEmailAdicional);
+            adicionaisValidos = false;
+          }
+        }
+
+        if (solicitanteTelefoneAdicional && solicitanteTelefoneAdicional.value.trim() !== "") {
+          const phoneDigits = solicitanteTelefoneAdicional.value.replace(/\D/g, "");
+          if (phoneDigits.length < 10) {
+            marcarErroLocal(solicitanteTelefoneAdicional);
+            adicionaisValidos = false;
+          }
+        }
+
+        if (!adicionaisValidos) {
+          btnConfirmarEnvioFinal.disabled = false;
+          btnConfirmarEnvioFinal.textContent = "Confirmar Coleta";
+          return;
+        }
 
         // Captura itens de cubagem dinâmicos
         const cubagemItens = [];

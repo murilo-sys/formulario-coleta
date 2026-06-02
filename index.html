@@ -35,18 +35,6 @@
         </div>
       </div>
 
-      <div class="linhaDupla">
-        <div class="coluna-flex-1">
-          <label for="solicitanteEmailAdicional" class="perguntaTitulo">E-mail de contato adicional (opcional)</label>
-          <input type="email" id="solicitanteEmailAdicional" placeholder="outro.email@exemplo.com">
-        </div>
-
-        <div class="coluna-flex-1">
-          <label for="solicitanteTelefoneAdicional" class="perguntaTitulo">Telefone de contato adicional (opcional)</label>
-          <input type="text" id="solicitanteTelefoneAdicional" placeholder="(00) 00000-0000">
-        </div>
-      </div>
-
       <div id="grupoEscondidoSolicitante" class="oculto">
         <p class="perguntaTitulo obrigatorio">O Solicitante é o...</p>
 
@@ -507,14 +495,30 @@
         <div
           style="border: 1px solid #cbd5e1; border-radius: 6px; background-color: #ffffff; padding: 10px; font-size: 13px; text-align: left; display: flex; flex-direction: column; gap: 6px; box-shadow: 0 1px 2px rgba(0,0,0,0.02);">
           <p style="margin: 0 0 4px 0; font-weight: bold; color: #1e3a8a;">Contatos Solicitante:</p>
+          
           <div
-            style="display: flex; justify-content: space-between; border-bottom: 1px dashed #e2e8f0; padding-bottom: 4px;">
+            style="display: flex; justify-content: space-between; border-bottom: 1px dashed #e2e8f0; padding-bottom: 4px; align-items: center;">
             <span style="color: #64748b; font-weight: 500;">E-mail:</span>
             <span id="confirmacaoEmailContato" style="color: #0f172a; font-weight: 600;">-</span>
           </div>
-          <div style="display: flex; justify-content: space-between; padding-top: 2px;">
+          <div style="display: flex; justify-content: space-between; border-bottom: 1px dashed #e2e8f0; padding-bottom: 4px; padding-top: 2px; align-items: center;">
             <span style="color: #64748b; font-weight: 500;">Telefone:</span>
             <span id="confirmacaoTelefoneContato" style="color: #0f172a; font-weight: 600;">-</span>
+          </div>
+
+          <!-- Campos de contato adicional opcionais -->
+          <div style="margin-top: 5px; display: flex; flex-direction: column; gap: 8px;">
+            <p style="margin: 0; font-weight: bold; color: #475569; font-size: 12px;">Inserir outro contato operacional (Opcional):</p>
+            <div style="display: flex; gap: 8px;">
+              <div style="flex: 1;">
+                <input type="email" id="solicitanteEmailAdicional" placeholder="Outro e-mail" 
+                  style="padding: 6px 8px; font-size: 12px; height: 32px; border: 1px solid #cbd5e1; border-radius: 4px; background-color: #f8fafc; width: 100%;">
+              </div>
+              <div style="flex: 1;">
+                <input type="text" id="solicitanteTelefoneAdicional" placeholder="Outro telefone" 
+                  style="padding: 6px 8px; font-size: 12px; height: 32px; border: 1px solid #cbd5e1; border-radius: 4px; background-color: #f8fafc; width: 100%;">
+              </div>
+            </div>
           </div>
         </div>
 

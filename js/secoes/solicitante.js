@@ -156,8 +156,6 @@ export function validarSolicitante(marcarErro) {
   const solicitanteDoc = document.getElementById("solicitanteDoc");
   const remetenteDoc = document.getElementById("remetenteDoc");
   const destinatarioDoc = document.getElementById("destinatarioDoc");
-  const solicitanteEmailAdicional = document.getElementById("solicitanteEmailAdicional");
-  const solicitanteTelefoneAdicional = document.getElementById("solicitanteTelefoneAdicional");
 
   const cnpjSolicitante = state.maskSolicitante ? state.maskSolicitante.unmaskedValue : "";
   const documentoRemetente = state.maskRemetente ? state.maskRemetente.unmaskedValue : "";
@@ -173,22 +171,6 @@ export function validarSolicitante(marcarErro) {
   if (!DocValido(cnpjSolicitante) || state.solicitanteVerificado !== true) {
     marcarErro(solicitanteDoc);
     valido = false;
-  }
-
-  if (solicitanteEmailAdicional && solicitanteEmailAdicional.value.trim() !== "") {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(solicitanteEmailAdicional.value.trim())) {
-      marcarErro(solicitanteEmailAdicional);
-      valido = false;
-    }
-  }
-
-  if (solicitanteTelefoneAdicional && solicitanteTelefoneAdicional.value.trim() !== "") {
-    const phoneDigits = solicitanteTelefoneAdicional.value.replace(/\D/g, "");
-    if (phoneDigits.length < 10) {
-      marcarErro(solicitanteTelefoneAdicional);
-      valido = false;
-    }
   }
 
   // Verifica se o papel do solicitante foi selecionado
