@@ -13,10 +13,10 @@ document.addEventListener("DOMContentLoaded", () => {
     ],
     dispatch: function (appended, dynamicMasked) {
       const number = (dynamicMasked.value + appended).replace(/\D/g, "");
-      if (number.length > 11) {
-        return dynamicMasked.compiledMasks[1];
+      if (number.length == 11) {
+        return dynamicMasked.compiledMasks[0];
       }
-      return dynamicMasked.compiledMasks[0];
+      return dynamicMasked.compiledMasks[1];
     }
   };
 
@@ -74,7 +74,7 @@ document.addEventListener("DOMContentLoaded", () => {
   if (numeroNf) {
     numeroNf.addEventListener("keydown", (evento) => {
       const teclasPermitidas = [
-        "Backspace", "Delete", "ArrowLeft", "ArrowRight", "Tab", 
+        "Backspace", "Delete", "ArrowLeft", "ArrowRight", "Tab",
         "Enter", "Escape", "Home", "End"
       ];
       if (teclasPermitidas.includes(evento.key) || evento.ctrlKey || evento.metaKey) {
@@ -106,7 +106,7 @@ export function blindarInputCubagem(inputElement) {
 
   inputElement.addEventListener("keydown", (evento) => {
     const teclasPermitidas = [
-      "Backspace", "Delete", "ArrowLeft", "ArrowRight", "Tab", 
+      "Backspace", "Delete", "ArrowLeft", "ArrowRight", "Tab",
       "Enter", "Escape", "Home", "End"
     ];
     if (teclasPermitidas.includes(evento.key) || evento.ctrlKey || evento.metaKey) {
@@ -128,10 +128,10 @@ export function blindarInputMetro(inputElement) {
   // Keydown block para garantir apenas números e comandos
   inputElement.addEventListener("keydown", (evento) => {
     const teclasPermitidas = [
-      "Backspace", "Delete", "ArrowLeft", "ArrowRight", "Tab", 
+      "Backspace", "Delete", "ArrowLeft", "ArrowRight", "Tab",
       "Enter", "Escape", "Home", "End"
     ];
-    
+
     if (teclasPermitidas.includes(evento.key) || evento.ctrlKey || evento.metaKey) {
       return;
     }
