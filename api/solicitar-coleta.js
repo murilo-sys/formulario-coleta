@@ -366,7 +366,6 @@ module.exports = async function (req, res) {
 
   const numeroNfLimpo = body.numeroNf ? body.numeroNf.trim() : "";
   partesComments.push(`Numero da NF-e: ${numeroNfLimpo || "Não informada"}`);
-  partesComments.push("Informações verdadeiras confirmadas pelo cliente");
 
   const commentsString = partesComments.join(" | ");
 
