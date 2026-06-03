@@ -1,4 +1,51 @@
-// api/solicitar-coleta.js
+function validarCPF(cpf) {
+  const clean = String(cpf).replace(/\D/g, "");
+  if (clean.length !== 11 || /^(\d)\1{10}$/.test(clean)) return false;
+
+  let soma = 0;
+  for (let i = 0; i < 9; i++) {
+    soma += parseInt(clean.charAt(i), 10) * (10 - i);
+  }
+  let resto = 11 - (soma % 11);
+  let digito1 = resto > 9 ? 0 : resto;
+  if (parseInt(clean.charAt(9), 10) !== digito1) return false;
+
+  soma = 0;
+  for (let i = 0; i < 10; i++) {
+    soma += parseInt(clean.charAt(i), 10) * (11 - i);
+  }
+  resto = 11 - (soma % 11);
+  let digito2 = resto > 9 ? 0 : resto;
+  return parseInt(clean.charAt(10), 10) === digito2;
+}
+
+function validarCNPJ(cnpj) {
+  const clean = String(cnpj).replace(/\D/g, "");
+  if (clean.length !== 14 || /^(\d)\1{13}$/.test(clean)) return false;
+
+  let tamanho = clean.length - 2;
+  let numeros = clean.substring(0, tamanho);
+  let digitos = clean.substring(tamanho);
+  let soma = 0;
+  let pos = tamanho - 7;
+  for (let i = tamanho; i >= 1; i--) {
+    soma += parseInt(numeros.charAt(tamanho - i), 10) * pos--;
+    if (pos < 2) pos = 9;
+  }
+  let resultado = soma % 11 < 2 ? 0 : 11 - (soma % 11);
+  if (resultado !== parseInt(digitos.charAt(0), 10)) return false;
+
+  tamanho = tamanho + 1;
+  numeros = clean.substring(0, tamanho);
+  soma = 0;
+  pos = tamanho - 7;
+  for (let i = tamanho; i >= 1; i--) {
+    soma += parseInt(numeros.charAt(tamanho - i), 10) * pos--;
+    if (pos < 2) pos = 9;
+  }
+  resultado = soma % 11 < 2 ? 0 : 11 - (soma % 11);
+  return resultado === parseInt(digitos.charAt(1), 10);
+}
 
 const NATUREZAS_BLOQUEADAS = ["liquido", "quimica_diversos", "artigos_perigosos"];
 const cooldowns = new Map(); // ip -> timestamp
@@ -10,18 +57,17 @@ const sanitizeInput = str => {
 };
 
 module.exports = async function (req, res) {
+  const isLocal = process.env.NODE_ENV === 'development' || process.env.IS_LOCAL === 'true';
+  const allowedOrigin = process.env.ALLOWED_ORIGIN;
+  const origin = req.headers.origin;
+
   // CORS Headers para Vercel com restrição de origem (Secure by Default)
   if (res && typeof res.setHeader === 'function') {
-    const origin = req.headers.origin;
-    const isLocal = process.env.NODE_ENV === 'development' || process.env.IS_LOCAL === 'true';
-    const allowedOrigin = process.env.ALLOWED_ORIGIN; // Sem fallback para '*'
-
     if (isLocal && origin && (origin.includes('localhost') || origin.includes('127.0.0.1'))) {
       res.setHeader('Access-Control-Allow-Origin', origin);
     } else if (allowedOrigin && origin === allowedOrigin) {
       res.setHeader('Access-Control-Allow-Origin', origin);
     } else {
-      // Bloqueia por padrão caso a origem não coincida ou ALLOWED_ORIGIN não esteja configurada
       res.setHeader('Access-Control-Allow-Origin', allowedOrigin || 'https://blocked-by-cors.invalid');
     }
     res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
@@ -32,13 +78,29 @@ module.exports = async function (req, res) {
     return res.status(204).end();
   }
 
+  // SEC-03: Bloqueio estrito de origens não autorizadas no backend em produção
+  if (!isLocal && allowedOrigin) {
+    if (!origin) {
+      return res.status(403).json({ error: "Acesso Proibido: Origem ausente." });
+    }
+    const normOrigin = origin.replace(/\/+$/, "").trim();
+    const normAllowed = allowedOrigin.replace(/\/+$/, "").trim();
+    const isVercelPreview = normOrigin.endsWith('.vercel.app');
+    if (normOrigin !== normAllowed && !isVercelPreview) {
+      return res.status(403).json({ error: "Acesso Proibido: Origem não autorizada." });
+    }
+  }
+
   // Apenas aceita método POST
   if (req.method !== "POST") {
     return res.status(405).json({ message: "Método não autorizado" });
   }
 
   // Rate Limiter de 3 segundos por IP (Gatilho de segurança backend)
-  const ip = req.headers['x-forwarded-for'] || req.socket.remoteAddress || 'unknown';
+  const ip = req.headers['x-real-ip'] || 
+             (req.headers['x-forwarded-for'] ? req.headers['x-forwarded-for'].split(',')[0].trim() : null) || 
+             req.socket.remoteAddress || 
+             'unknown';
   const agora = Date.now();
 
   // Limpeza preventiva otimizada (evita varredura O(N) em todas as requisições)
@@ -148,6 +210,52 @@ module.exports = async function (req, res) {
         message: `O campo '${item.nome}' é obrigatório e deve ser preenchido.`
       });
     }
+  }
+
+  // Validação matemática rigorosa dos documentos (CPF/CNPJ) no Backend
+  if (solicitanteDocLimpo.length !== 14 || !validarCNPJ(solicitanteDocLimpo)) {
+    return res.status(400).json({ message: "O documento do solicitante (CNPJ) fornecido é inválido." });
+  }
+
+  const remetenteDocLimpo = String(body.remetenteDoc || "").replace(/\D/g, "");
+  if (remetenteDocLimpo.length === 11) {
+    if (!validarCPF(remetenteDocLimpo)) {
+      return res.status(400).json({ message: "O documento do remetente (CPF) fornecido é inválido." });
+    }
+  } else if (remetenteDocLimpo.length === 14) {
+    if (!validarCNPJ(remetenteDocLimpo)) {
+      return res.status(400).json({ message: "O documento do remetente (CNPJ) fornecido é inválido." });
+    }
+  } else {
+    return res.status(400).json({ message: "O documento do remetente deve possuir 11 dígitos (CPF) ou 14 dígitos (CNPJ)." });
+  }
+
+  const destinatarioDocLimpo = String(body.destinatarioDoc || "").replace(/\D/g, "");
+  if (destinatarioDocLimpo.length === 11) {
+    if (!validarCPF(destinatarioDocLimpo)) {
+      return res.status(400).json({ message: "O documento do destinatário (CPF) fornecido é inválido." });
+    }
+  } else if (destinatarioDocLimpo.length === 14) {
+    if (!validarCNPJ(destinatarioDocLimpo)) {
+      return res.status(400).json({ message: "O documento do destinatário (CNPJ) fornecido é inválido." });
+    }
+  } else {
+    return res.status(400).json({ message: "O documento do destinatário deve possuir 11 dígitos (CPF) ou 14 dígitos (CNPJ)." });
+  }
+
+  // Validação matemática do valor da NF, volumes e peso
+  const valorNfNum = parseFloat(String(body.valorNf).replace(/\./g, "").replace(",", ".")) || 0;
+  const qtdVolumesNum = parseInt(body.qtdVolumes, 10) || 0;
+  const pesoRealNum = parseFloat(String(body.pesoReal).replace(/\./g, "").replace(",", ".")) || 0;
+
+  if (valorNfNum <= 0) {
+    return res.status(400).json({ message: "O valor da nota fiscal deve ser maior que zero." });
+  }
+  if (qtdVolumesNum <= 0) {
+    return res.status(400).json({ message: "A quantidade de volumes deve ser maior que zero." });
+  }
+  if (pesoRealNum <= 0) {
+    return res.status(400).json({ message: "O peso real deve ser maior que zero." });
   }
 
   // 5. Validação redundante do Array de Cubagem no Backend (Defense in Depth)
@@ -324,9 +432,6 @@ module.exports = async function (req, res) {
       ]
     }
   };
-
-  // Identifica se a requisição está rodando em ambiente local (desenvolvimento) por variáveis de ambiente seguras
-  const isLocal = process.env.NODE_ENV === 'development' || process.env.IS_LOCAL === 'true';
 
   // Se o Modo Simulação estiver ativo pelo painel de testes local (apenas em ambiente local)
   if (isLocal && body.debugSimulate) {

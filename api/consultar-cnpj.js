@@ -1,19 +1,46 @@
+function validarCNPJ(cnpj) {
+  const clean = String(cnpj).replace(/\D/g, "");
+  if (clean.length !== 14 || /^(\d)\1{13}$/.test(clean)) return false;
+
+  let tamanho = clean.length - 2;
+  let numeros = clean.substring(0, tamanho);
+  let digitos = clean.substring(tamanho);
+  let soma = 0;
+  let pos = tamanho - 7;
+  for (let i = tamanho; i >= 1; i--) {
+    soma += parseInt(numeros.charAt(tamanho - i), 10) * pos--;
+    if (pos < 2) pos = 9;
+  }
+  let resultado = soma % 11 < 2 ? 0 : 11 - (soma % 11);
+  if (resultado !== parseInt(digitos.charAt(0), 10)) return false;
+
+  tamanho = tamanho + 1;
+  numeros = clean.substring(0, tamanho);
+  soma = 0;
+  pos = tamanho - 7;
+  for (let i = tamanho; i >= 1; i--) {
+    soma += parseInt(numeros.charAt(tamanho - i), 10) * pos--;
+    if (pos < 2) pos = 9;
+  }
+  resultado = soma % 11 < 2 ? 0 : 11 - (soma % 11);
+  return resultado === parseInt(digitos.charAt(1), 10);
+}
+
 const cooldowns = new Map(); // ip -> timestamp
 
 //Função dessa rota
 module.exports = async function (req, res) {
+  const isLocal = process.env.NODE_ENV === 'development' || process.env.IS_LOCAL === 'true';
+  const allowedOrigin = process.env.ALLOWED_ORIGIN;
+  const origin = req.headers.origin;
+
   // CORS Headers para Vercel com restrição de origem (Secure by Default)
   if (res && typeof res.setHeader === 'function') {
-    const origin = req.headers.origin;
-    const isLocal = process.env.NODE_ENV === 'development' || process.env.IS_LOCAL === 'true';
-    const allowedOrigin = process.env.ALLOWED_ORIGIN; // Sem fallback para '*'
-
     if (isLocal && origin && (origin.includes('localhost') || origin.includes('127.0.0.1'))) {
       res.setHeader('Access-Control-Allow-Origin', origin);
     } else if (allowedOrigin && origin === allowedOrigin) {
       res.setHeader('Access-Control-Allow-Origin', origin);
     } else {
-      // Bloqueia por padrão caso a origem não coincida ou ALLOWED_ORIGIN não esteja configurada
       res.setHeader('Access-Control-Allow-Origin', allowedOrigin || 'https://blocked-by-cors.invalid');
     }
     res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
@@ -24,13 +51,29 @@ module.exports = async function (req, res) {
     return res.status(204).end();
   }
 
+  // SEC-03: Bloqueio estrito de origens não autorizadas no backend em produção
+  if (!isLocal && allowedOrigin) {
+    if (!origin) {
+      return res.status(403).json({ error: "Acesso Proibido: Origem ausente." });
+    }
+    const normOrigin = origin.replace(/\/+$/, "").trim();
+    const normAllowed = allowedOrigin.replace(/\/+$/, "").trim();
+    const isVercelPreview = normOrigin.endsWith('.vercel.app');
+    if (normOrigin !== normAllowed && !isVercelPreview) {
+      return res.status(403).json({ error: "Acesso Proibido: Origem não autorizada." });
+    }
+  }
+
   // Verifica o metodo utilização na requisição -- Pode utilizar apenas POST
   if (req.method !== "POST") {
     return res.status(405).json({ error: "Metodo não autorizado" });
   }
 
   // Rate Limiter de 3 segundos por IP (Gatilho de segurança backend)
-  const ip = req.headers['x-forwarded-for'] || req.socket.remoteAddress || 'unknown';
+  const ip = req.headers['x-real-ip'] || 
+             (req.headers['x-forwarded-for'] ? req.headers['x-forwarded-for'].split(',')[0].trim() : null) || 
+             req.socket.remoteAddress || 
+             'unknown';
   const agora = Date.now();
   
   // Limpeza preventiva otimizada (evita varredura O(N) em todas as requisições)
@@ -81,8 +124,8 @@ module.exports = async function (req, res) {
   const cnpjLimpo = cnpjString.replace(/\D/g, "")
 
   //Verifica se o cnpj está limpo e valido
-  if (!cnpjLimpo || cnpjLimpo.length !== 14 || isNaN(cnpjLimpo)) {
-    return res.status(400).json({ error: "O Cnpj enviado é invalido ou está incompleto", body: cnpjLimpo })
+  if (!cnpjLimpo || cnpjLimpo.length !== 14 || isNaN(cnpjLimpo) || !validarCNPJ(cnpjLimpo)) {
+    return res.status(400).json({ error: "O CNPJ enviado é inválido ou está incompleto.", body: cnpjLimpo })
   }
 
   //Corpo da requisição
