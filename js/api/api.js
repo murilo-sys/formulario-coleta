@@ -22,17 +22,27 @@ export async function consultarEmpresaPorCnpj(cnpjLimpo) {
 
   console.log("Consultando CNPJ na API...");
   try {
+    let recaptchaToken = "";
+    if (typeof grecaptcha !== 'undefined' && typeof grecaptcha.execute === 'function') {
+      try {
+        recaptchaToken = await grecaptcha.execute('6LehugotAAAAAAKNMsMey-iHvpAbKNPDiDDFqEf4', { action: 'consultar_cnpj' });
+      } catch (e) {
+        console.error("Erro ao gerar token reCAPTCHA:", e);
+      }
+    }
+
     const resposta = await fetch(URL_API_LOCAL, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify({ cnpj: cnpjLimpo })
+      body: JSON.stringify({ cnpj: cnpjLimpo, recaptchaToken })
     });
 
-    // Se receber rate limit do backend
-    if (resposta.status === 429) {
-      mostrarAlerta("Consultas muito frequentes. Aguarde pelo menos 3 segundos.", "Aviso de Segurança", "🛡️");
+    if (!resposta.ok) {
+      const resultado = await resposta.json().catch(() => ({}));
+      const msgErro = resultado.message || resultado.error || "Ocorreu um erro ao consultar o CNPJ.";
+      mostrarAlerta(msgErro, "Aviso de Segurança", "🛡️");
       return null;
     }
 

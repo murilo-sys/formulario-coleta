@@ -69,24 +69,46 @@ module.exports = async function (req, res) {
     return res.status(405).json({ error: "Metodo não autorizado" });
   }
 
-  // Rate Limiter de 3 segundos por IP (Gatilho de segurança backend)
+  // Rate Limiter com Punição: Máximo de 50 consultas em 10 minutos (bloqueio de 2 horas se violado)
   const ip = req.headers['x-real-ip'] || 
              (req.headers['x-forwarded-for'] ? req.headers['x-forwarded-for'].split(',')[0].trim() : null) || 
              req.socket.remoteAddress || 
              'unknown';
   const agora = Date.now();
   
-  // Limpeza preventiva otimizada (evita varredura O(N) em todas as requisições)
+  // Limpeza preventiva periódica do Map (evita vazamento de memória)
   if (cooldowns.size > 5000) {
-    for (const [key, value] of cooldowns.entries()) {
-      if (agora - value > 3000) {
+    for (const [key, record] of cooldowns.entries()) {
+      const banExpirou = !record.bannedUntil || agora > record.bannedUntil;
+      const historyFiltrado = (record.history || []).filter(time => agora - time <= 600000);
+      
+      if (banExpirou && historyFiltrado.length === 0) {
         cooldowns.delete(key);
+      } else {
+        cooldowns.set(key, {
+          history: historyFiltrado,
+          bannedUntil: record.bannedUntil
+        });
       }
     }
   }
 
-  if (cooldowns.has(ip)) {
-    const ultimoAcesso = cooldowns.get(ip);
+  let record = cooldowns.get(ip) || { history: [], bannedUntil: 0 };
+
+  // 1. Verifica se o IP está sob banimento ativo (2 horas = 7.200.000 ms)
+  if (record.bannedUntil && agora < record.bannedUntil) {
+    return res.status(429).json({
+      error: "Too Many Requests",
+      message: "Acesso bloqueado temporariamente por suspeita de comportamento automatizado (limite de buscas excedido)."
+    });
+  }
+
+  // Filtra apenas requisições dos últimos 10 minutos (600.000 ms)
+  let history = (record.history || []).filter(time => agora - time <= 600000);
+
+  // 2. Validação de clique rápido (3 segundos)
+  if (history.length > 0) {
+    const ultimoAcesso = history[history.length - 1];
     if (agora - ultimoAcesso < 3000) {
       return res.status(429).json({
         error: "Too Many Requests",
@@ -94,7 +116,23 @@ module.exports = async function (req, res) {
       });
     }
   }
-  cooldowns.set(ip, agora);
+
+  // 3. Validação do limite de 50 consultas na janela de 10 minutos -> Bloqueio de 2 horas (7.200.000 ms)
+  if (history.length >= 50) {
+    record.bannedUntil = agora + 7200000; // 2 horas de punição
+    cooldowns.set(ip, record);
+    return res.status(429).json({
+      error: "Too Many Requests",
+      message: "Limite de segurança atingido. Seu acesso foi bloqueado temporariamente devido ao excesso de consultas realizadas (limite de buscas excedido)."
+    });
+  }
+
+  // Registra o acesso atual e atualiza no Map
+  history.push(agora);
+  cooldowns.set(ip, {
+    history: history,
+    bannedUntil: record.bannedUntil
+  });
 
   // Garante que o corpo está em formato de objeto mesmo se não vier pré-parseado
   let body = req.body;
@@ -109,6 +147,28 @@ module.exports = async function (req, res) {
   //Verifica se o objeto existe
   if (!body) {
     return res.status(400).json({ error: "Corpo da requisição inválido ou vazio" });
+  }
+
+  // Validação opcional de Google reCAPTCHA v3 (Ativa apenas se a chave estiver configurada no .env)
+  const recaptchaSecret = process.env.RECAPTCHA_SECRET_KEY;
+  if (recaptchaSecret && !isLocal) {
+    const token = body.recaptchaToken;
+    if (!token) {
+      return res.status(400).json({ error: "Validação de segurança (reCAPTCHA) ausente." });
+    }
+    try {
+      const responseGoogle = await fetch(`https://www.google.com/recaptcha/api/siteverify`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: `secret=${recaptchaSecret}&response=${token}`
+      });
+      const googleResult = await responseGoogle.json();
+      if (!googleResult.success || (googleResult.score !== undefined && googleResult.score < 0.5)) {
+        return res.status(400).json({ error: "Validação de segurança falhou (reCAPTCHA suspeito)." });
+      }
+    } catch (e) {
+      console.error("Erro na validação do reCAPTCHA:", e);
+    }
   }
 
   //Coloca o body.cnpj em uma variavel

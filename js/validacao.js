@@ -107,15 +107,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
       // Se passou por todas as validações com sucesso, abre modal de confirmação (Requisito 1)
       if (dialogConfirmacaoEnvio) {
-        // Validação preliminar do reCAPTCHA v2 antes de abrir o modal de confirmação
-        if (typeof grecaptcha !== 'undefined') {
-          const recaptchaToken = grecaptcha.getResponse();
-          const temRecaptchaDiv = document.querySelector('.g-recaptcha');
-          if (temRecaptchaDiv && !recaptchaToken) {
-            mostrarAlerta("Por favor, marque a caixa de seleção do reCAPTCHA para provar que você não é um robô.", "Verificação de Segurança", "🤖");
-            return;
-          }
-        }
+
 
         if (confirmacaoEmailContato) {
           confirmacaoEmailContato.textContent = state.solicitanteEndereco?.email || "Não cadastrado";
@@ -226,10 +218,14 @@ document.addEventListener("DOMContentLoaded", () => {
           });
         }
 
-        // Captura o token do Google reCAPTCHA v2 se a biblioteca estiver carregada
+        // Captura o token do Google reCAPTCHA v3 de forma invisível se a biblioteca estiver carregada
         let recaptchaToken = "";
-        if (typeof grecaptcha !== 'undefined') {
-          recaptchaToken = grecaptcha.getResponse();
+        if (typeof grecaptcha !== 'undefined' && typeof grecaptcha.execute === 'function') {
+          try {
+            recaptchaToken = await grecaptcha.execute('6LehugotAAAAAAKNMsMey-iHvpAbKNPDiDDFqEf4', { action: 'solicitar_coleta' });
+          } catch (e) {
+            console.error("Erro ao gerar token reCAPTCHA:", e);
+          }
         }
 
         const emailCadastro = state.solicitanteEndereco?.email || "";
