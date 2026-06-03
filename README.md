@@ -16,21 +16,29 @@ Sistema de interface de usuário (frontend) e funções serverless (backend) par
 
 ```text
 formulario-coleta/
-├── api/                     # Endpoints Serverless (Backend)
-│   ├── consultar-cnpj.js    # API de consulta de CNPJ com rate limit e ban por IP
-│   └── solicitar-coleta.js  # API de processamento do formulário de coleta
-├── assets/                  # Estilos globais e recursos visuais
-├── js/                      # Scripts do Frontend (Lógica e Validações)
-│   ├── api/                 # Integração e chamadas AJAX com o backend
-│   │   └── api.js
-│   ├── secoes/              # Comportamentos específicos de seções da tela
-│   ├── utils/               # Validadores auxiliares de documentos (CPF, CNPJ)
-│   ├── index.js             # Inicialização do formulário
-│   ├── masks.js             # Máscaras de entrada dinâmicas (IMask)
-│   ├── state.js             # Gerenciamento de estado da aplicação
-│   └── validacao.js         # Validação de formulários e submissão
-├── index.html               # Página HTML5 principal
-└── README.md                # Documentação técnica do projeto
+├── api/                       # Endpoints Serverless (Backend)
+│   ├── consultar-cnpj.js      # API de consulta de CNPJ com rate limit e ban por IP
+│   └── solicitar-coleta.js    # API de processamento do formulário de coleta
+├── assets/                    # Estilos globais e recursos visuais
+├── js/                        # Scripts do Frontend (Lógica e Validações)
+│   ├── api/                   # Integração e chamadas AJAX com o backend
+│   │   └── api.js             # Chamada de consulta CNPJ no backend
+│   ├── secoes/                # Comportamentos específicos de seções da tela
+│   │   ├── avisoCadastro.js   # Controle de avisos sobre necessidade de cadastro
+│   │   ├── cubagem.js         # Lógica e cálculos de cubagem de itens
+│   │   ├── destinatario.js    # Fluxos de preenchimento do destinatário
+│   │   ├── endereco.js        # Fluxos e validações de endereço de coleta
+│   │   ├── horarios.js        # Seleção e validação de janelas de horários
+│   │   ├── mercadoria.js      # Validações e dinâmica de mercadorias
+│   │   └── solicitante.js     # Validações e dinâmica do solicitante
+│   ├── utils/                 # Validadores auxiliares de documentos (CPF, CNPJ)
+│   │   └── utils.js           # Funções utilitárias de validação de documentos
+│   ├── index.js               # Inicialização do formulário e handlers de eventos
+│   ├── masks.js               # Máscaras de entrada dinâmicas (IMask)
+│   ├── state.js               # Gerenciamento de estado da aplicação
+│   └── validacao.js           # Validação de formulários e submissão
+├── index.html                 # Página HTML5 principal
+└── README.md                  # Documentação técnica do projeto
 ```
 
 ## 🛠️ Tecnologias Utilizadas
