@@ -305,9 +305,6 @@ document.addEventListener("DOMContentLoaded", () => {
             if (dialogSucesso) {
               dialogSucesso.showModal();
             }
-            if (typeof grecaptcha !== 'undefined') {
-              grecaptcha.reset();
-            }
             formulario.reset();
           } else {
             mostrarAlerta(result.message || "Erro desconhecido", "Erro ao Solicitar Coleta", "❌");
@@ -324,10 +321,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Gerencia o reset do formulário limpando estados, erros e tags
     formulario.addEventListener("reset", () => {
-      // Reseta o widget do reCAPTCHA v2 se a biblioteca estiver disponível
-      if (typeof grecaptcha !== 'undefined') {
-        grecaptcha.reset();
-      }
 
       // 1. Remove classes de erro
       const erros = formulario.querySelectorAll(".erro-input");
@@ -358,6 +351,7 @@ document.addEventListener("DOMContentLoaded", () => {
       // 5. Oculta o grupo de solicitante e as seções adicionais
       const grupoEscondidoSolicitante = document.getElementById("grupoEscondidoSolicitante");
       if (grupoEscondidoSolicitante) {
+        grupoEscondidoSolicitante.classList.remove("visivel");
         grupoEscondidoSolicitante.classList.add("oculto");
       }
       const secoesFormularioAdicionais = document.getElementById("secoesFormularioAdicionais");
