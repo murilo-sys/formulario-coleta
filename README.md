@@ -1,6 +1,6 @@
 # Formulário de Coleta
 
-Sistema de interface de usuário (frontend) e funções serveless (backend) para solicitação de coletas com validação inteligente de CNPJ e blindagem automatizada contra robôs e abusos.
+Sistema de interface de usuário (frontend) e funções serverless (backend) para solicitação de coletas com validação inteligente de CNPJ e blindagem automatizada contra robôs e abusos.
 
 ## 🚀 Funcionalidades
 
@@ -12,33 +12,31 @@ Sistema de interface de usuário (frontend) e funções serveless (backend) para
   - **Bloqueio Temporário (IP Ban)**: Ban automático temporário de 2 horas para IPs com comportamento suspeito de spam de consultas.
   - **CORS & Origens Seguras**: Restrição rígida de origens de requisição permitidas para impedir acessos cruzados não autorizados.
 
+## 📁 Estrutura do Projeto
+
+```text
+formulario-coleta/
+├── api/                     # Endpoints Serverless (Backend)
+│   ├── consultar-cnpj.js    # API de consulta de CNPJ com rate limit e ban por IP
+│   └── solicitar-coleta.js  # API de processamento do formulário de coleta
+├── assets/                  # Estilos globais e recursos visuais
+├── js/                      # Scripts do Frontend (Lógica e Validações)
+│   ├── api/                 # Integração e chamadas AJAX com o backend
+│   │   └── api.js
+│   ├── secoes/              # Comportamentos específicos de seções da tela
+│   ├── utils/               # Validadores auxiliares de documentos (CPF, CNPJ)
+│   ├── index.js             # Inicialização do formulário
+│   ├── masks.js             # Máscaras de entrada dinâmicas (IMask)
+│   ├── state.js             # Gerenciamento de estado da aplicação
+│   └── validacao.js         # Validação de formulários e submissão
+├── index.html               # Página HTML5 principal
+└── README.md                # Documentação técnica do projeto
+```
+
 ## 🛠️ Tecnologias Utilizadas
 
-- **Frontend**: HTML5, CSS3 (Vanilla), JavaScript moderno (ES6+), biblioteca IMask.
-- **Backend**: Node.js rodando em Vercel Serverless Functions.
-
-## 🔧 Configuração e Instalação
-
-### Pré-requisitos
-- Node.js instalado localmente.
-- Vercel CLI (opcional para simulação local de Serverless Functions).
-
-### Instalação
-1. Clone o repositório.
-2. Instale as dependências (se houver/necessário):
-   ```bash
-   npm install
-   ```
-
-### Variáveis de Ambiente
-Crie um arquivo `.env` na raiz do projeto contendo as variáveis necessárias (não cometa este arquivo para o Git):
-```env
-# URL da Origem Permitida (ex: https://seu-dominio.com)
-ALLOWED_ORIGIN=http://localhost:3000
-
-# Chave secreta do Google reCAPTCHA v3
-RECAPTCHA_SECRET_KEY=sua_chave_secreta_aqui
-```
+- **Frontend**: HTML5, CSS3 (Vanilla), JavaScript moderno (ES6+), IMask.
+- **Backend**: Node.js (Vercel Serverless Functions).
 
 ---
 
