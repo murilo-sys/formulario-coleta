@@ -1,3 +1,6 @@
+const nodemailer = require('nodemailer');
+
+
 function validarCPF(cpf) {
   const clean = String(cpf).replace(/\D/g, "");
   if (clean.length !== 11 || /^(\d)\1{10}$/.test(clean)) return false;
@@ -97,10 +100,10 @@ module.exports = async function (req, res) {
   }
 
   // Rate Limiter de 3 segundos por IP (Gatilho de segurança backend)
-  const ip = req.headers['x-real-ip'] || 
-             (req.headers['x-forwarded-for'] ? req.headers['x-forwarded-for'].split(',')[0].trim() : null) || 
-             req.socket.remoteAddress || 
-             'unknown';
+  const ip = req.headers['x-real-ip'] ||
+    (req.headers['x-forwarded-for'] ? req.headers['x-forwarded-for'].split(',')[0].trim() : null) ||
+    req.socket.remoteAddress ||
+    'unknown';
   const agora = Date.now();
 
   // Limpeza preventiva otimizada (evita varredura O(N) em todas as requisições)
@@ -146,7 +149,7 @@ module.exports = async function (req, res) {
 
   // Validação opcional de Google reCAPTCHA v3 (Ativa apenas se a chave estiver configurada no .env)
   const recaptchaSecret = process.env.RECAPTCHA_SECRET_KEY;
-  if (recaptchaSecret) {
+  if (recaptchaSecret && !isLocal) {
     const token = body.recaptchaToken;
     if (!token) {
       return res.status(400).json({ message: "Validação de segurança (reCAPTCHA) ausente." });
@@ -159,7 +162,7 @@ module.exports = async function (req, res) {
       });
       const googleResult = await responseGoogle.json();
       if (!googleResult.success || googleResult.score < 0.5) {
-        return res.status(400).json({ message: "Validação de segurança falhou. Comportamento automatizado suspeito." });
+        return res.status(400).json({ message: "Validação de segurança falhou." });
       }
     } catch (e) {
       console.error("Erro na comunicação com a API do reCAPTCHA:", e);
@@ -270,9 +273,9 @@ module.exports = async function (req, res) {
     for (let i = 0; i < cubagem.length; i++) {
       const item = cubagem[i];
       if (typeof item.volumes !== 'number' || item.volumes <= 0 ||
-          typeof item.comprimento !== 'number' || item.comprimento <= 0 ||
-          typeof item.largura !== 'number' || item.largura <= 0 ||
-          typeof item.altura !== 'number' || item.altura <= 0) {
+        typeof item.comprimento !== 'number' || item.comprimento <= 0 ||
+        typeof item.largura !== 'number' || item.largura <= 0 ||
+        typeof item.altura !== 'number' || item.altura <= 0) {
         return res.status(400).json({
           message: `O grupo de cubagem ${i + 1} deve possuir quantidade de volumes e dimensões válidas e maiores que zero.`
         });
@@ -488,7 +491,45 @@ module.exports = async function (req, res) {
       }
 
       // Sucesso na criação! Retorna o ID e o sequenceCode (protocolo da coleta)
-      const seq = pickCreateResult.resource?.sequenceCode || Math.floor(100000 + Math.random() * 900000);
+      const seq = pickCreateResult.resource?.sequenceCode;
+
+      const transporter = nodemailer.createTransport({
+        host: 'smtp.gmail.com',
+        port: 465,
+        secure: true,
+        auth: {
+          user: process.env.SMTP_USER,
+          pass: process.env.SMTP_PASS,
+        },
+      });
+
+      const listaEmail = [
+        body.solicitanteEmail,
+        body.solicitanteEmailAdicional
+      ].filter(Boolean);
+
+      const mailOptions = {
+        from: `"Global Cargo" <${process.env.SMTP_USER}>`,
+        to: listaEmail.join(', '),
+        subject: `Confirmação de solicitação de Coleta - Protocolo #${seq}`,
+        html: `
+        <div style="font-family: sans-serif; color: #333;">
+        <h2>Olá, ${body.solicitanteNome}!</h2>
+        <p>Sua solicitação de coleta foi recebida com sucesso.</p>
+        <p><strong>Número do Protocolo:</strong> ${seq}</p>
+        <p>Em breve nossa equipe entrará em contato para os próximos passos.</p>
+        <hr>
+        <p style="font-size: 12px; color: #777;">Esta é uma mensagem automática, por favor não responda.</p>
+        </div>
+        `
+      };
+
+      try {
+        await transporter.sendMail(mailOptions);
+        console.log('E-mail enviado com sucesso.');
+      } catch (emailError) {
+        console.error('Erro no envio do e-mail de confirmação:', emailError);
+      }
 
       return res.status(200).json({
         message: "Solicitação de coleta aberta com sucesso!",
