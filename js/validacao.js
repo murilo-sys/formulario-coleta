@@ -277,6 +277,8 @@ document.addEventListener("DOMContentLoaded", () => {
             body: JSON.stringify(payload)
           });
 
+          const emailCadastroRegex
+
           const result = await response.json();
 
           if (response.ok) {
