@@ -353,22 +353,24 @@ module.exports = async function (req, res) {
 
   // Constrói observações dinamicamente com base nos contatos adicionais
   const partesComments = [];
+
   if (body.observacoes && body.observacoes.trim() !== "") {
     partesComments.push(body.observacoes.trim());
   } else {
     partesComments.push("Sem observações");
   }
 
-  if (body.solicitanteEmailAdicional && body.solicitanteEmailAdicional.trim() !== "") {
-    partesComments.push(`E-mail Adicional: ${body.solicitanteEmailAdicional.trim()}`);
-  }
+  const numeroNfLimpo = body.numeroNf ? body.numeroNf.trim() : "";
+  partesComments.push(`Numero da NF-e: ${numeroNfLimpo || "Não informada"}`);
 
   if (body.solicitanteTelefoneAdicional && body.solicitanteTelefoneAdicional.trim() !== "") {
     partesComments.push(`Telefone Adicional: ${body.solicitanteTelefoneAdicional.trim()}`);
   }
 
-  const numeroNfLimpo = body.numeroNf ? body.numeroNf.trim() : "";
-  partesComments.push(`Numero da NF-e: ${numeroNfLimpo || "Não informada"}`);
+  if (body.solicitanteTelefone && body.solicitanteTelefone.trim() !== "") {
+    partesComments.push(`Telefone Solicitante: ${body.solicitanteTelefone.trim()}`);
+  }
+
 
   const commentsString = partesComments.join(" | ");
 
@@ -521,7 +523,7 @@ module.exports = async function (req, res) {
         <h2>Olá, ${body.solicitanteNome}!</h2>
         <p>Recebemos com sucesso a sua solicitação de coleta nº ${seq}</p>
         <p>Nossa equipe realizará a análise do pedido e retornará com a confirmação da coleta o mais breve possível.</p>
-        <p><strong>Prazo de retorno:</strong> até <strong>2 horas.</strong></p>
+        <p><strong>Prazo de retorno:</strong> até <strong>60 minutos.</strong></p>
         <p>Em caso de dúvidas, entre em contato com a equipe de suporte da Global informando o número da sua solicitação.</p>
         <p>
         <p>Atenciosamente,</p>

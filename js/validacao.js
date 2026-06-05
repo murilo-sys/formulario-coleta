@@ -201,7 +201,7 @@ document.addEventListener("DOMContentLoaded", () => {
             const comprimentoVal = linha.querySelector(".input-comprimento")?.value || "";
             const larguraVal = linha.querySelector(".input-largura")?.value || "";
             const alturaVal = linha.querySelector(".input-altura")?.value || "";
-            
+
             // Substitui a vírgula decimal por ponto para converter em número flutuante
             const compLimpo = comprimentoVal.replace(",", ".");
             const largLimpo = larguraVal.replace(",", ".");
@@ -277,8 +277,6 @@ document.addEventListener("DOMContentLoaded", () => {
             body: JSON.stringify(payload)
           });
 
-          const emailCadastroRegex
-
           const result = await response.json();
 
           if (response.ok) {
@@ -288,7 +286,7 @@ document.addEventListener("DOMContentLoaded", () => {
             const emailCadastro = state.solicitanteEndereco?.email || "Não localizado";
             const emailAdicional = document.getElementById("solicitanteEmailAdicional")?.value.trim() || "";
             if (sucessoEmailContato) {
-              sucessoEmailContato.textContent = emailAdicional 
+              sucessoEmailContato.textContent = emailAdicional
                 ? `${emailCadastro} / ${emailAdicional}`
                 : emailCadastro;
             }
@@ -297,7 +295,7 @@ document.addEventListener("DOMContentLoaded", () => {
             const telAdicional = document.getElementById("solicitanteTelefoneAdicional")?.value.trim() || "";
             if (sucessoTelefoneContato) {
               const telCadastroTexto = telCadastro || "Não localizado";
-              sucessoTelefoneContato.textContent = telAdicional 
+              sucessoTelefoneContato.textContent = telAdicional
                 ? `${telCadastroTexto} / ${telAdicional}`
                 : telCadastroTexto;
             }
