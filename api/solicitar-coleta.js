@@ -515,13 +515,17 @@ module.exports = async function (req, res) {
       const mailOptions = {
         from: `"Global Cargo" <${process.env.SMTP_USER}>`,
         to: listaEmail.join(', '),
-        subject: `Confirmação de solicitação de Coleta - Protocolo #${seq}`,
+        subject: `Solicitação de Coleta - Nº O.C #${seq}`,
         html: `
         <div style="font-family: sans-serif; color: #333;">
         <h2>Olá, ${body.solicitanteNome}!</h2>
-        <p>Sua solicitação de coleta foi recebida com sucesso.</p>
-        <p><strong>Número do Protocolo:</strong> ${seq}</p>
-        <p>Em breve nossa equipe entrará em contato para os próximos passos.</p>
+        <p>Recebemos com sucesso a sua solicitação de coleta nº ${seq}</p>
+        <p>Nossa equipe realizará a análise do pedido e retornará com a confirmação da coleta o mais breve possível.</p>
+        <p><strong>Prazo de retorno:</strong> até <strong>2 horas.</strong></p>
+        <p>Em caso de dúvidas, entre em contato com a equipe de suporte da Global informando o número da sua solicitação.</p>
+        <p>
+        <p>Atenciosamente,</p>
+        <p><strong>Global Cargo</strong></p>
         <hr>
         <p style="font-size: 12px; color: #777;">Esta é uma mensagem automática, por favor não responda.</p>
         </div>
