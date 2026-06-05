@@ -506,7 +506,11 @@ module.exports = async function (req, res) {
       const listaEmail = [
         body.solicitanteEmail,
         body.solicitanteEmailAdicional
-      ].filter(Boolean);
+      ]
+        .filter(Boolean)
+        .flatMap(emailStr => emailStr.split(/[;,]/))
+        .map(email => email.trim())
+        .filter(Boolean);
 
       const mailOptions = {
         from: `"Global Cargo" <${process.env.SMTP_USER}>`,
