@@ -418,10 +418,16 @@ input[type="number"] {
   padding: 0;
   max-width: 500px;
   width: 90%;
+  max-height: 90vh;
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
   background-color: #ffffff;
   overflow: hidden;
   animation: dialogFadeIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.dialog-premium[open] {
+  display: flex;
+  flex-direction: column;
 }
 
 .dialog-premium::backdrop {
@@ -455,6 +461,9 @@ input[type="number"] {
   flex-direction: column;
   padding: 24px;
   gap: 16px;
+  max-height: 90vh;
+  box-sizing: border-box;
+  overflow: hidden;
 }
 
 .dialog-cabecalho {
@@ -484,6 +493,8 @@ input[type="number"] {
   flex-direction: column;
   gap: 10px;
   border: 1px solid #e2e8f0;
+  overflow-y: auto;
+  min-height: 0;
 }
 
 .dialog-item {
@@ -802,4 +813,22 @@ input[type="number"] {
 
 .secoes-adicionais-wrapper {
   min-height: 0;
+}
+
+/* Responsividade do Dialog para telas com pouca altura vertical */
+@media (max-height: 620px) {
+  .dialog-container {
+    padding: 16px;
+    gap: 10px;
+  }
+  .dialog-corpo {
+    padding: 12px;
+    gap: 8px;
+  }
+  .dialog-cabecalho {
+    padding-bottom: 4px;
+  }
+  .dialog-rodape {
+    margin-top: 4px;
+  }
 }
