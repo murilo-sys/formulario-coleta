@@ -378,6 +378,14 @@ module.exports = async function (req, res) {
     partesComments.push(`Telefone Solicitante: ${body.solicitanteTelefone.trim()}`);
   }
 
+  if (body.destinatarioNome && body.destinatarioNome.trim() !== "") {
+    partesComments.push(`Destinatario Nome: ${body.destinatarioNome.trim()}`)
+  }
+
+  if (body.destinatarioCidade && body.destinatarioCidade.trim() !== "") {
+    partesComments.push(`Cidade Destino: ${body.destinatarioCidade.trim()}`)
+  }
+
 
   const commentsString = partesComments.join(" | ");
 
