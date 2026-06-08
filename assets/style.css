@@ -832,3 +832,8 @@ input[type="number"] {
     margin-top: 4px;
   }
 }
+
+/* Força a exibição em caixa alta nos inputs de CPF/CNPJ */
+#solicitanteDoc, #remetenteDoc, #destinatarioDoc {
+  text-transform: uppercase;
+}

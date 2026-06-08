@@ -1,29 +1,36 @@
 function validarCNPJ(cnpj) {
-  const clean = String(cnpj).replace(/\D/g, "");
-  if (clean.length !== 14 || /^(\d)\1{13}$/.test(clean)) return false;
+  const clean = String(cnpj).toUpperCase().replace(/[^A-Z0-9]/g, "");
+  if (clean.length !== 14) return false;
 
-  let tamanho = clean.length - 2;
-  let numeros = clean.substring(0, tamanho);
-  let digitos = clean.substring(tamanho);
+  // Evita sequências repetidas apenas se for totalmente numérico
+  if (/^\d+$/.test(clean) && /^(\d)\1{13}$/.test(clean)) return false;
+
+  const obterValorCaractere = (caractere) => {
+    return caractere.charCodeAt(0) - 48;
+  };
+
+  // Validação do Primeiro Dígito Verificador (DV)
   let soma = 0;
-  let pos = tamanho - 7;
-  for (let i = tamanho; i >= 1; i--) {
-    soma += parseInt(numeros.charAt(tamanho - i), 10) * pos--;
-    if (pos < 2) pos = 9;
+  let peso = 5;
+  for (let i = 0; i < 12; i++) {
+    soma += obterValorCaractere(clean.charAt(i)) * peso;
+    peso = (peso === 2) ? 9 : peso - 1;
   }
-  let resultado = soma % 11 < 2 ? 0 : 11 - (soma % 11);
-  if (resultado !== parseInt(digitos.charAt(0), 10)) return false;
+  let resto = soma % 11;
+  let digito1 = resto < 2 ? 0 : 11 - resto;
+  if (parseInt(clean.charAt(12), 10) !== digito1) return false;
 
-  tamanho = tamanho + 1;
-  numeros = clean.substring(0, tamanho);
+  // Validação do Segundo Dígito Verificador (DV)
   soma = 0;
-  pos = tamanho - 7;
-  for (let i = tamanho; i >= 1; i--) {
-    soma += parseInt(numeros.charAt(tamanho - i), 10) * pos--;
-    if (pos < 2) pos = 9;
+  peso = 6;
+  for (let i = 0; i < 13; i++) {
+    soma += obterValorCaractere(clean.charAt(i)) * peso;
+    peso = (peso === 2) ? 9 : peso - 1;
   }
-  resultado = soma % 11 < 2 ? 0 : 11 - (soma % 11);
-  return resultado === parseInt(digitos.charAt(1), 10);
+  resto = soma % 11;
+  let digito2 = resto < 2 ? 0 : 11 - resto;
+
+  return parseInt(clean.charAt(13), 10) === digito2;
 }
 
 const cooldowns = new Map(); // ip -> timestamp
@@ -180,11 +187,11 @@ module.exports = async function (req, res) {
   //Garante que o CNPJ seja uma string antes de formatar
   const cnpjString = String(cnpj);
 
-  //Limpa a variavel deixando apenas os numeros
-  const cnpjLimpo = cnpjString.replace(/\D/g, "")
+  //Limpa a variavel deixando apenas letras e números
+  const cnpjLimpo = cnpjString.toUpperCase().replace(/[^A-Z0-9]/g, "");
 
   //Verifica se o cnpj está limpo e valido
-  if (!cnpjLimpo || cnpjLimpo.length !== 14 || isNaN(cnpjLimpo) || !validarCNPJ(cnpjLimpo)) {
+  if (!cnpjLimpo || cnpjLimpo.length !== 14 || !validarCNPJ(cnpjLimpo)) {
     return res.status(400).json({ error: "O CNPJ enviado é inválido ou está incompleto.", body: cnpjLimpo })
   }
 

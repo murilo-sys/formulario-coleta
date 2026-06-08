@@ -9,14 +9,25 @@ document.addEventListener("DOMContentLoaded", () => {
   const maskOptionsDoc = {
     mask: [
       { mask: "000.000.000-00", type: "CPF" },
-      { mask: "00.000.000/0000-00", type: "CNPJ" }
+      {
+        mask: "XX.XXX.XXX/XXXX-00",
+        type: "CNPJ",
+        blocks: {
+          X: {
+            mask: /^[a-zA-Z0-9]$/
+          }
+        },
+        prepare: function (str) {
+          return str.toUpperCase();
+        }
+      }
     ],
     dispatch: function (appended, dynamicMasked) {
-      const number = (dynamicMasked.value + appended).replace(/\D/g, "");
-      if (number.length == 11) {
-        return dynamicMasked.compiledMasks[0];
+      const clean = (dynamicMasked.value + appended).replace(/[^a-zA-Z0-9]/g, "");
+      if (clean.length > 11 || /[a-zA-Z]/.test(clean)) {
+        return dynamicMasked.compiledMasks[1];
       }
-      return dynamicMasked.compiledMasks[1];
+      return dynamicMasked.compiledMasks[0];
     }
   };
 

@@ -23,31 +23,38 @@ function validarCPF(cpf) {
 }
 
 function validarCNPJ(cnpj) {
-  const clean = String(cnpj).replace(/\D/g, "");
-  if (clean.length !== 14 || /^(\d)\1{13}$/.test(clean)) return false;
+  const clean = String(cnpj).toUpperCase().replace(/[^A-Z0-9]/g, "");
+  if (clean.length !== 14) return false;
 
-  let tamanho = clean.length - 2;
-  let numeros = clean.substring(0, tamanho);
-  let digitos = clean.substring(tamanho);
+  // Evita sequências repetidas apenas se for totalmente numérico
+  if (/^\d+$/.test(clean) && /^(\d)\1{13}$/.test(clean)) return false;
+
+  const obterValorCaractere = (caractere) => {
+    return caractere.charCodeAt(0) - 48;
+  };
+
+  // Validação do Primeiro Dígito Verificador (DV)
   let soma = 0;
-  let pos = tamanho - 7;
-  for (let i = tamanho; i >= 1; i--) {
-    soma += parseInt(numeros.charAt(tamanho - i), 10) * pos--;
-    if (pos < 2) pos = 9;
+  let peso = 5;
+  for (let i = 0; i < 12; i++) {
+    soma += obterValorCaractere(clean.charAt(i)) * peso;
+    peso = (peso === 2) ? 9 : peso - 1;
   }
-  let resultado = soma % 11 < 2 ? 0 : 11 - (soma % 11);
-  if (resultado !== parseInt(digitos.charAt(0), 10)) return false;
+  let resto = soma % 11;
+  let digito1 = resto < 2 ? 0 : 11 - resto;
+  if (parseInt(clean.charAt(12), 10) !== digito1) return false;
 
-  tamanho = tamanho + 1;
-  numeros = clean.substring(0, tamanho);
+  // Validação do Segundo Dígito Verificador (DV)
   soma = 0;
-  pos = tamanho - 7;
-  for (let i = tamanho; i >= 1; i--) {
-    soma += parseInt(numeros.charAt(tamanho - i), 10) * pos--;
-    if (pos < 2) pos = 9;
+  peso = 6;
+  for (let i = 0; i < 13; i++) {
+    soma += obterValorCaractere(clean.charAt(i)) * peso;
+    peso = (peso === 2) ? 9 : peso - 1;
   }
-  resultado = soma % 11 < 2 ? 0 : 11 - (soma % 11);
-  return resultado === parseInt(digitos.charAt(1), 10);
+  resto = soma % 11;
+  let digito2 = resto < 2 ? 0 : 11 - resto;
+
+  return parseInt(clean.charAt(13), 10) === digito2;
 }
 
 const NATUREZAS_BLOQUEADAS = ["liquido", "quimica_diversos", "artigos_perigosos"];
@@ -170,7 +177,7 @@ module.exports = async function (req, res) {
   }
 
   // 2. Validação de Pessoa Física (Bypass de segurança)
-  const solicitanteDocLimpo = String(body.solicitanteDoc || "").replace(/\D/g, "");
+  const solicitanteDocLimpo = String(body.solicitanteDoc || "").toUpperCase().replace(/[^A-Z0-9]/g, "");
   if (solicitanteDocLimpo.length === 11) {
     return res.status(400).json({
       message: "A solicitação direta via formulário não é permitida para Pessoa Física. Entre em contato com nosso atendimento para suporte pelos telefones: (11) 3017-8990 ou (11) 2222-1260."
@@ -220,7 +227,7 @@ module.exports = async function (req, res) {
     return res.status(400).json({ message: "O documento do solicitante (CNPJ) fornecido é inválido." });
   }
 
-  const remetenteDocLimpo = String(body.remetenteDoc || "").replace(/\D/g, "");
+  const remetenteDocLimpo = String(body.remetenteDoc || "").toUpperCase().replace(/[^A-Z0-9]/g, "");
   if (remetenteDocLimpo.length === 11) {
     if (!validarCPF(remetenteDocLimpo)) {
       return res.status(400).json({ message: "O documento do remetente (CPF) fornecido é inválido." });
@@ -233,7 +240,7 @@ module.exports = async function (req, res) {
     return res.status(400).json({ message: "O documento do remetente deve possuir 11 dígitos (CPF) ou 14 dígitos (CNPJ)." });
   }
 
-  const destinatarioDocLimpo = String(body.destinatarioDoc || "").replace(/\D/g, "");
+  const destinatarioDocLimpo = String(body.destinatarioDoc || "").toUpperCase().replace(/[^A-Z0-9]/g, "");
   if (destinatarioDocLimpo.length === 11) {
     if (!validarCPF(destinatarioDocLimpo)) {
       return res.status(400).json({ message: "O documento do destinatário (CPF) fornecido é inválido." });
