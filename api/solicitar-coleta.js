@@ -383,7 +383,8 @@ module.exports = async function (req, res) {
   }
 
   if (body.destinatarioCidade && body.destinatarioCidade.trim() !== "") {
-    partesComments.push(`Cidade Destino: ${body.destinatarioCidade.trim()}`)
+    const uf = (body.destinatarioUf && body.destinatarioUf.trim() !== "") ? ` - ${body.destinatarioUf.trim()}` : "";
+    partesComments.push(`Cidade Destino: ${body.destinatarioCidade.trim()}${uf}`);
   }
 
 
