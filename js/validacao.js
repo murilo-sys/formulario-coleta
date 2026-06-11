@@ -116,9 +116,15 @@ document.addEventListener("DOMContentLoaded", () => {
           const tel = state.solicitanteEndereco?.phoneNumber || state.solicitanteEndereco?.mobileNumber;
           confirmacaoTelefoneContato.textContent = tel ? tel.trim() : "Não cadastrado";
         }
-        if (chkConfirmacaoFinal) chkConfirmacaoFinal.checked = false;
+        if (chkConfirmacaoFinal) {
+          chkConfirmacaoFinal.checked = false;
+          const containerConfirmacaoFinal = document.getElementById("containerConfirmacaoFinal");
+          if (containerConfirmacaoFinal) {
+            containerConfirmacaoFinal.classList.remove("erro-input");
+          }
+        }
         if (btnConfirmarEnvioFinal) {
-          btnConfirmarEnvioFinal.disabled = true;
+          btnConfirmarEnvioFinal.disabled = false;
           btnConfirmarEnvioFinal.textContent = "Confirmar Coleta";
         }
         dialogConfirmacaoEnvio.showModal();
@@ -126,9 +132,12 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     // Controladores do Dialog de Confirmação de Envio (Requisito 1)
-    if (chkConfirmacaoFinal && btnConfirmarEnvioFinal) {
+    if (chkConfirmacaoFinal) {
       chkConfirmacaoFinal.addEventListener("change", () => {
-        btnConfirmarEnvioFinal.disabled = !chkConfirmacaoFinal.checked;
+        const containerConfirmacaoFinal = document.getElementById("containerConfirmacaoFinal");
+        if (chkConfirmacaoFinal.checked && containerConfirmacaoFinal) {
+          containerConfirmacaoFinal.classList.remove("erro-input");
+        }
       });
     }
 
@@ -183,6 +192,13 @@ document.addEventListener("DOMContentLoaded", () => {
             marcarErroLocal(solicitanteTelefoneAdicional);
             adicionaisValidos = false;
           }
+        }
+
+        // Validação do checkbox de confirmação final
+        if (chkConfirmacaoFinal && !chkConfirmacaoFinal.checked) {
+          const containerConfirmacaoFinal = document.getElementById("containerConfirmacaoFinal");
+          marcarErroLocal(containerConfirmacaoFinal);
+          adicionaisValidos = false;
         }
 
         if (!adicionaisValidos) {

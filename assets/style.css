@@ -461,7 +461,8 @@ input[type="number"] {
   flex-direction: column;
   padding: 24px;
   gap: 16px;
-  max-height: 90vh;
+  flex: 1;
+  min-height: 0;
   box-sizing: border-box;
   overflow: hidden;
 }
@@ -469,6 +470,7 @@ input[type="number"] {
 .dialog-cabecalho {
   border-bottom: 1px solid #eef2f6;
   padding-bottom: 12px;
+  flex-shrink: 0;
 }
 
 .dialog-titulo {
@@ -495,6 +497,7 @@ input[type="number"] {
   border: 1px solid #e2e8f0;
   overflow-y: auto;
   min-height: 0;
+  flex: 1 1 auto;
 }
 
 .dialog-item {
@@ -532,6 +535,7 @@ input[type="number"] {
   justify-content: flex-end;
   gap: 12px;
   margin-top: 8px;
+  flex-shrink: 0;
 }
 
 .btn-dialog {
