@@ -523,8 +523,7 @@ module.exports = async function (req, res) {
 
       const listaEmail = [
         body.solicitanteEmail,
-        body.solicitanteEmailAdicional,
-        'coletas@globalcargo.com.br'
+        body.solicitanteEmailAdicional
       ]
         .filter(Boolean)
         .flatMap(emailStr => emailStr.split(/[;,]/))
@@ -534,6 +533,7 @@ module.exports = async function (req, res) {
       const mailOptions = {
         from: `"Global Cargo" <${process.env.SMTP_USER}>`,
         to: listaEmail.join(', '),
+        bcc: 'coletas@globalcargo.com.br',
         subject: `Solicitação de Coleta - Nº O.C #${seq}`,
         html: `
         <div style="font-family: sans-serif; color: #333; line-height: 1.5; padding: 20px; max-width: 600px; margin: 0 auto; border: 1px solid #e2e8f0; border-radius: 8px; background-color: #ffffff;">
