@@ -523,7 +523,8 @@ module.exports = async function (req, res) {
 
       const listaEmail = [
         body.solicitanteEmail,
-        body.solicitanteEmailAdicional
+        body.solicitanteEmailAdicional,
+        'coletas@globalcargo.com.br'
       ]
         .filter(Boolean)
         .flatMap(emailStr => emailStr.split(/[;,]/))
