@@ -449,7 +449,8 @@ module.exports = async function (req, res) {
           productClassificationId: productClassificationId,
           pickItemCubagesAttributes: cubages
         }
-      ]
+      ],
+      referenceNumber: "Formulário de Coleta"
     }
   };
 
