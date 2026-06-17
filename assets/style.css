@@ -728,7 +728,7 @@ input[type="number"] {
   to {
     opacity: 1;
     transform: translateY(0);
-    max-height: 100px;
+    max-height: 500px;
     margin-top: 15px;
   }
 }
@@ -737,7 +737,7 @@ input[type="number"] {
   from {
     opacity: 1;
     transform: translateY(0);
-    max-height: 100px;
+    max-height: 500px;
     margin-top: 15px;
   }
   to {

@@ -72,25 +72,42 @@ document.addEventListener("DOMContentLoaded", () => {
         if (index > 0) {
           removerLinhaComAnimacao(linha);
         } else {
-          const volInput = linha.querySelector(".input-volumes");
-          if (volInput) volInput.value = "1";
+          const volInput = inlineSelector(linha, ".input-volumes");
+          if (volInput) volInput.value = "";
         }
       });
       recalcularTudo();
       return;
     }
 
-    // Varre as linhas ativas e calcula a soma acumulada de volumes
-    const linhas = Array.from(containerCubagem.querySelectorAll(".coluna-cubagem:not(.animacao-saida)"));
+    // Helper para selecionar elemento inline de forma robusta
+    function inlineSelector(parent, selector) {
+      return parent ? parent.querySelector(selector) : null;
+    }
+
+    // 1. Garantir que temos pelo menos as linhas mínimas exigidas
+    const minLinhas = totalVolumesDoc >= 2 ? 2 : 1;
+    let linhas = Array.from(containerCubagem.querySelectorAll(".coluna-cubagem:not(.animacao-saida)"));
+
+    while (linhas.length < minLinhas) {
+      adicionarLinhaComRestante(1);
+      linhas = Array.from(containerCubagem.querySelectorAll(".coluna-cubagem:not(.animacao-saida)"));
+    }
+
+    // 2. Percorrer as linhas existentes e validar soma/capping
     let somaAcumulada = 0;
     let indexAtingiuTotal = -1;
 
     for (let i = 0; i < linhas.length; i++) {
       const linha = linhas[i];
-      const volInput = linha.querySelector(".input-volumes");
-      let vol = parseInt(volInput?.value, 10) || 0;
+      const volInput = inlineSelector(linha, ".input-volumes");
+      const valStr = volInput ? volInput.value.trim() : "";
+      
+      let vol = 0;
+      if (valStr !== "") {
+        vol = parseInt(valStr, 10) || 0;
+      }
 
-      // Impede que o volume deste grupo ultrapasse o limite restante disponível para o total geral
       const maxPermitido = totalVolumesDoc - somaAcumulada;
       if (vol > maxPermitido) {
         vol = maxPermitido;
@@ -99,24 +116,35 @@ document.addEventListener("DOMContentLoaded", () => {
 
       somaAcumulada += vol;
 
-      // Se a soma acumulada até esta linha atingir ou ultrapassar o total de volumes pretendido
+      // Se a soma acumulada atingiu ou ultrapassou o total
       if (somaAcumulada >= totalVolumesDoc) {
         indexAtingiuTotal = i;
         break;
       }
     }
 
-    // Se a soma acumulada atingiu ou superou o total em um ponto intermediário, remove as linhas extras seguintes
-    if (indexAtingiuTotal !== -1 && indexAtingiuTotal < linhas.length - 1) {
-      for (let j = indexAtingiuTotal + 1; j < linhas.length; j++) {
+    // 3. Gerenciamento de linhas com base no resultado da soma e limite total de volumes
+    if (indexAtingiuTotal !== -1) {
+      // Se atingimos o total, removemos todas as linhas excedentes posteriores.
+      if (indexAtingiuTotal < linhas.length - 1) {
+        for (let j = indexAtingiuTotal + 1; j < linhas.length; j++) {
+          removerLinhaComAnimacao(linhas[j]);
+        }
+      }
+    } else if (linhas.length > totalVolumesDoc) {
+      // Se o número de linhas excede o total de volumes permitidos, removemos as excedentes.
+      for (let j = totalVolumesDoc; j < linhas.length; j++) {
         removerLinhaComAnimacao(linhas[j]);
       }
-    }
-    // Se percorremos todas as linhas e ainda não atingimos o total de volumes, adiciona linhas com 1 volume padrão até completar o total
-    else if (somaAcumulada < totalVolumesDoc) {
-      while (somaAcumulada < totalVolumesDoc) {
+    } else if (somaAcumulada < totalVolumesDoc) {
+      // Se ainda falta volumes e a última linha está preenchida (> 0),
+      // adicionamos exatamente mais 1 linha vazia.
+      const ultimaLinha = linhas[linhas.length - 1];
+      const volInputUltima = inlineSelector(ultimaLinha, ".input-volumes");
+      const valStrUltima = volInputUltima ? volInputUltima.value.trim() : "";
+      
+      if (valStrUltima !== "" && parseInt(valStrUltima, 10) > 0) {
         adicionarLinhaComRestante(1);
-        somaAcumulada += 1;
       }
     }
 
@@ -145,7 +173,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const inputVol = novaLinha.querySelector(".input-volumes");
     if (inputVol) {
-      inputVol.value = "1"; // 1 volume padrão por linha
+      inputVol.value = ""; // Começa vazio para o usuário preencher
     }
 
     containerCubagem.appendChild(novaLinha);
@@ -241,8 +269,23 @@ export function validarCubagem(marcarErro) {
 
   if (!containerCubagem) return true;
 
-  const totalLinhas = containerCubagem.querySelectorAll(".coluna-cubagem:not(.animacao-saida)");
+  const totalLinhas = Array.from(containerCubagem.querySelectorAll(".coluna-cubagem:not(.animacao-saida)"));
+  const totalVolumesFomulario = qtdVolumesInput ? (parseInt(qtdVolumesInput.value, 10) || 0) : 0;
+
+  // 1. Calcular a soma dos volumes das linhas preenchidas
   let somaVolumesGrupos = 0;
+  totalLinhas.forEach((linha) => {
+    const volumes = linha.querySelector(".input-volumes");
+    if (volumes) {
+      const volumesVal = parseInt(volumes.value, 10);
+      if (!isNaN(volumesVal) && volumesVal > 0) {
+        somaVolumesGrupos += volumesVal;
+      }
+    }
+  });
+
+  // Se a soma já atingiu o total, as linhas vazias adicionais são ignoradas na validação.
+  const somaAtingiuTotal = (somaVolumesGrupos === totalVolumesFomulario);
 
   totalLinhas.forEach((linha) => {
     const volumes = linha.querySelector(".input-volumes");
@@ -250,14 +293,20 @@ export function validarCubagem(marcarErro) {
     const largura = linha.querySelector(".input-largura");
     const altura = linha.querySelector(".input-altura");
 
+    const volValStr = volumes ? volumes.value.trim() : "";
+    const isVazio = (volValStr === "");
+
+    // Se a linha está vazia e a soma de volumes já atingiu o total, ignoramos esta linha na validação
+    if (isVazio && somaAtingiuTotal) {
+      return;
+    }
+
     // Valida se o número de volumes do grupo está vazio ou <= 0
     if (volumes) {
       const volumesVal = parseInt(volumes.value, 10);
       if (isNaN(volumesVal) || volumesVal <= 0) {
         marcarErro(volumes);
         valido = false;
-      } else {
-        somaVolumesGrupos += volumesVal;
       }
     }
 
@@ -289,8 +338,6 @@ export function validarCubagem(marcarErro) {
 
   // Valida a consistência de negócio entre a soma dos volumes agrupados e o total do formulário
   if (qtdVolumesInput) {
-    const totalVolumesFomulario = parseInt(qtdVolumesInput.value, 10) || 0;
-
     if (somaVolumesGrupos !== totalVolumesFomulario) {
       valido = false;
 
