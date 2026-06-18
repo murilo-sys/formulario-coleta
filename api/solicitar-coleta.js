@@ -532,24 +532,48 @@ module.exports = async function (req, res) {
         .filter(Boolean);
 
       const mailOptions = {
-        from: `"Global Cargo" <${process.env.SMTP_USER}>`,
+        from: `"Agendamento Global Cargo" <${process.env.SMTP_USER}>`,
         to: listaEmail.join(', '),
         bcc: 'coletas@globalcargo.com.br',
         subject: `Solicitação de Coleta - Nº O.C #${seq}`,
         html: `
-        <div style="font-family: sans-serif; color: #333; line-height: 1.5; padding: 20px; max-width: 600px; margin: 0 auto; border: 1px solid #e2e8f0; border-radius: 8px; background-color: #ffffff;">
-          <h2 style="color: #1a3a6b; margin-top: 0; margin-bottom: 16px; font-size: 20px; border-bottom: 2px solid #1a3a6b; padding-bottom: 8px;">Olá, ${body.solicitanteNome}!</h2>
-          <p style="margin: 0 0 16px 0;">Recebemos com sucesso a sua solicitação de coleta nº <strong>${seq}</strong>.</p>
-          <p style="margin: 0 0 16px 0;">Nossa equipe realizará a análise do pedido e retornará com a confirmação da coleta o mais breve possível.</p>
-          <p style="margin: 0 0 16px 0;"><strong>Prazo de retorno:</strong> até <strong>60 minutos.</strong></p>
-          <p style="margin: 0 0 24px 0;">Em caso de dúvidas, entre em contato com a equipe de suporte da Global informando o número da sua solicitação.</p>
-          
-          <p style="margin: 0; color: #555;">Atenciosamente,</p>
-          <p style="margin: 4px 0 0 0; font-weight: bold; color: #1a3a6b; font-size: 16px;">Global Cargo</p>
-          
-          <hr style="border: 0; border-top: 1px solid #e2e8f0; margin: 30px 0 15px 0;">
-          <p style="font-size: 12px; color: #777; margin: 0;">Esta é uma mensagem automática, por favor não responda.</p>
-        </div>
+        <div style="font-family: sans-serif; color: #333333; line-height: 1.6; padding: 25px; max-width: 600px; margin: 0 auto; border: 1px solid #e2e8f0; border-radius: 8px; background-color: #ffffff; box-shadow: 0 4px 6px rgba(0,0,0,0.05);">
+
+  <div style="height: 4px; background-color: #d9383a; margin-bottom: 20px; border-radius: 4px 4px 0 0;"></div>
+
+  <h2 style="color: #1a3a6b; margin-top: 0; margin-bottom: 20px; font-size: 22px; border-bottom: 2px solid #1a3a6b; padding-bottom: 10px;">
+    Olá, ${body.solicitanteNome}!
+  </h2>
+  
+  <p style="margin: 0 0 16px 0; font-size: 15px;">
+    Recebemos com sucesso a sua solicitação de coleta nº <strong style="color: #1a3a6b;">${seq}</strong>.
+  </p>
+  
+  <p style="margin: 0 0 16px 0; font-size: 15px;">
+    Nossa equipe realizará a análise do pedido e retornará com a confirmação da coleta o mais breve possível.
+  </p>
+  
+  <div style="background-color: #f8fafc; border-left: 4px solid #d9383a; padding: 15px; margin: 20px 0; border-radius: 0 6px 6px 0;">
+    <p style="margin: 0; font-size: 15px; color: #1a3a6b;">
+      <strong>Prazo de retorno:</strong> até <strong style="color: #d9383a;">60 minutos.</strong>
+    </p>
+  </div>
+  
+  <p style="margin: 0 0 30px 0; font-size: 15px;">
+    Em caso de dúvidas, entre em contato com a equipe de suporte da Global informando o número da sua solicitação.
+  </p>
+  
+  <p style="margin: 0; color: #555555; font-size: 15px;">Atenciosamente,</p>
+  <p style="margin: 4px 0 0 0; font-weight: bold; color: #1a3a6b; font-size: 18px; letter-spacing: 0.5px;">
+    Global Cargo</span>
+  </p>
+  <p style="margin: 0; font-size: 12px; color: #d9383a">Paixão por entregar bem ✓</p>
+  
+  <hr style="border: 0; border-top: 1px solid #e2e8f0; margin: 30px 0 15px 0;">
+  <p style="font-size: 12px; color: #777777; margin: 0; text-align: center; font-style: italic;">
+    Esta é uma mensagem automática, por favor não responda.
+  </p>
+</div>
         `
       };
 
