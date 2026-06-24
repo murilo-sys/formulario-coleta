@@ -260,4 +260,30 @@ document.addEventListener("DOMContentLoaded", () => {
   document.addEventListener('remetente:cnpj-blur', () => {
     verificarEndRemetente();
   });
+
+  // Busca automática de endereço via ViaCEP
+  const cepInput = document.getElementById('cepInput');
+  if (cepInput) {
+    cepInput.addEventListener('blur', async () => {
+      const cep = state.maskCep ? state.maskCep.unmaskedValue : cepInput.value.replace(/\D/g, '');
+      if (cep.length === 8) {
+        try {
+          const response = await fetch(`https://viacep.com.br/ws/${cep}/json/`);
+          const data = await response.json();
+          if (!data.erro) {
+            if (state.logradouro) state.logradouro.value = data.logradouro || state.logradouro.value;
+            if (state.bairro) state.bairro.value = data.bairro || state.bairro.value;
+            if (state.cidade) state.cidade.value = data.localidade || state.cidade.value;
+            if (state.estado) state.estado.value = data.uf || state.estado.value;
+            
+            // Move o foco para o campo "Número"
+            const numeroInput = document.getElementById('numeroInput');
+            if (numeroInput) numeroInput.focus();
+          }
+        } catch (error) {
+          // Falha silenciosa, o usuário pode continuar digitando manualmente
+        }
+      }
+    });
+  }
 });
