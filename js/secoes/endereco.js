@@ -275,10 +275,6 @@ document.addEventListener("DOMContentLoaded", () => {
             if (state.bairro) state.bairro.value = data.bairro || state.bairro.value;
             if (state.cidade) state.cidade.value = data.localidade || state.cidade.value;
             if (state.estado) state.estado.value = data.uf || state.estado.value;
-            
-            // Move o foco para o campo "Número"
-            const numeroInput = document.getElementById('numeroInput');
-            if (numeroInput) numeroInput.focus();
           }
         } catch (error) {
           // Falha silenciosa, o usuário pode continuar digitando manualmente
