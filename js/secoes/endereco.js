@@ -142,8 +142,6 @@ export function abrirDialogConfirmacao(endereco) {
 }
 
 export function recusarEndereco() {
-  avisoCadastro("Remetente", "editar");
-
   // Muda o rádio do solicitante para "Outros" para restaurar os campos
   const radioOutros = document.getElementById("solicitanteOutros");
   if (radioOutros) {
