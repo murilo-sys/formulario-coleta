@@ -38,6 +38,40 @@ document.addEventListener("DOMContentLoaded", () => {
       dialogNaturezaBloqueada.close();
     });
   }
+
+  const valorNf = document.getElementById("valorNf");
+  const dialogValorNfBaixo = document.getElementById("dialogValorNfBaixo");
+
+  if (valorNf) {
+    valorNf.addEventListener("blur", () => {
+      const valorLimpo = state.maskValor ? state.maskValor.unmaskedValue : valorNf.value;
+      const valorFloat = parseFloat(valorLimpo.replace(',', '.'));
+      if (!isNaN(valorFloat) && valorFloat > 0 && valorFloat <= 200) {
+        valorNf.value = "";
+        if (state.maskValor) state.maskValor.value = "";
+        if (dialogValorNfBaixo) {
+          dialogValorNfBaixo.showModal();
+        }
+      }
+    });
+  }
+
+  const pesoReal = document.getElementById("pesoReal");
+  const dialogPesoExcedido = document.getElementById("dialogPesoExcedido");
+
+  if (pesoReal) {
+    pesoReal.addEventListener("blur", () => {
+      const pesoLimpo = state.maskPeso ? state.maskPeso.unmaskedValue : pesoReal.value;
+      const pesoFloat = parseFloat(pesoLimpo.replace(',', '.'));
+      if (!isNaN(pesoFloat) && pesoFloat > 500) {
+        pesoReal.value = "";
+        if (state.maskPeso) state.maskPeso.value = "";
+        if (dialogPesoExcedido) {
+          dialogPesoExcedido.showModal();
+        }
+      }
+    });
+  }
 });
 
 // Executa as validações da seção de mercadoria
@@ -60,8 +94,10 @@ export function validarMercadoria(marcarErro) {
     valido = false;
   }
 
-  // Verifica se o valor da NF é maior que zero
-  if (valorNfLimpo <= 0 || isNaN(valorNfLimpo) || valorNfLimpo === "") {
+  const valorNfFloat = parseFloat(valorNfLimpo.replace(',', '.'));
+
+  // Verifica se o valor da NF é maior que 200
+  if (isNaN(valorNfFloat) || valorNfFloat <= 200) {
     marcarErro(valorNf);
     valido = false;
   }
@@ -72,8 +108,10 @@ export function validarMercadoria(marcarErro) {
     valido = false;
   }
 
-  // Verifica se o peso real é válido e maior que zero
-  if (pesoLimpo <= 0 || isNaN(pesoLimpo) || pesoLimpo === "") {
+  const pesoFloat = parseFloat(pesoLimpo.replace(',', '.'));
+
+  // Verifica se o peso real é válido, maior que zero e não ultrapassa 500KG
+  if (isNaN(pesoFloat) || pesoFloat <= 0 || pesoFloat > 500 || pesoLimpo === "") {
     marcarErro(pesoReal);
     valido = false;
   }

@@ -258,14 +258,14 @@ module.exports = async function (req, res) {
   const qtdVolumesNum = parseInt(body.qtdVolumes, 10) || 0;
   const pesoRealNum = parseFloat(String(body.pesoReal).replace(/\./g, "").replace(",", ".")) || 0;
 
-  if (valorNfNum <= 0) {
-    return res.status(400).json({ message: "O valor da nota fiscal deve ser maior que zero." });
+  if (valorNfNum <= 200) {
+    return res.status(400).json({ message: "O valor da nota fiscal deve ser superior a R$ 200,00." });
   }
   if (qtdVolumesNum <= 0) {
     return res.status(400).json({ message: "A quantidade de volumes deve ser maior que zero." });
   }
-  if (pesoRealNum <= 0) {
-    return res.status(400).json({ message: "O peso real deve ser maior que zero." });
+  if (pesoRealNum <= 0 || pesoRealNum > 500) {
+    return res.status(400).json({ message: "O peso real deve ser maior que zero e não pode ultrapassar 500 KG." });
   }
 
   // 5. Validação redundante do Array de Cubagem no Backend (Defense in Depth)
@@ -294,6 +294,20 @@ module.exports = async function (req, res) {
       return res.status(400).json({
         message: `A soma das quantidades de volumes dos grupos de cubagem (${somaVolumes}) deve ser igual ao total de volumes informado (${totalVolumesPayload}).`
       });
+    }
+
+    // Validação estrita de limites de dimensão e cubagem total (Segurança Backend)
+    let metrosCubicosTotais = 0;
+    for (let i = 0; i < cubagem.length; i++) {
+      const item = cubagem[i];
+      if (item.comprimento > 2.0 || item.largura > 2.0 || item.altura > 2.0) {
+        return res.status(400).json({ message: "Nenhuma dimensão individual (comprimento, largura, altura) pode exceder 2,00 metros." });
+      }
+      metrosCubicosTotais += (item.volumes * item.comprimento * item.largura * item.altura);
+    }
+
+    if (metrosCubicosTotais > 5.0) {
+      return res.status(400).json({ message: "A cubagem total da carga não pode exceder 5,0 m³." });
     }
   }
 

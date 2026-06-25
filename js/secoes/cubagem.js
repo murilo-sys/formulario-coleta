@@ -249,6 +249,68 @@ document.addEventListener("DOMContentLoaded", () => {
         recalcularTudo();
       }
     });
+
+    // Trava Imediata de Cubagem Total (> 5.0 m³) e Dimensão Individual (> 2.0m) ao sair do campo (focusout)
+    containerCubagem.addEventListener("focusout", (evento) => {
+      if (evento.target.tagName !== "INPUT") return;
+
+      const totalLinhas = Array.from(containerCubagem.querySelectorAll(".coluna-cubagem:not(.animacao-saida)"));
+      let metrosCubicosTotais = 0;
+      let dimensaoExcedida = false;
+
+      totalLinhas.forEach((linha) => {
+        const volumes = linha.querySelector(".input-volumes");
+        const comprimento = linha.querySelector(".input-comprimento");
+        const largura = linha.querySelector(".input-largura");
+        const altura = linha.querySelector(".input-altura");
+
+        const vol = parseInt(volumes?.value, 10) || 0;
+        const comp = parseFloat(comprimento?.value.replace(",", ".") || 0);
+        const larg = parseFloat(largura?.value.replace(",", ".") || 0);
+        const alt = parseFloat(altura?.value.replace(",", ".") || 0);
+
+        if (comp > 2.0 || larg > 2.0 || alt > 2.0) {
+          dimensaoExcedida = true;
+        }
+
+        metrosCubicosTotais += (vol * comp * larg * alt);
+      });
+
+      if (dimensaoExcedida) {
+        // Limpa todas as medidas (comprimento, largura, altura) da linha atual
+        const linhaAtual = evento.target.closest(".coluna-cubagem");
+        if (linhaAtual) {
+          const c = linhaAtual.querySelector(".input-comprimento");
+          const l = linhaAtual.querySelector(".input-largura");
+          const a = linhaAtual.querySelector(".input-altura");
+          if (c) c.value = "";
+          if (l) l.value = "";
+          if (a) a.value = "";
+        }
+        
+        const dialogDimensaoExcedida = document.getElementById("dialogDimensaoExcedida");
+        if (dialogDimensaoExcedida) {
+          dialogDimensaoExcedida.showModal();
+        }
+      } else if (metrosCubicosTotais > 5.0) {
+        // Limpa todas as medidas da linha que causou o estouro do volume total
+        const linhaAtual = evento.target.closest(".coluna-cubagem");
+        if (linhaAtual) {
+          const c = linhaAtual.querySelector(".input-comprimento");
+          const l = linhaAtual.querySelector(".input-largura");
+          const a = linhaAtual.querySelector(".input-altura");
+          if (c) c.value = "";
+          if (l) l.value = "";
+          if (a) a.value = "";
+        }
+        
+        // Exibe o pop-up
+        const dialogVolumeExcedido = document.getElementById("dialogVolumeExcedido");
+        if (dialogVolumeExcedido) {
+          dialogVolumeExcedido.showModal();
+        }
+      }
+    });
   }
 
   // Inicialização reativa no carregamento da página
@@ -359,6 +421,47 @@ export function validarCubagem(marcarErro) {
         erroSomaCubagem.textContent = "";
         erroSomaCubagem.classList.add("oculto");
       }
+    }
+  }
+
+  // Se passou nas validações anteriores, verifica os limites: Dimensão (> 2m) e Volume (> 5m³)
+  if (valido) {
+    let metrosCubicosTotais = 0;
+    let dimensaoExcedida = false;
+
+    totalLinhas.forEach((linha) => {
+      const volumes = linha.querySelector(".input-volumes");
+      const comprimento = linha.querySelector(".input-comprimento");
+      const largura = linha.querySelector(".input-largura");
+      const altura = linha.querySelector(".input-altura");
+
+      const vol = parseInt(volumes?.value, 10) || 0;
+      const comp = parseFloat(comprimento?.value.replace(",", ".") || 0);
+      const larg = parseFloat(largura?.value.replace(",", ".") || 0);
+      const alt = parseFloat(altura?.value.replace(",", ".") || 0);
+
+      if (comp > 2.0 || larg > 2.0 || alt > 2.0) {
+        dimensaoExcedida = true;
+        if (comp > 2.0 && comprimento) marcarErro(comprimento);
+        if (larg > 2.0 && largura) marcarErro(largura);
+        if (alt > 2.0 && altura) marcarErro(altura);
+      }
+
+      metrosCubicosTotais += (vol * comp * larg * alt);
+    });
+
+    if (dimensaoExcedida) {
+      const dialogDimensaoExcedida = document.getElementById("dialogDimensaoExcedida");
+      if (dialogDimensaoExcedida) {
+        dialogDimensaoExcedida.showModal();
+      }
+      valido = false;
+    } else if (metrosCubicosTotais > 5.0) {
+      const dialogVolumeExcedido = document.getElementById("dialogVolumeExcedido");
+      if (dialogVolumeExcedido) {
+        dialogVolumeExcedido.showModal();
+      }
+      valido = false;
     }
   }
 
