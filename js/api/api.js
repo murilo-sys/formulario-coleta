@@ -20,7 +20,6 @@ export async function consultarEmpresaPorCnpj(cnpjLimpo) {
   }
   ultimoTimestampConsulta = agora;
 
-  console.log("Consultando CNPJ na API...");
   try {
     let recaptchaToken = "";
     if (typeof grecaptcha !== 'undefined' && typeof grecaptcha.execute === 'function') {

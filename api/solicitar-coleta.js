@@ -579,7 +579,6 @@ module.exports = async function (req, res) {
 
       try {
         await transporter.sendMail(mailOptions);
-        console.log('E-mail enviado com sucesso.');
       } catch (emailError) {
         console.error('Erro no envio do e-mail de confirmação:', emailError);
       }
