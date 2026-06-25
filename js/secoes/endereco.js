@@ -6,17 +6,7 @@ import { avisoCadastro } from './avisoCadastro.js'
 
 const remetenteDoc = document.getElementById("remetenteDoc");
 
-export function preencherEndColeta() {
-  // Define os campos do endereço com o do Remetente
-  state.maskCep.value = state.remetenteEndereco.postalCode || "";
-  state.logradouro.value = state.remetenteEndereco.line1 || "";
-  state.numero.value = state.remetenteEndereco.number || "";
-  state.complemento.value = state.remetenteEndereco.line2 || "";
-  state.bairro.value = state.remetenteEndereco.neighborhood || "";
-  state.cidade.value = state.remetenteEndereco.city?.name || "";
-  state.estado.value = state.remetenteEndereco.city?.state.code || "";
-
-  // Preenche a cidade e estado resumidos abaixo do CNPJ do remetente
+export function preencherResumoRemetente() {
   const elCidadeEstado = document.getElementById("cidadeEstadoRemetente");
   const elRazaoSocial = document.getElementById("razaoSolicitanteRemetente");
   if (state.remetenteEndereco) {
@@ -38,7 +28,21 @@ export function preencherEndColeta() {
   }
 }
 
-export function limparEndColeta() {
+export function preencherEndColeta() {
+  // Define os campos do endereço com o do Remetente
+  state.maskCep.value = state.remetenteEndereco.postalCode || "";
+  state.logradouro.value = state.remetenteEndereco.line1 || "";
+  state.numero.value = state.remetenteEndereco.number || "";
+  state.complemento.value = state.remetenteEndereco.line2 || "";
+  state.bairro.value = state.remetenteEndereco.neighborhood || "";
+  state.cidade.value = state.remetenteEndereco.city?.name || "";
+  state.estado.value = state.remetenteEndereco.city?.state.code || "";
+
+  // Preenche a cidade e estado resumidos abaixo do CNPJ do remetente
+  preencherResumoRemetente();
+}
+
+export function limparEndColeta(limparResumo = true) {
   // limpa os campos do endereço
   const campos = [state.maskCep, state.logradouro, state.numero, state.complemento, state.bairro, state.cidade, state.estado];
 
@@ -49,16 +53,18 @@ export function limparEndColeta() {
     }
   });
 
-  // Limpa também o texto resumido de cidade/estado do remetente
-  const elCidadeEstado = document.getElementById("cidadeEstadoRemetente");
-  const elRazao = document.getElementById("razaoSolicitanteRemetente");
-  if (elCidadeEstado) {
-    elCidadeEstado.textContent = "";
-    elCidadeEstado.classList.add("oculto");
-  }
-  if (elRazao) {
-    elRazao.textContent = "";
-    elRazao.classList.add("oculto");
+  if (limparResumo) {
+    // Limpa também o texto resumido de cidade/estado do remetente
+    const elCidadeEstado = document.getElementById("cidadeEstadoRemetente");
+    const elRazao = document.getElementById("razaoSolicitanteRemetente");
+    if (elCidadeEstado) {
+      elCidadeEstado.textContent = "";
+      elCidadeEstado.classList.add("oculto");
+    }
+    if (elRazao) {
+      elRazao.textContent = "";
+      elRazao.classList.add("oculto");
+    }
   }
 }
 
@@ -212,9 +218,11 @@ document.addEventListener("DOMContentLoaded", () => {
     btnRecusar.addEventListener("click", () => {
       dialog.close();
       
-      // Salva o CNPJ como confirmado, mas limpa os campos de endereço para o cliente digitar
+      // Salva o CNPJ como confirmado, mostra o resumo visual (razao/cidade/estado),
+      // mas limpa os campos de endereço para o cliente digitar.
       state.cnpjRemetenteConfirmado = state.maskRemetente.unmaskedValue;
-      limparEndColeta();
+      preencherResumoRemetente();
+      limparEndColeta(false);
       
       // Foca no CEP para ele iniciar a digitação
       const cepInput = document.getElementById('cepInput');
