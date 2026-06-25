@@ -1,7 +1,7 @@
 // js/secoes/mercadoria.js
 import { state } from '../state.js';
 
-export const NATUREZAS_BLOQUEADAS = ["liquido", "quimica_diversos", "artigos_perigosos"];
+export const NATUREZAS_BLOQUEADAS = ["liquido", "quimica_diversos", "artigos_perigosos", "perecivel"];
 
 // Listener para gerenciar a seleção de naturezas de carga bloqueadas (Requisitos 3 e 4)
 document.addEventListener("DOMContentLoaded", () => {

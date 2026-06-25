@@ -57,7 +57,7 @@ function validarCNPJ(cnpj) {
   return parseInt(clean.charAt(13), 10) === digito2;
 }
 
-const NATUREZAS_BLOQUEADAS = ["liquido", "quimica_diversos", "artigos_perigosos"];
+const NATUREZAS_BLOQUEADAS = ["liquido", "quimica_diversos", "artigos_perigosos", "perecivel"];
 const cooldowns = new Map(); // ip -> timestamp
 
 // Helper simples para higienização contra XSS e injeção de HTML
@@ -336,8 +336,8 @@ module.exports = async function (req, res) {
   }));
 
   // Mapeamento das opções de natureza de mercadoria do formulário para IDs de classificação de produto na ESL Cloud
-  // Sinta-se livre para ajustar estes IDs conforme a tabela de classificação do seu sistema ESL
   const MAPA_NATUREZAS = {
+    "perecivel": 33858,           // Perecivel
     "cosmetico_geral": 17602,     // Cosméticos em geral
     "material_eletrico": 21059,   // Equipamentos elétricos e eletrônicos
     "alimenticio_geral": 15582,   // Alimentos em geral
