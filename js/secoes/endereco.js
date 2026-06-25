@@ -211,7 +211,16 @@ document.addEventListener("DOMContentLoaded", () => {
   if (btnRecusar && dialog) {
     btnRecusar.addEventListener("click", () => {
       dialog.close();
-      recusarEndereco();
+      
+      // Salva o CNPJ como confirmado, mas limpa os campos de endereço para o cliente digitar
+      state.cnpjRemetenteConfirmado = state.maskRemetente.unmaskedValue;
+      limparEndColeta();
+      
+      // Foca no CEP para ele iniciar a digitação
+      const cepInput = document.getElementById('cepInput');
+      if (cepInput) {
+        setTimeout(() => cepInput.focus(), 50);
+      }
     });
   }
 
