@@ -41,16 +41,25 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const valorNf = document.getElementById("valorNf");
   const dialogValorNfBaixo = document.getElementById("dialogValorNfBaixo");
+  const dialogValorNfAlto = document.getElementById("dialogValorNfAlto");
 
   if (valorNf) {
     valorNf.addEventListener("blur", () => {
       const valorLimpo = state.maskValor ? state.maskValor.unmaskedValue : valorNf.value;
       const valorFloat = parseFloat(valorLimpo.replace(',', '.'));
-      if (!isNaN(valorFloat) && valorFloat > 0 && valorFloat <= 200) {
-        valorNf.value = "";
-        if (state.maskValor) state.maskValor.value = "";
-        if (dialogValorNfBaixo) {
-          dialogValorNfBaixo.showModal();
+      if (!isNaN(valorFloat) && valorFloat > 0) {
+        if (valorFloat <= 200) {
+          valorNf.value = "";
+          if (state.maskValor) state.maskValor.value = "";
+          if (dialogValorNfBaixo) {
+            dialogValorNfBaixo.showModal();
+          }
+        } else if (valorFloat > 250000) {
+          valorNf.value = "";
+          if (state.maskValor) state.maskValor.value = "";
+          if (dialogValorNfAlto) {
+            dialogValorNfAlto.showModal();
+          }
         }
       }
     });
@@ -96,8 +105,8 @@ export function validarMercadoria(marcarErro) {
 
   const valorNfFloat = parseFloat(valorNfLimpo.replace(',', '.'));
 
-  // Verifica se o valor da NF é maior que 200
-  if (isNaN(valorNfFloat) || valorNfFloat <= 200) {
+  // Verifica se o valor da NF é maior que 200 e menor ou igual a 250.000
+  if (isNaN(valorNfFloat) || valorNfFloat <= 200 || valorNfFloat > 250000) {
     marcarErro(valorNf);
     valido = false;
   }

@@ -261,6 +261,9 @@ module.exports = async function (req, res) {
   if (valorNfNum <= 200) {
     return res.status(400).json({ message: "O valor da nota fiscal deve ser superior a R$ 200,00." });
   }
+  if (valorNfNum > 250000) {
+    return res.status(400).json({ message: "O valor da nota fiscal não pode exceder R$ 250.000,00." });
+  }
   if (qtdVolumesNum <= 0) {
     return res.status(400).json({ message: "A quantidade de volumes deve ser maior que zero." });
   }
