@@ -35,6 +35,7 @@ loadEnv(dotenvLocalPath);
 // Import the serverless function
 const apiHandler = require('./api/consultar-cnpj.js');
 const solicitarColetaHandler = require('./api/solicitar-coleta.js');
+const validarCepHandler = require('./api/validar-cep.js');
 
 const PORT = process.env.PORT || 3000;
 
@@ -160,6 +161,41 @@ const server = http.createServer((req, res) => {
     });
     return;
   }
+
+  if (pathname === '/api/validar-cep' && req.method === 'GET') {
+    const resMock = {
+      setHeader(name, value) {
+        res.setHeader(name, value);
+        return this;
+      },
+      status(statusCode) {
+        res.statusCode = statusCode;
+        return this;
+      },
+      json(data) {
+        res.setHeader('Content-Type', 'application/json');
+        res.end(JSON.stringify(data));
+        return this;
+      },
+      send(data) {
+        res.end(data);
+        return this;
+      }
+    };
+
+    req.query = parsedUrl.query;
+
+    try {
+      validarCepHandler(req, resMock);
+    } catch (err) {
+      console.error('API Error:', err);
+      res.statusCode = 500;
+      res.setHeader('Content-Type', 'application/json');
+      res.end(JSON.stringify({ error: 'Internal Server Error', details: err.message }));
+    }
+    return;
+  }
+
 
   // Decode and normalize the path to prevent directory traversal and casing issues
   let normalizedPathname;

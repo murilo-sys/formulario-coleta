@@ -28,9 +28,28 @@ export function preencherResumoRemetente() {
   }
 }
 
-export function preencherEndColeta() {
-  // Define os campos do endereço com o do Remetente
-  state.maskCep.value = state.remetenteEndereco.postalCode || "";
+export async function preencherEndColeta() {
+  const cepDoRemetente = state.remetenteEndereco.postalCode || "";
+  const cepSomenteNumeros = cepDoRemetente.replace(/\D/g, "");
+
+  if (cepSomenteNumeros.length === 8) {
+    try {
+      const resValida = await fetch(`/api/validar-cep?cep=${cepSomenteNumeros}`);
+      const jsonValida = await resValida.json();
+      
+      if (jsonValida.valido === false) {
+        limparEndColeta(false);
+        const dialogCep = document.getElementById("dialogCepNaoAtendido");
+        if (dialogCep) dialogCep.showModal();
+        return;
+      }
+    } catch (e) {
+      console.error("Erro ao validar CEP do remetente", e);
+    }
+  }
+
+  // Preenche dados do remetente no destino
+  state.maskCep.value = cepDoRemetente;
   state.logradouro.value = state.remetenteEndereco.line1 || "";
   state.numero.value = state.remetenteEndereco.number || "";
   state.complemento.value = state.remetenteEndereco.line2 || "";
@@ -285,6 +304,19 @@ document.addEventListener("DOMContentLoaded", () => {
       const cep = state.maskCep ? state.maskCep.unmaskedValue : cepInput.value.replace(/\D/g, '');
       if (cep.length === 8) {
         try {
+          // Validação de cobertura do CEP
+          const resValida = await fetch(`/api/validar-cep?cep=${cep}`);
+          const jsonValida = await resValida.json();
+          
+          if (jsonValida.valido === false) {
+            if (state.maskCep) state.maskCep.value = "";
+            cepInput.value = "";
+            const dialogCep = document.getElementById("dialogCepNaoAtendido");
+            if (dialogCep) dialogCep.showModal();
+            return;
+          }
+
+          // Preenchimento automático via ViaCEP
           const response = await fetch(`https://viacep.com.br/ws/${cep}/json/`);
           const data = await response.json();
           if (!data.erro) {

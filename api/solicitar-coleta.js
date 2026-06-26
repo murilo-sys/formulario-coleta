@@ -253,6 +253,13 @@ module.exports = async function (req, res) {
     return res.status(400).json({ message: "O documento do destinatário deve possuir 11 dígitos (CPF) ou 14 dígitos (CNPJ)." });
   }
 
+  // Validação de cobertura do CEP
+  const { procurarCep } = require('./validar-cep.js');
+  const cepColetaValido = procurarCep(body.cepColeta);
+  if (!cepColetaValido) {
+    return res.status(400).json({ message: "O CEP informado para a coleta não faz parte da nossa área de cobertura." });
+  }
+
   // Validação matemática do valor da NF, volumes e peso
   const valorNfNum = parseFloat(String(body.valorNf).replace(/\./g, "").replace(",", ".")) || 0;
   const qtdVolumesNum = parseInt(body.qtdVolumes, 10) || 0;
@@ -271,7 +278,7 @@ module.exports = async function (req, res) {
     return res.status(400).json({ message: "O peso real deve ser maior que zero e não pode ultrapassar 500 KG." });
   }
 
-  // 5. Validação redundante do Array de Cubagem no Backend (Defense in Depth)
+  // Validação do array de cubagem
   const cubagem = body.cubagemItens;
   const totalVolumesPayload = parseInt(body.qtdVolumes, 10) || 0;
 
@@ -299,7 +306,7 @@ module.exports = async function (req, res) {
       });
     }
 
-    // Validação estrita de limites de dimensão e cubagem total (Segurança Backend)
+    // Validação de dimensões e limites totais
     let metrosCubicosTotais = 0;
     for (let i = 0; i < cubagem.length; i++) {
       const item = cubagem[i];

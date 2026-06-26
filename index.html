@@ -856,6 +856,44 @@
     </div>
   </dialog>
 
+  <!-- Dialog CEP Não Atendido -->
+  <dialog id="dialogCepNaoAtendido" class="dialog-premium">
+    <div class="dialog-container">
+      <div class="dialog-cabecalho" style="text-align: center; border-bottom: none; padding-bottom: 0;">
+        <div style="font-size: 40px; margin-bottom: 12px;">🚫</div>
+        <span class="dialog-titulo" style="color: #c2410c; font-size: 20px;">Região Não Atendida</span>
+        <p class="dialog-subtitulo" style="font-size: 14px; margin-top: 6px;">O CEP informado não faz parte da nossa área de cobertura para coletas diretas via formulário.</p>
+      </div>
+
+      <div class="dialog-corpo" style="background-color: #fff9f5; border-color: #ffedd5; padding: 20px;">
+        <p style="margin: 0 0 12px 0; font-size: 13px; color: #7c2d12; line-height: 1.5; text-align: center;">
+          Para consultar a viabilidade de uma coleta especial nesta região, por favor, ligue para nosso atendimento:
+        </p>
+        <div class="dialog-item" style="border-bottom: 1px dashed #fed7aa; padding-bottom: 8px; margin-bottom: 8px;">
+          <span class="dialog-label" style="color: #9a3412;">Telefone Principal</span>
+          <span class="dialog-valor" style="color: #431407; font-weight: bold;">(11) 3017-8990</span>
+        </div>
+        <div class="dialog-item" style="border-bottom: 1px dashed #fed7aa; padding-bottom: 8px; margin-bottom: 8px;">
+          <span class="dialog-label" style="color: #9a3412;">Telefone Secundário</span>
+          <span class="dialog-valor" style="color: #431407; font-weight: bold;">(11) 2222-1260</span>
+        </div>
+        <div class="dialog-item" style="justify-content: center; margin-top: 4px; text-align: center;">
+          <span class="dialog-label" style="font-size: 12px; color: #9a3412; font-style: italic;">
+            Horário de atendimento: Segunda a Sexta, das 8h às 18h
+          </span>
+        </div>
+      </div>
+
+      <div class="dialog-rodape" style="justify-content: center; margin-top: 8px;">
+        <button type="button" id="btnFecharCepNaoAtendido" onclick="this.closest('dialog').close()"
+          class="btn-dialog btn-dialog-confirmar"
+          style="background-color: #c2410c; width: 100%; text-align: center; border: none;">
+          Entendido
+        </button>
+      </div>
+    </div>
+  </dialog>
+
 </body>
 
 </html>
