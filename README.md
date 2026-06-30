@@ -5,6 +5,7 @@ Sistema de interface de usuário (frontend) e funções serverless (backend) par
 ## 🚀 Funcionalidades
 
 - **Formulário Dinâmico**: Validação avançada em tempo real de contatos (e-mails/telefones adicionais), cubagem de itens e classificações de mercadorias.
+- **Regras de Negócio Aplicadas**: Restrições de valores baseadas na natureza da mercadoria (Ex: Limite padrão de R$ 250.000,00, com restrição específica de R$ 50.000,00 para Materiais de Informática).
 - **Consulta CNPJ Integrada**: Auto-preenchimento e validação de informações cadastrais via API de CNPJ integrada no backend.
 - **Segurança e Blindagem**:
   - **Google reCAPTCHA v3 (Invisível)**: Protege as rotas de consulta de CNPJ e envio de formulário de forma transparente ao usuário.
@@ -17,8 +18,11 @@ Sistema de interface de usuário (frontend) e funções serverless (backend) par
 ```text
 formulario-coleta/
 ├── api/                       # Endpoints Serverless (Backend)
+│   ├── _data/                 # Dados estáticos de apoio da API
+│   │   └── linhasCepGeral.txt # Cache de CEPs para área de cobertura
 │   ├── consultar-cnpj.js      # API de consulta de CNPJ com rate limit e ban por IP
-│   └── solicitar-coleta.js    # API de processamento do formulário de coleta
+│   ├── solicitar-coleta.js    # API de processamento do formulário de coleta
+│   └── validar-cep.js         # API estática para validação de CEP e área de cobertura
 ├── assets/                    # Estilos globais e recursos visuais
 ├── js/                        # Scripts do Frontend (Lógica e Validações)
 │   ├── api/                   # Integração e chamadas AJAX com o backend
