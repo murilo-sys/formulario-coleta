@@ -265,11 +265,15 @@ module.exports = async function (req, res) {
   const qtdVolumesNum = parseInt(body.qtdVolumes, 10) || 0;
   const pesoRealNum = parseFloat(String(body.pesoReal).replace(/\./g, "").replace(",", ".")) || 0;
 
+  const isInformatica = body.naturezaMercadoria === "informatica";
+  const limitValue = isInformatica ? 50000 : 250000;
+  const formatLimit = isInformatica ? "50.000,00" : "250.000,00";
+
   if (valorNfNum <= 200) {
     return res.status(400).json({ message: "O valor da nota fiscal deve ser superior a R$ 200,00." });
   }
-  if (valorNfNum > 250000) {
-    return res.status(400).json({ message: "O valor da nota fiscal não pode exceder R$ 250.000,00." });
+  if (valorNfNum > limitValue) {
+    return res.status(400).json({ message: `O valor da nota fiscal não pode exceder R$ ${formatLimit}.` });
   }
   if (qtdVolumesNum <= 0) {
     return res.status(400).json({ message: "A quantidade de volumes deve ser maior que zero." });

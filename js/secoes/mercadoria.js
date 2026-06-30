@@ -47,6 +47,16 @@ document.addEventListener("DOMContentLoaded", () => {
     valorNf.addEventListener("blur", () => {
       const valorLimpo = state.maskValor ? state.maskValor.unmaskedValue : valorNf.value;
       const valorFloat = parseFloat(valorLimpo.replace(',', '.'));
+      
+      const naturezaSelect = document.getElementById("naturezaMercadoria");
+      let limiteValor = 250000;
+      let limiteFormatado = "250.000,00";
+      
+      if (naturezaSelect && naturezaSelect.value === "informatica") {
+        limiteValor = 50000;
+        limiteFormatado = "50.000,00";
+      }
+
       if (!isNaN(valorFloat) && valorFloat > 0) {
         if (valorFloat <= 200) {
           valorNf.value = "";
@@ -54,10 +64,14 @@ document.addEventListener("DOMContentLoaded", () => {
           if (dialogValorNfBaixo) {
             dialogValorNfBaixo.showModal();
           }
-        } else if (valorFloat > 250000) {
+        } else if (valorFloat > limiteValor) {
           valorNf.value = "";
           if (state.maskValor) state.maskValor.value = "";
           if (dialogValorNfAlto) {
+            const subtitulo = document.getElementById("dialogValorNfAltoSubtitulo");
+            if (subtitulo) {
+              subtitulo.textContent = `Notamos que o valor da sua Nota Fiscal é maior que R$ ${limiteFormatado}.`;
+            }
             dialogValorNfAlto.showModal();
           }
         }
@@ -105,8 +119,13 @@ export function validarMercadoria(marcarErro) {
 
   const valorNfFloat = parseFloat(valorNfLimpo.replace(',', '.'));
 
-  // Verifica se o valor da NF é maior que 200 e menor ou igual a 250.000
-  if (isNaN(valorNfFloat) || valorNfFloat <= 200 || valorNfFloat > 250000) {
+  let limiteValor = 250000;
+  if (naturezaMercadoria && naturezaMercadoria.value === "informatica") {
+    limiteValor = 50000;
+  }
+
+  // Verifica se o valor da NF é maior que 200 e menor ou igual ao limite
+  if (isNaN(valorNfFloat) || valorNfFloat <= 200 || valorNfFloat > limiteValor) {
     marcarErro(valorNf);
     valido = false;
   }
