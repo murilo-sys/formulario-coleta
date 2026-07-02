@@ -702,7 +702,8 @@
       <div class="dialog-cabecalho" style="text-align: center; border-bottom: none; padding-bottom: 0;">
         <div style="font-size: 40px; margin-bottom: 12px;">💰</div>
         <span class="dialog-titulo" style="color: #c2410c; font-size: 20px;">Valor da NF Excedido</span>
-        <p id="dialogValorNfAltoSubtitulo" class="dialog-subtitulo" style="font-size: 14px; margin-top: 6px;">Notamos que o valor da sua Nota Fiscal é maior que R$ 250.000,00.</p>
+        <p id="dialogValorNfAltoSubtitulo" class="dialog-subtitulo" style="font-size: 14px; margin-top: 6px;">Notamos
+          que o valor da sua Nota Fiscal é maior que R$ 250.000,00.</p>
       </div>
 
       <div class="dialog-corpo" style="background-color: #fff9f5; border-color: #ffedd5; padding: 20px;">
@@ -856,12 +857,13 @@
   </dialog>
 
   <!-- Dialog CEP Não Atendido -->
-  <dialog id="dialogCepNaoAtendido" class="dialog-premium">
+  <dialog id="dialogCepNaoAtendido" class="dialog-premium" onclose="window.location.reload()">
     <div class="dialog-container">
       <div class="dialog-cabecalho" style="text-align: center; border-bottom: none; padding-bottom: 0;">
         <div style="font-size: 40px; margin-bottom: 12px;">🚫</div>
-        <span class="dialog-titulo" style="color: #c2410c; font-size: 20px;">Região Não Atendida</span>
-        <p class="dialog-subtitulo" style="font-size: 14px; margin-top: 6px;">O CEP informado não faz parte da nossa área de cobertura para coletas diretas via formulário.</p>
+        <span class="dialog-titulo" style="color: #c2410c; font-size: 20px;">Atendimento para sua Região</span>
+        <p class="dialog-subtitulo" style="font-size: 14px; margin-top: 6px;">O CEP informado pertence a uma região cujo
+          agendamento de coleta é realizado por nossa equipe de atendimento.</p>
       </div>
 
       <div class="dialog-corpo" style="background-color: #fff9f5; border-color: #ffedd5; padding: 20px;">
