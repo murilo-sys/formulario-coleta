@@ -34,7 +34,14 @@ function procurarCep(cep) {
     }
 
     const cepNumber = Number(cleanCep);
+
+    //Zona ABC
     if (cepNumber >= 9000000 && cepNumber <= 9999999) {
+      return true;
+    }
+
+    //Zona cotia
+    if (cepNumber >= 6700000 && cepNumber <= 6729999) {
       return true;
     }
 
@@ -51,7 +58,7 @@ function procurarCep(cep) {
 module.exports = async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET, OPTIONS');
-  
+
   if (req.method === 'OPTIONS') {
     return res.status(200).end();
   }
