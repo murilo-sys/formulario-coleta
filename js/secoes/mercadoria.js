@@ -42,41 +42,49 @@ document.addEventListener("DOMContentLoaded", () => {
   const valorNf = document.getElementById("valorNf");
   const dialogValorNfBaixo = document.getElementById("dialogValorNfBaixo");
   const dialogValorNfAlto = document.getElementById("dialogValorNfAlto");
+  const naturezaSelect = document.getElementById("naturezaMercadoria");
 
-  if (valorNf) {
-    valorNf.addEventListener("blur", () => {
-      const valorLimpo = state.maskValor ? state.maskValor.unmaskedValue : valorNf.value;
-      const valorFloat = parseFloat(valorLimpo.replace(',', '.'));
-      
-      const naturezaSelect = document.getElementById("naturezaMercadoria");
-      let limiteValor = 250000;
-      let limiteFormatado = "250.000,00";
-      
-      if (naturezaSelect && naturezaSelect.value === "informatica") {
-        limiteValor = 50000;
-        limiteFormatado = "50.000,00";
-      }
+  function validarLimitesValorNf() {
+    if (!valorNf || !valorNf.value) return;
+    
+    const valorLimpo = state.maskValor ? state.maskValor.unmaskedValue : valorNf.value;
+    const valorFloat = parseFloat(valorLimpo.replace(',', '.'));
+    
+    let limiteValor = 250000;
+    let limiteFormatado = "250.000,00";
+    
+    if (naturezaSelect && naturezaSelect.value === "informatica") {
+      limiteValor = 50000;
+      limiteFormatado = "50.000,00";
+    }
 
-      if (!isNaN(valorFloat) && valorFloat > 0) {
-        if (valorFloat <= 200) {
-          valorNf.value = "";
-          if (state.maskValor) state.maskValor.value = "";
-          if (dialogValorNfBaixo) {
-            dialogValorNfBaixo.showModal();
+    if (!isNaN(valorFloat) && valorFloat > 0) {
+      if (valorFloat <= 200) {
+        valorNf.value = "";
+        if (state.maskValor) state.maskValor.value = "";
+        if (dialogValorNfBaixo) {
+          dialogValorNfBaixo.showModal();
+        }
+      } else if (valorFloat > limiteValor) {
+        valorNf.value = "";
+        if (state.maskValor) state.maskValor.value = "";
+        if (dialogValorNfAlto) {
+          const subtitulo = document.getElementById("dialogValorNfAltoSubtitulo");
+          if (subtitulo) {
+            subtitulo.textContent = `Notamos que o valor da sua Nota Fiscal é maior que R$ ${limiteFormatado}.`;
           }
-        } else if (valorFloat > limiteValor) {
-          valorNf.value = "";
-          if (state.maskValor) state.maskValor.value = "";
-          if (dialogValorNfAlto) {
-            const subtitulo = document.getElementById("dialogValorNfAltoSubtitulo");
-            if (subtitulo) {
-              subtitulo.textContent = `Notamos que o valor da sua Nota Fiscal é maior que R$ ${limiteFormatado}.`;
-            }
-            dialogValorNfAlto.showModal();
-          }
+          dialogValorNfAlto.showModal();
         }
       }
-    });
+    }
+  }
+
+  if (valorNf) {
+    valorNf.addEventListener("blur", validarLimitesValorNf);
+  }
+
+  if (naturezaSelect) {
+    naturezaSelect.addEventListener("change", validarLimitesValorNf);
   }
 
   const pesoReal = document.getElementById("pesoReal");
