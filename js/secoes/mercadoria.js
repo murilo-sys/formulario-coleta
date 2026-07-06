@@ -42,7 +42,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const valorNf = document.getElementById("valorNf");
   const dialogValorNfBaixo = document.getElementById("dialogValorNfBaixo");
   const dialogValorNfAlto = document.getElementById("dialogValorNfAlto");
-  const naturezaSelect = document.getElementById("naturezaMercadoria");
+
 
   function validarLimitesValorNf() {
     if (!valorNf || !valorNf.value) return;
