@@ -1011,28 +1011,18 @@ input[type="number"] {
     padding: 10px;
   }
 
-  .formularioColeta {
+  .container-principal {
     grid-template-columns: 1fr;
     gap: 16px;
     margin: 10px auto;
   }
 
   .cartaoBoasVindas {
-    grid-column: 1;
-    grid-row: auto;
     position: static;
-    top: auto;
-    transform: none;
     width: 100%;
     max-height: none;
-    left: auto;
     padding: 24px;
     border-radius: 20px;
-  }
-
-  .cartaoPerguntas,
-  #secoesFormularioAdicionais {
-    grid-column: 1;
   }
 
   .cartaoPerguntas {
