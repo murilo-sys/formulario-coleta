@@ -589,7 +589,7 @@ module.exports = async function (req, res) {
 
   <div style="background-color: #ffffff; border: 1px solid #e2e8f0; padding: 15px; margin: 20px 0; border-radius: 6px;">
     <h3 style="color: #1a3a6b; margin-top: 0; font-size: 16px; border-bottom: 1px solid #e2e8f0; padding-bottom: 8px;">Dados do Local de Coleta</h3>
-    <p style="margin: 0; font-size: 14px;"><strong>Remetente (CNPJ):</strong> ${body.remetenteDoc}</p>
+    <p style="margin: 0; font-size: 14px;"><strong>Remetente:</strong> ${body.remetenteNome}</p>
     <p style="margin: 6px 0 0 0; font-size: 14px;"><strong>Endereço:</strong> ${body.ruaColeta}, Nº ${body.numeroColeta}</p>
     <p style="margin: 6px 0 0 0; font-size: 14px;"><strong>Bairro:</strong> ${body.bairroColeta}</p>
     <p style="margin: 6px 0 0 0; font-size: 14px;"><strong>Município/UF:</strong> ${body.cidadeColeta} - ${body.ufColeta}</p>
