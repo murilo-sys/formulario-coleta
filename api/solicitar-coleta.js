@@ -343,8 +343,8 @@ module.exports = async function (req, res) {
   `;
 
   const now = new Date();
-  const todayISO = now.toISOString().split('T')[0]; // YYYY-MM-DD
-  const timeISO = now.toTimeString().split(' ')[0].substring(0, 5); // HH:MM
+  const todayISO = now.toLocaleDateString('pt-BR', { timeZone: 'America/Sao_Paulo' }).split('/').reverse().join('-'); // YYYY-MM-DD
+  const timeISO = now.toLocaleTimeString('pt-BR', { timeZone: 'America/Sao_Paulo', hour: '2-digit', minute: '2-digit' }); // HH:MM
 
   // Processamento do fechamento para almoço
   let lunchStart = null;
@@ -584,6 +584,24 @@ module.exports = async function (req, res) {
   <div style="background-color: #f8fafc; border-left: 4px solid #d9383a; padding: 15px; margin: 20px 0; border-radius: 0 6px 6px 0;">
     <p style="margin: 0; font-size: 15px; color: #1a3a6b;">
       <strong>Prazo de retorno:</strong> até <strong style="color: #d9383a;">60 minutos.</strong>
+    </p>
+  </div>
+
+  <div style="background-color: #ffffff; border: 1px solid #e2e8f0; padding: 15px; margin: 20px 0; border-radius: 6px;">
+    <h3 style="color: #1a3a6b; margin-top: 0; font-size: 16px; border-bottom: 1px solid #e2e8f0; padding-bottom: 8px;">Dados do Local de Coleta</h3>
+    <p style="margin: 0; font-size: 14px;"><strong>Remetente (CNPJ):</strong> ${body.remetenteDoc}</p>
+    <p style="margin: 6px 0 0 0; font-size: 14px;"><strong>Endereço:</strong> ${body.ruaColeta}, Nº ${body.numeroColeta}</p>
+    <p style="margin: 6px 0 0 0; font-size: 14px;"><strong>Bairro:</strong> ${body.bairroColeta}</p>
+    <p style="margin: 6px 0 0 0; font-size: 14px;"><strong>Município/UF:</strong> ${body.cidadeColeta} - ${body.ufColeta}</p>
+    <p style="margin: 6px 0 0 0; font-size: 14px;"><strong>CEP:</strong> ${body.cepColeta}</p>
+  </div>
+
+  <div style="background-color: #f8fafc; border-left: 4px solid #f59e0b; padding: 15px; margin: 20px 0; border-radius: 0 6px 6px 0;">
+    <p style="margin: 0 0 10px 0; font-size: 14px; color: #333333;">
+      <strong style="color: #d9383a;">Atenção:</strong> Em sua Nota Fiscal deverá constar os dados da Global Cargo <strong>(GLOBAL AIR CARGO LTDA - CNPJ 00.945.958/0001-55)</strong> no campo de transportador. Nos casos em que a NF já está emitida e não consta o CNPJ, enviar o XML da Nota Fiscal para <strong>xml@globalcargo.com.br</strong>.
+    </p>
+    <p style="margin: 0; font-size: 14px; color: #333333;">
+      No momento da coleta o material deverá estar pronto e as documentações devidamente emitidas e caixas devidamente identificadas (Nota Fiscal e Quantidade de Volumes).
     </p>
   </div>
   

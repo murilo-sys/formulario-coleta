@@ -60,296 +60,296 @@
 
     <form class="formularioColeta">
 
-    <div class="cartaoPerguntas">
+      <div class="cartaoPerguntas">
 
-      <h3>Dados do solicitante</h3>
-      <p class="resumoCampo">CNPJ ou CPF de quem está solicitando a coleta</p>
+        <h3>Dados do solicitante</h3>
+        <p class="resumoCampo">CNPJ ou CPF de quem está solicitando a coleta</p>
 
-      <div class="linhaDupla">
-        <div class="coluna-flex-1">
-          <label for="solicitanteDoc" class="perguntaTitulo obrigatorio">CNPJ do solicitante</label>
-          <input type="text" id="solicitanteDoc" placeholder="CPF ou CNPJ">
-        </div>
-
-        <div class="coluna-flex-1">
-          <label for="solicitanteNome" class="perguntaTitulo obrigatorio">Nome do solicitante</label>
-          <input type="text" id="solicitanteNome" placeholder="Seu nome">
-        </div>
-      </div>
-
-      <div id="grupoEscondidoSolicitante" class="oculto">
-        <p class="perguntaTitulo obrigatorio">O Solicitante é o...</p>
-
-        <div class="grupo-opcoes-solicitante">
-          <input type="radio" name="tipoSolicitante" id="solicitanteRemetente" value="remetente">
-          <label for="solicitanteRemetente">Remetente</label>
-
-          <input type="radio" name="tipoSolicitante" id="solicitanteDestinatario" value="destinatario">
-          <label for="solicitanteDestinatario">Destinatário</label>
-
-          <input type="radio" name="tipoSolicitante" id="solicitanteOutros" value="outros">
-          <label for="solicitanteOutros">Outros</label>
-        </div>
-      </div>
-
-    </div>
-
-    <div id="secoesFormularioAdicionais" class="secoes-adicionais-container">
-      <div class="secoes-adicionais-wrapper">
-
-        <div class="cartaoPerguntas">
-          <h3>Remetente e Destinatário</h3>
-
-          <div class="linhaDupla">
-
-            <div class="coluna-flex-2">
-              <label for="remetenteDoc" class="perguntaTitulo obrigatorio">CNPJ do Remetente</label>
-              <input type="text" id="remetenteDoc" placeholder="CPF ou CNPJ" readonly>
-              <div class="grupo-cidade-estado">
-                <span class="cidade-estado oculto" id="razaoSolicitanteRemetente"></span>
-                <span class="cidade-estado oculto" id="cidadeEstadoRemetente"></span>
-              </div>
-            </div>
-
-            <div class="coluna-flex-2">
-              <label for="destinatarioDoc" class="perguntaTitulo obrigatorio">CNPJ do Destinatário</label>
-              <input type="text" id="destinatarioDoc" placeholder="CPF ou CNPJ" readonly>
-              <div class="grupo-cidade-estado">
-                <span class="cidade-estado oculto" id="razaoSolicitanteDestinatario"></span>
-                <span class="cidade-estado oculto" id="cidadeEstadoDestinatario"></span>
-              </div>
-            </div>
-
+        <div class="linhaDupla">
+          <div class="coluna-flex-1">
+            <label for="solicitanteDoc" class="perguntaTitulo obrigatorio">CNPJ do solicitante</label>
+            <input type="text" id="solicitanteDoc" placeholder="CPF ou CNPJ">
           </div>
 
-        </div>
-
-        <div class="cartaoPerguntas">
-
-          <h3>Endereço da coleta</h3>
-          <p class="resumoCampo">Local onde a mercadoria será retirada</p>
-
-          <div class="linhaDupla">
-
-            <div class="coluna-flex-1">
-              <label for="cepInput" class="perguntaTitulo obrigatorio">CEP</label>
-              <input type="text" id="cepInput" placeholder="00000-000">
-            </div>
-
-            <div class="coluna-flex-3">
-              <label for="logradouroInput" class="perguntaTitulo obrigatorio">Logradouro</label>
-              <input type="text" id="logradouroInput" placeholder="Rua, Avenida, Travessa...">
-            </div>
-
-          </div>
-
-          <div class="linhaDupla">
-
-            <div class="coluna-flex-1">
-              <label for="numeroInput" class="perguntaTitulo obrigatorio">Número</label>
-              <input type="text" id="numeroInput" placeholder="Ex: 01">
-            </div>
-
-            <div class="coluna-flex-3">
-              <label for="complementoInput" class="perguntaTitulo">Complemento</label>
-              <input type="text" id="complementoInput" placeholder="Apartamento, sala, bloco...">
-            </div>
-
-          </div>
-
-          <div class="linhaDupla">
-
-            <div class="coluna-flex-2">
-              <label for="bairroInput" class="perguntaTitulo obrigatorio">Bairro</label>
-              <input type="text" id="bairroInput" placeholder="Centro, Vila Mariana...">
-            </div>
-
-            <div class="coluna-flex-1">
-              <label for="cidadeInput" class="perguntaTitulo obrigatorio">Cidade</label>
-              <input type="text" id="cidadeInput" placeholder="São Paulo...">
-            </div>
-
-            <div class="coluna-flex-1">
-              <label for="estadoInput" class="perguntaTitulo obrigatorio">Estado</label>
-              <input type="text" id="estadoInput" placeholder="SP, RJ...">
-            </div>
-
+          <div class="coluna-flex-1">
+            <label for="solicitanteNome" class="perguntaTitulo obrigatorio">Nome do solicitante</label>
+            <input type="text" id="solicitanteNome" placeholder="Seu nome">
           </div>
         </div>
 
-        <div class="cartaoPerguntas">
-          <h3>Dados da mercadoria</h3>
-          <label for="naturezaMercadoria" class="perguntaTitulo obrigatorio">Natureza da mercadoria</label>
-          <select id="naturezaMercadoria">
-            <option value="" disabled selected>Selecione o tipo de carga...</option>
-            <option value="cosmetico_geral">Cosméticos em geral</option>
-            <option value="perecivel">Perecível</option>
-            <option value="material_eletrico">Equipamentos elétricos e eletrônicos</option>
-            <option value="alimenticio_geral">Alimentos em geral</option>
-            <option value="saude_correlato">Produtos de saúde / correlatos</option>
-            <option value="liquido">Líquido</option>
-            <option value="produto_saude">Produtos de saúde</option>
-            <option value="quimica_diversos">Produtos diversos da indústria química</option>
-            <option value="confeccoes_tecidos">Confecções e tecidos</option>
-            <option value="artigos_perigosos">Outros artigos perigosos</option>
-            <option value="autopecas">Autopeças</option>
-            <option value="pecas_automotivas">Peças automotivas</option>
-            <option value="brindes">Brindes</option>
-            <option value="bijuterias">Bijuterias</option>
-            <option value="livros">Livros</option>
-            <option value="equip_protecao_epi">Equip. de Proteção EPI</option>
-            <option value="propaganda_visual">Material de propaganda e visual</option>
-            <option value="eletroeletronicos">Equipamentos elétricos e eletrônicos</option>
-            <option value="informatica">Material de Informática ou comunicação</option>
-            <option value="pecas_geral">Peças em geral</option>
-          </select>
+        <div id="grupoEscondidoSolicitante" class="oculto">
+          <p class="perguntaTitulo obrigatorio">O Solicitante é o...</p>
 
-          <div class="linhaDupla">
+          <div class="grupo-opcoes-solicitante">
+            <input type="radio" name="tipoSolicitante" id="solicitanteRemetente" value="remetente">
+            <label for="solicitanteRemetente">Remetente</label>
 
-            <div class="coluna-flex-1">
-              <label for="numeroNf" class="perguntaTitulo">Número da NF</label>
-              <input type="text" id="numeroNf" placeholder="000.000.000">
-            </div>
+            <input type="radio" name="tipoSolicitante" id="solicitanteDestinatario" value="destinatario">
+            <label for="solicitanteDestinatario">Destinatário</label>
 
-            <div class="coluna-flex-1">
-              <label for="valorNf" class="perguntaTitulo obrigatorio">Valor da NF (R$)</label>
-              <div class="input-grupo-sufixo">
-                <span class="sufixo"> R$ |</span>
-                <input type="text" id="valorNf" placeholder="0,00">
-              </div>
-            </div>
-
+            <input type="radio" name="tipoSolicitante" id="solicitanteOutros" value="outros">
+            <label for="solicitanteOutros">Outros</label>
           </div>
-
-          <div class="linhaDupla">
-
-            <div class="coluna-flex-1">
-              <label for="qtdVolumes" class="perguntaTitulo obrigatorio">Volumes</label>
-              <input type="text" id="qtdVolumes" placeholder="Qtd. de volumes" inputmode="numeric">
-            </div>
-
-            <div class="coluna-flex-1">
-              <label for="pesoReal" class="perguntaTitulo obrigatorio">Peso Real Total</label>
-              <div class="input-grupo-sufixo">
-                <input type="text" id="pesoReal" placeholder="0,00">
-                <span class="sufixo">| KG</span>
-              </div>
-            </div>
-
-          </div>
-
-          <div class="linhaDuplaCubagem"
-            style="align-items: center; justify-content: space-between; flex-wrap: wrap; width: 100%;">
-            <div>
-              <p class="pergunta-cubagem-titulo">Dimensões da embalagem</p>
-              <p class="subTitulo">Medidas em metros (m)</p>
-            </div>
-            <div id="statusAlocacaoVolumes" class="status-alocacao"></div>
-          </div>
-
-          <div id="containerCubagem">
-            <div class="coluna-cubagem">
-              <div class="coluna-flex-1">
-                <p class="pergunta-cubagem">VOLUMES</p>
-                <div class="input-grupo-sufixo">
-                  <input class="input-volumes" type="text" placeholder="" value="1">
-                  <span class="sufixo">| un</span>
-                </div>
-              </div>
-
-              <div class="coluna-flex-1">
-                <p class="pergunta-cubagem">COMPRIMENTO</p>
-                <div class="input-grupo-sufixo">
-                  <input class="input-comprimento" type="text" placeholder="0">
-                  <span class="sufixo">| m</span>
-                </div>
-              </div>
-
-              <div class="coluna-flex-1">
-                <p class="pergunta-cubagem">LARGURA</p>
-                <div class="input-grupo-sufixo">
-                  <input class="input-largura" type="text" placeholder="0">
-                  <span class="sufixo">| m</span>
-                </div>
-              </div>
-
-              <div class="coluna-flex-1">
-                <p class="pergunta-cubagem">ALTURA</p>
-                <div class="input-grupo-sufixo">
-                  <input class="input-altura" type="text" placeholder="0">
-                  <span class="sufixo">| m</span>
-                </div>
-              </div>
-
-
-            </div>
-          </div>
-
-
-
-          <p id="erroSomaCubagem" class="oculto"
-            style="color: rgb(240, 113, 113); font-size: 13px; font-weight: bold; margin-top: 10px;"></p>
-
-
-        </div>
-
-        <div class="cartaoPerguntas">
-          <h3>Horário de funcionamento</h3>
-          <p class="resumoCampo">Defina o intervalo e horários em que a transportadora pode realizar a retirada</p>
-
-          <div class="linhaDupla">
-            <div class="coluna-flex-1">
-              <label for="horarioAbertura" class="perguntaTitulo obrigatorio">Horário de abertura</label>
-              <input type="text" id="horarioAbertura" placeholder="00:00" maxlength="5">
-            </div>
-
-            <div class="coluna-flex-1">
-              <label for="horarioFechamento" class="perguntaTitulo obrigatorio">Horário de fechamento</label>
-              <input type="text" id="horarioFechamento" placeholder="00:00" maxlength="5">
-            </div>
-          </div>
-
-          <p class="perguntaTitulo" style="margin-top: 15px;">Fechado para almoço?</p>
-          <div class="grupo-radio-almoco">
-            <input type="radio" name="horarioAlmoco" id="almoco12-13" value="12:00-13:00">
-            <label for="almoco12-13">12h às 13h</label>
-
-            <input type="radio" name="horarioAlmoco" id="almoco13-14" value="13:00-14:00">
-            <label for="almoco13-14">13h às 14h</label>
-
-            <input type="radio" name="horarioAlmoco" id="almoco14-15" value="14:00-15:00">
-            <label for="almoco14-15">14h às 15h</label>
-          </div>
-        </div>
-
-        <div class="cartaoPerguntas">
-          <h3>Instruções adicionais</h3>
-          <p class="resumoCampo">Pontos de referência, observações sobre a mercadoria, etc...</p>
-
-          <label for="observacoes" class="perguntaTitulo">Observações da coleta</label>
-          <input type="text" id="observacoes" placeholder="Ex: Entrar pelos fundos do galpão B...">
-        </div>
-
-        <!-- Banner de Atenção/Regras de Negócio -->
-        <div class="alerta-importante-card">
-          <div class="alerta-importante-icone">⚠️</div>
-          <div class="alerta-importante-conteudo">
-            <strong>Atenção:</strong> O pedido será submetido à análise operacional. A confirmação da coleta, ou
-            eventual
-            impossibilidade de atendimento, será comunicada em até 60 minutos.
-          </div>
-        </div>
-
-
-
-        <div class="coluna-botao-agendar">
-          <button id="buttonLimparForm" type="reset">Limpar Formulário</button>
-          <button id="buttonSolicitarColeta" type="submit">Solicitar Coleta</button>
         </div>
 
       </div>
-    </div>
-  </form>
+
+      <div id="secoesFormularioAdicionais" class="secoes-adicionais-container">
+        <div class="secoes-adicionais-wrapper">
+
+          <div class="cartaoPerguntas">
+            <h3>Remetente e Destinatário</h3>
+
+            <div class="linhaDupla">
+
+              <div class="coluna-flex-2">
+                <label for="remetenteDoc" class="perguntaTitulo obrigatorio">CNPJ do Remetente</label>
+                <input type="text" id="remetenteDoc" placeholder="CPF ou CNPJ" readonly>
+                <div class="grupo-cidade-estado">
+                  <span class="cidade-estado oculto" id="razaoSolicitanteRemetente"></span>
+                  <span class="cidade-estado oculto" id="cidadeEstadoRemetente"></span>
+                </div>
+              </div>
+
+              <div class="coluna-flex-2">
+                <label for="destinatarioDoc" class="perguntaTitulo obrigatorio">CNPJ do Destinatário</label>
+                <input type="text" id="destinatarioDoc" placeholder="CPF ou CNPJ" readonly>
+                <div class="grupo-cidade-estado">
+                  <span class="cidade-estado oculto" id="razaoSolicitanteDestinatario"></span>
+                  <span class="cidade-estado oculto" id="cidadeEstadoDestinatario"></span>
+                </div>
+              </div>
+
+            </div>
+
+          </div>
+
+          <div class="cartaoPerguntas">
+
+            <h3>Endereço da coleta</h3>
+            <p class="resumoCampo">Local onde a mercadoria será retirada</p>
+
+            <div class="linhaDupla">
+
+              <div class="coluna-flex-1">
+                <label for="cepInput" class="perguntaTitulo obrigatorio">CEP</label>
+                <input type="text" id="cepInput" placeholder="00000-000">
+              </div>
+
+              <div class="coluna-flex-3">
+                <label for="logradouroInput" class="perguntaTitulo obrigatorio">Logradouro</label>
+                <input type="text" id="logradouroInput" placeholder="Rua, Avenida, Travessa...">
+              </div>
+
+            </div>
+
+            <div class="linhaDupla">
+
+              <div class="coluna-flex-1">
+                <label for="numeroInput" class="perguntaTitulo obrigatorio">Número</label>
+                <input type="text" id="numeroInput" placeholder="Ex: 01">
+              </div>
+
+              <div class="coluna-flex-3">
+                <label for="complementoInput" class="perguntaTitulo">Complemento</label>
+                <input type="text" id="complementoInput" placeholder="Apartamento, sala, bloco...">
+              </div>
+
+            </div>
+
+            <div class="linhaDupla">
+
+              <div class="coluna-flex-2">
+                <label for="bairroInput" class="perguntaTitulo obrigatorio">Bairro</label>
+                <input type="text" id="bairroInput" placeholder="Centro, Vila Mariana...">
+              </div>
+
+              <div class="coluna-flex-1">
+                <label for="cidadeInput" class="perguntaTitulo obrigatorio">Cidade</label>
+                <input type="text" id="cidadeInput" placeholder="São Paulo...">
+              </div>
+
+              <div class="coluna-flex-1">
+                <label for="estadoInput" class="perguntaTitulo obrigatorio">Estado</label>
+                <input type="text" id="estadoInput" placeholder="SP, RJ...">
+              </div>
+
+            </div>
+          </div>
+
+          <div class="cartaoPerguntas">
+            <h3>Dados da mercadoria</h3>
+            <label for="naturezaMercadoria" class="perguntaTitulo obrigatorio">Natureza da mercadoria</label>
+            <select id="naturezaMercadoria">
+              <option value="" disabled selected>Selecione o tipo de carga...</option>
+              <option value="cosmetico_geral">Cosméticos em geral</option>
+              <option value="perecivel">Perecível</option>
+              <option value="material_eletrico">Equipamentos elétricos e eletrônicos</option>
+              <option value="alimenticio_geral">Alimentos em geral</option>
+              <option value="saude_correlato">Produtos de saúde / correlatos</option>
+              <option value="liquido">Líquido</option>
+              <option value="produto_saude">Produtos de saúde</option>
+              <option value="quimica_diversos">Produtos diversos da indústria química</option>
+              <option value="confeccoes_tecidos">Confecções e tecidos</option>
+              <option value="artigos_perigosos">Outros artigos perigosos</option>
+              <option value="autopecas">Autopeças</option>
+              <option value="pecas_automotivas">Peças automotivas</option>
+              <option value="brindes">Brindes</option>
+              <option value="bijuterias">Bijuterias</option>
+              <option value="livros">Livros</option>
+              <option value="equip_protecao_epi">Equip. de Proteção EPI</option>
+              <option value="propaganda_visual">Material de propaganda e visual</option>
+              <option value="eletroeletronicos">Equipamentos elétricos e eletrônicos</option>
+              <option value="informatica">Material de Informática ou comunicação</option>
+              <option value="pecas_geral">Peças em geral</option>
+            </select>
+
+            <div class="linhaDupla">
+
+              <div class="coluna-flex-1">
+                <label for="numeroNf" class="perguntaTitulo">Número da NF</label>
+                <input type="text" id="numeroNf" placeholder="000.000.000">
+              </div>
+
+              <div class="coluna-flex-1">
+                <label for="valorNf" class="perguntaTitulo obrigatorio">Valor da NF (R$)</label>
+                <div class="input-grupo-sufixo">
+                  <span class="sufixo"> R$ |</span>
+                  <input type="text" id="valorNf" placeholder="0,00">
+                </div>
+              </div>
+
+            </div>
+
+            <div class="linhaDupla">
+
+              <div class="coluna-flex-1">
+                <label for="qtdVolumes" class="perguntaTitulo obrigatorio">Volumes</label>
+                <input type="text" id="qtdVolumes" placeholder="Qtd. de volumes" inputmode="numeric">
+              </div>
+
+              <div class="coluna-flex-1">
+                <label for="pesoReal" class="perguntaTitulo obrigatorio">Peso Real Total</label>
+                <div class="input-grupo-sufixo">
+                  <input type="text" id="pesoReal" placeholder="0,00">
+                  <span class="sufixo">| KG</span>
+                </div>
+              </div>
+
+            </div>
+
+            <div class="linhaDuplaCubagem"
+              style="align-items: center; justify-content: space-between; flex-wrap: wrap; width: 100%;">
+              <div>
+                <p class="pergunta-cubagem-titulo">Dimensões da embalagem</p>
+                <p class="subTitulo">Medidas em metros (m)</p>
+              </div>
+              <div id="statusAlocacaoVolumes" class="status-alocacao"></div>
+            </div>
+
+            <div id="containerCubagem">
+              <div class="coluna-cubagem">
+                <div class="coluna-flex-1">
+                  <p class="pergunta-cubagem">VOLUMES</p>
+                  <div class="input-grupo-sufixo">
+                    <input class="input-volumes" type="text" placeholder="" value="1">
+                    <span class="sufixo">| un</span>
+                  </div>
+                </div>
+
+                <div class="coluna-flex-1">
+                  <p class="pergunta-cubagem">COMPRIMENTO</p>
+                  <div class="input-grupo-sufixo">
+                    <input class="input-comprimento" type="text" placeholder="0">
+                    <span class="sufixo">| m</span>
+                  </div>
+                </div>
+
+                <div class="coluna-flex-1">
+                  <p class="pergunta-cubagem">LARGURA</p>
+                  <div class="input-grupo-sufixo">
+                    <input class="input-largura" type="text" placeholder="0">
+                    <span class="sufixo">| m</span>
+                  </div>
+                </div>
+
+                <div class="coluna-flex-1">
+                  <p class="pergunta-cubagem">ALTURA</p>
+                  <div class="input-grupo-sufixo">
+                    <input class="input-altura" type="text" placeholder="0">
+                    <span class="sufixo">| m</span>
+                  </div>
+                </div>
+
+
+              </div>
+            </div>
+
+
+
+            <p id="erroSomaCubagem" class="oculto"
+              style="color: rgb(240, 113, 113); font-size: 13px; font-weight: bold; margin-top: 10px;"></p>
+
+
+          </div>
+
+          <div class="cartaoPerguntas">
+            <h3>Horário de funcionamento</h3>
+            <p class="resumoCampo">Defina o intervalo e horários em que a transportadora pode realizar a retirada</p>
+
+            <div class="linhaDupla">
+              <div class="coluna-flex-1">
+                <label for="horarioAbertura" class="perguntaTitulo obrigatorio">Horário de abertura</label>
+                <input type="text" id="horarioAbertura" placeholder="00:00" maxlength="5">
+              </div>
+
+              <div class="coluna-flex-1">
+                <label for="horarioFechamento" class="perguntaTitulo obrigatorio">Horário de fechamento</label>
+                <input type="text" id="horarioFechamento" placeholder="00:00" maxlength="5">
+              </div>
+            </div>
+
+            <p class="perguntaTitulo" style="margin-top: 15px;">Fechado para almoço?</p>
+            <div class="grupo-radio-almoco">
+              <input type="radio" name="horarioAlmoco" id="almoco12-13" value="12:00-13:00">
+              <label for="almoco12-13">12h às 13h</label>
+
+              <input type="radio" name="horarioAlmoco" id="almoco13-14" value="13:00-14:00">
+              <label for="almoco13-14">13h às 14h</label>
+
+              <input type="radio" name="horarioAlmoco" id="almoco14-15" value="14:00-15:00">
+              <label for="almoco14-15">14h às 15h</label>
+            </div>
+          </div>
+
+          <div class="cartaoPerguntas">
+            <h3>Instruções adicionais</h3>
+            <p class="resumoCampo">Pontos de referência, observações sobre a mercadoria, etc...</p>
+
+            <label for="observacoes" class="perguntaTitulo">Observações da coleta</label>
+            <input type="text" id="observacoes" placeholder="Ex: Entrar pelos fundos do galpão B...">
+          </div>
+
+          <!-- Banner de Atenção/Regras de Negócio -->
+          <div class="alerta-importante-card">
+            <div class="alerta-importante-icone">⚠️</div>
+            <div class="alerta-importante-conteudo">
+              <strong>Atenção:</strong> O pedido será submetido à análise operacional. A confirmação da coleta, ou
+              eventual
+              impossibilidade de atendimento, será comunicada em até 60 minutos.
+            </div>
+          </div>
+
+
+
+          <div class="coluna-botao-agendar">
+            <button id="buttonLimparForm" type="reset">Limpar Formulário</button>
+            <button id="buttonSolicitarColeta" type="submit">Solicitar Coleta</button>
+          </div>
+
+        </div>
+      </div>
+    </form>
   </main>
 
   <template id="template-cubagem">
@@ -357,28 +357,28 @@
       <div class="coluna-flex-1">
         <p class="pergunta-cubagem">VOLUMES</p>
         <div class="input-grupo-sufixo">
-          <input class="input-volumes" placeholder="">
+          <input class="input-volumes" type="text" placeholder="" value="1">
           <span class="sufixo">| un</span>
         </div>
       </div>
       <div class="coluna-flex-1">
         <p class="pergunta-cubagem">COMPRIMENTO</p>
         <div class="input-grupo-sufixo">
-          <input class="input-comprimento" placeholder="0">
+          <input class="input-comprimento" type="text" placeholder="0">
           <span class="sufixo">| m</span>
         </div>
       </div>
       <div class="coluna-flex-1">
         <p class="pergunta-cubagem">LARGURA</p>
         <div class="input-grupo-sufixo">
-          <input class="input-largura" placeholder="0">
+          <input class="input-largura" type="text" placeholder="0">
           <span class="sufixo">| m</span>
         </div>
       </div>
       <div class="coluna-flex-1">
         <p class="pergunta-cubagem">ALTURA</p>
         <div class="input-grupo-sufixo">
-          <input class="input-altura" placeholder="0">
+          <input class="input-altura" type="text" placeholder="0">
           <span class="sufixo">| m</span>
         </div>
       </div>
@@ -441,8 +441,8 @@
       <div class="dialog-cabecalho" style="text-align: center; border-bottom: none; padding-bottom: 0;">
         <div style="font-size: 40px; margin-bottom: 12px;">⚠️</div>
         <span class="dialog-titulo" style="color: #c2410c; font-size: 20px;">Cadastro Não Encontrado</span>
-        <p class="dialog-subtitulo" style="font-size: 14px; margin-top: 6px;">O CNPJ informado não está registrado
-          em nossa base de dados.</p>
+        <p class="dialog-subtitulo" style="font-size: 14px; margin-top: 6px;">O CNPJ informado não foi encontrado em
+          nossos registros.</p>
       </div>
 
       <div class="dialog-corpo" style="background-color: #fff9f5; border-color: #ffedd5; padding: 20px;">
