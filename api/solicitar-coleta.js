@@ -559,6 +559,30 @@ module.exports = async function (req, res) {
         .map(email => email.trim())
         .filter(Boolean);
 
+      const NOMES_NATUREZA = {
+        "cosmetico_geral": "Cosméticos em geral",
+        "perecivel": "Perecível",
+        "material_eletrico": "Equipamentos elétricos e eletrônicos",
+        "alimenticio_geral": "Alimentos em geral",
+        "saude_correlato": "Produtos de saúde / correlatos",
+        "liquido": "Líquido",
+        "produto_saude": "Produtos de saúde",
+        "quimica_diversos": "Produtos diversos da indústria química",
+        "confeccoes_tecidos": "Confecções e tecidos",
+        "artigos_perigosos": "Outros artigos perigosos",
+        "autopecas": "Autopeças",
+        "pecas_automotivas": "Peças automotivas",
+        "brindes": "Brindes",
+        "bijuterias": "Bijuterias",
+        "livros": "Livros",
+        "equip_protecao_epi": "Equip. de Proteção EPI",
+        "propaganda_visual": "Material de propaganda e visual",
+        "eletroeletronicos": "Equipamentos elétricos e eletrônicos",
+        "informatica": "Material de Informática ou comunicação",
+        "pecas_geral": "Peças em geral"
+      };
+      const naturezaFormatada = NOMES_NATUREZA[body.naturezaMercadoria] || body.naturezaMercadoria || "Não informada";
+
       const mailOptions = {
         from: `"Agendamento Global Cargo" <${process.env.SMTP_USER}>`,
         to: listaEmail.join(', '),
@@ -594,6 +618,13 @@ module.exports = async function (req, res) {
     <p style="margin: 6px 0 0 0; font-size: 14px;"><strong>Bairro:</strong> ${body.bairroColeta}</p>
     <p style="margin: 6px 0 0 0; font-size: 14px;"><strong>Município/UF:</strong> ${body.cidadeColeta} - ${body.ufColeta}</p>
     <p style="margin: 6px 0 0 0; font-size: 14px;"><strong>CEP:</strong> ${body.cepColeta}</p>
+  </div>
+
+  <div style="background-color: #ffffff; border: 1px solid #e2e8f0; padding: 15px; margin: 20px 0; border-radius: 6px;">
+    <h3 style="color: #1a3a6b; margin-top: 0; font-size: 16px; border-bottom: 1px solid #e2e8f0; padding-bottom: 8px;">Dados da Mercadoria</h3>
+    <p style="margin: 0; font-size: 14px;"><strong>Volumes:</strong> ${body.qtdVolumes || 'Não informado'} un</p>
+    <p style="margin: 6px 0 0 0; font-size: 14px;"><strong>Peso Real:</strong> ${body.pesoReal || '0'} kg</p>
+    <p style="margin: 6px 0 0 0; font-size: 14px;"><strong>Natureza da Carga:</strong> ${naturezaFormatada}</p>
   </div>
 
   <div style="background-color: #f8fafc; border-left: 4px solid #f59e0b; padding: 15px; margin: 20px 0; border-radius: 0 6px 6px 0;">
