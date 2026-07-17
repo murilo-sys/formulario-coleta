@@ -1,7 +1,7 @@
 // js/secoes/solicitante.js
 import { state } from '../state.js';
-import { DocValido } from '../utils/utils.js';
-import { consultarEmpresaPorCnpj } from '../api/api.js';
+import { DocValido, mostrarAlerta } from '../utils/utils.js';
+import { consultarEmpresaPorCnpj, consultarPessoaPorCpf } from '../api/api.js';
 import { avisoCadastro } from './avisoCadastro.js';
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -69,19 +69,44 @@ document.addEventListener("DOMContentLoaded", () => {
       return;
     }
 
-    // Se for Pessoa Física (CPF), abre o aviso de suporte e bloqueia o fluxo
+    // Se for Pessoa Física (CPF), consulta a API para ver se existe
     if (docSolicitante.length === 11) {
-      avisoCadastro("Pessoa Física");
-      if (state.maskSolicitante) {
-        state.maskSolicitante.value = "";
+      try {
+        const pessoa = await consultarPessoaPorCpf(docSolicitante);
+        
+        state.cnpjSolicitanteConsultado = docSolicitante; // Reutilizando a variável de cache
+
+        if (!pessoa) {
+          // O alerta de cadastro não localizado já é disparado na api.js
+          if (state.maskSolicitante) {
+            state.maskSolicitante.value = "";
+          }
+
+          state.solicitanteVerificado = false;
+          state.cnpjSolicitanteConsultado = "";
+          grupoEscondidoSolicitante.classList.remove('visivel');
+
+          resetaCamposDependentes();
+          return;
+        }
+
+        // Sucesso na verificação do CPF
+        state.solicitanteVerificado = true;
+        grupoEscondidoSolicitante.classList.add('visivel');
+
+        // Impede de avançar se já houver Remetente selecionado (Edge case)
+        const radioAtivo = document.querySelector('input[name="tipoSolicitante"]:checked');
+        if (radioAtivo && radioAtivo.value === 'remetente') {
+          mostrarAlerta("Pessoa Física (CPF) não pode ser o remetente de uma coleta.", "Aviso", "⚠️");
+          radioAtivo.checked = false;
+          resetaCamposDependentes();
+          return;
+        } else if (radioAtivo) {
+          aplicarPapelSolicitante(radioAtivo.value);
+        }
+      } catch(err) {
+        // Erro
       }
-
-      state.solicitanteVerificado = false;
-      state.cnpjSolicitanteConsultado = "";
-      state.solicitanteEndereco = null;
-      grupoEscondidoSolicitante.classList.remove('visivel');
-
-      resetaCamposDependentes();
       return;
     }
 
@@ -137,10 +162,20 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Lógica de alternância do papel do solicitante utilizando o evento 'change' nos rádios
   const secoesFormularioAdicionais = document.getElementById("secoesFormularioAdicionais");
-  const radiosSolicitante = document.querySelectorAll('input[name="tipoSolicitante"]');
-  radiosSolicitante.forEach(radio => {
-    radio.addEventListener('change', (evento) => {
-      aplicarPapelSolicitante(evento.target.value);
+  const radiosPapel = document.querySelectorAll('input[name="tipoSolicitante"]');
+  radiosPapel.forEach(radio => {
+    radio.addEventListener('change', (e) => {
+      const papel = e.target.value;
+      const docSolicitante = state.maskSolicitante ? state.maskSolicitante.unmaskedValue : "";
+
+      if (papel === 'remetente' && docSolicitante.length === 11) {
+        mostrarAlerta("Pessoa Física (CPF) não pode ser o remetente de uma coleta.", "Aviso", "⚠️");
+        e.target.checked = false; // Desmarca o botão
+        resetaCamposDependentes();
+        return;
+      }
+
+      aplicarPapelSolicitante(papel);
       if (secoesFormularioAdicionais) {
         secoesFormularioAdicionais.classList.add("visivel");
       }

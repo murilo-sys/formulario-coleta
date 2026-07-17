@@ -178,9 +178,9 @@ module.exports = async function (req, res) {
 
   // 2. Validação de Pessoa Física (Bypass de segurança)
   const solicitanteDocLimpo = String(body.solicitanteDoc || "").toUpperCase().replace(/[^A-Z0-9]/g, "");
-  if (solicitanteDocLimpo.length === 11) {
+  if (solicitanteDocLimpo.length === 11 && body.tipoSolicitante === 'remetente') {
     return res.status(400).json({
-      message: "A solicitação direta via formulário não é permitida para Pessoa Física. Entre em contato com nosso atendimento para suporte pelos telefones: (11) 3017-8990 ou (11) 2222-1260."
+      message: "Pessoa Física (CPF) não pode ser o remetente da coleta. Entre em contato com nosso atendimento para suporte pelos telefones: (11) 3017-8990 ou (11) 2222-1260."
     });
   }
 
@@ -223,8 +223,16 @@ module.exports = async function (req, res) {
   }
 
   // Validação matemática rigorosa dos documentos (CPF/CNPJ) no Backend
-  if (solicitanteDocLimpo.length !== 14 || !validarCNPJ(solicitanteDocLimpo)) {
-    return res.status(400).json({ message: "O documento do solicitante (CNPJ) fornecido é inválido." });
+  if (solicitanteDocLimpo.length === 11) {
+    if (!validarCPF(solicitanteDocLimpo)) {
+      return res.status(400).json({ message: "O documento do solicitante (CPF) fornecido é inválido." });
+    }
+  } else if (solicitanteDocLimpo.length === 14) {
+    if (!validarCNPJ(solicitanteDocLimpo)) {
+      return res.status(400).json({ message: "O documento do solicitante (CNPJ) fornecido é inválido." });
+    }
+  } else {
+    return res.status(400).json({ message: "O documento do solicitante deve possuir 11 dígitos (CPF) ou 14 dígitos (CNPJ)." });
   }
 
   const remetenteDocLimpo = String(body.remetenteDoc || "").toUpperCase().replace(/[^A-Z0-9]/g, "");
@@ -424,8 +432,8 @@ module.exports = async function (req, res) {
       corporationId: body.corporationId ? parseInt(body.corporationId, 10) : 107892,
       pickTypeId: body.pickTypeId ? parseInt(body.pickTypeId, 10) : 866,
       requester: body.solicitanteNome,
-      notificationPhone: body.solicitanteTelefone || body.solicitanteTelefoneAdicional || null,
-      notificationEmail: body.solicitanteEmail || body.solicitanteEmailAdicional || null,
+      notificationPhone: [body.solicitanteTelefone, body.solicitanteTelefoneAdicional].filter(Boolean).join(" / ") || null,
+      notificationEmail: [body.solicitanteEmail, body.solicitanteEmailAdicional].filter(Boolean).join(";") || null,
       customer: {
         document: String(body.solicitanteDoc || "").replace(/\D/g, ""),
         name: body.solicitanteNome

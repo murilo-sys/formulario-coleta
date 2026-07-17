@@ -34,6 +34,7 @@ loadEnv(dotenvLocalPath);
 
 // Import the serverless function
 const apiHandler = require('./api/consultar-cnpj.js');
+const apiHandlerCpf = require('./api/consultar-cpf.js');
 const solicitarColetaHandler = require('./api/solicitar-coleta.js');
 const validarCepHandler = require('./api/validar-cep.js');
 
@@ -55,7 +56,7 @@ const server = http.createServer((req, res) => {
   }
 
   // Route API requests
-  if (pathname === '/api/consultar-cnpj' && req.method === 'POST') {
+  if ((pathname === '/api/consultar-cnpj' || pathname === '/api/consultar-cpf') && req.method === 'POST') {
     let body = '';
     let tooLarge = false;
     req.on('data', chunk => {
@@ -98,7 +99,11 @@ const server = http.createServer((req, res) => {
       };
 
       try {
-        await apiHandler(req, resMock);
+        if (pathname === '/api/consultar-cnpj') {
+          await apiHandler(req, resMock);
+        } else if (pathname === '/api/consultar-cpf') {
+          await apiHandlerCpf(req, resMock);
+        }
       } catch (err) {
         console.error('API Error:', err);
         res.statusCode = 500;
