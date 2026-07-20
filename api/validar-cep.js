@@ -45,6 +45,11 @@ function procurarCep(cep) {
       return true;
     }
 
+    //Zona extrema
+    if (cepNumber >= 37640000 && cepNumber <= 37649999) {
+      return true;
+    }
+
     return false;
   } catch (err) {
     console.error("Erro durante a validação do CEP:", err);
